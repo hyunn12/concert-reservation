@@ -5,7 +5,7 @@
 - **Language**
     - Java 17
 - **Framework** 
-    -  Spring Boot
+    -  Spring Boot 3.x
 - **Architecture**
     - Testable Business logics
     - Layered Architecture Based
@@ -15,8 +15,7 @@
 - **Test**
     - JUnit + AssertJ
 
- 
----
+<br>
 
 ### 시나리오 선정
 콘서트 예약 서비스
@@ -26,7 +25,7 @@
 <div markdown="1">
 
 #### Description
-- **`콘서트 예약 서비스`**를 구현해 봅니다.
+- `콘서트 예약 서비스`를 구현해 봅니다.
 - 대기열 시스템을 구축하고, 예약 서비스는 작업가능한 유저만 수행할 수 있도록 해야합니다.
 - 사용자는 좌석예약 시에 미리 충전한 잔액을 이용합니다.
 - 좌석 예약 요청시에, 결제가 이루어지지 않더라도 일정 시간동안 다른 유저가 해당 좌석에 접근할 수 없도록 합니다.
@@ -72,7 +71,7 @@
 - 결제 처리하고 결제 내역을 생성하는 API 를 작성합니다.
 - 결제가 완료되면 해당 좌석의 소유권을 유저에게 배정하고 대기열 토큰을 만료시킵니다.
 
-### 심화 과제
+#### 심화 과제
 
 6️⃣ **`심화` 대기열 고도화**
 
@@ -83,27 +82,10 @@
 </div>
 </details>
 
+<br>
 
----
+### 설계 문서
 
-### 진행 단계
-#### **`STEP 05`**
-- 시나리오 요구사항 별 분석 자료 제출
-  - [ ] 항해 플러스 서버 구축 프로젝트 Milestone
-  - [ ] 시퀀스 다이어그램
-  - [ ] API 명세
-    - `Endpoint` - API 의 URL 및 기능을 설명할 수 있는 적절한 HTTP Method
-    - `Request` - Param, Query, Body 등 API 호출 시 전달되어야 할 매개변수 및 데이터
-    - `Response` - API 의 응답 코드, 데이터 등에 대한 명세 및 적절한 예제
-    - `Error` - API 호출 중 발생할 수 있는 예외 케이스에 대해 명시
-    - `Authorization` - 필요한 인증, 권한에 대해서도 명시
-  - [ ] ERD 설계
-    - 요구사항 해결을 위한 도메인의 분석 및 테이블 설계 역량
+#### [Milestone](https://github.com/users/hyunn12/projects/3)
 
-- 자료들을 리드미에 작성 후 PR 링크 제출
-
-#### **`STEP 06`**
-- ERD 설계 자료 제출
-- API 명세 및 Mock API 작성
-- 자료들을 리드미에 작성 후 PR링크 제출 ( 기본 패키지 구조, 서버 Configuration 등 )
-
+#### [Sequence Diagram](./docs/SequenceDiagram.md)
