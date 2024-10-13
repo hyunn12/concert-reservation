@@ -4,6 +4,7 @@ import io.hhplus.reserve.concert.interfaces.dto.ConcertResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ public class ConcertController {
 
     @GetMapping("/list/{date}")
     @Operation(summary = "예약 가능한 콘서트 목록 조회", description = "특정 날짜의 예약 가능한 콘서트 목록 조회")
-    public List<ConcertResponse.Concert> getList(
+    public ResponseEntity<List<ConcertResponse.Concert>> getList(
             @Parameter(description = "날짜 (형식: yyyy-MM-dd)", example = "2024-12-25", required = true)
             @PathVariable String date
     ) {
@@ -44,12 +45,12 @@ public class ConcertController {
                 .reservationEndAt(LocalDateTime.of(2024, 11, 23, 23, 59))
                 .build();
 
-        return List.of(concert1, concert2);
+        return ResponseEntity.ok(List.of(concert1, concert2));
     }
 
     @GetMapping("/seat/list/{id}")
     @Operation(summary = "예약 가능한 좌석 목록 조회", description = "특정 콘서트의 예약 가능한 좌석 목록 조회")
-    public List<ConcertResponse.Seat> getSeatList(
+    public ResponseEntity<List<ConcertResponse.Seat>> getSeatList(
             @Parameter(description = "콘서트 ID", example = "1", required = true)
             @PathVariable("id") Long concertId
     ) {
@@ -69,7 +70,7 @@ public class ConcertController {
                 .reservedAt(LocalDateTime.now())
                 .build();
 
-        return List.of(seat1, seat2);
+        return ResponseEntity.ok(List.of(seat1, seat2));
     }
 
 }

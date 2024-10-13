@@ -4,6 +4,7 @@ import io.hhplus.reserve.payment.interfaces.dto.PaymentRequest;
 import io.hhplus.reserve.payment.interfaces.dto.PaymentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,17 +19,17 @@ public class PaymentController {
 
     @Operation(summary = "결제", description = "예약한 콘서트 좌석 결제")
     @PostMapping("/payment")
-    public PaymentResponse.Payment pay(
+    public ResponseEntity<PaymentResponse.Payment> pay(
             @RequestBody PaymentRequest.Payment request
     ) {
         // TODO 결제 API 작성
 
-        return PaymentResponse.Payment.builder()
+        return ResponseEntity.ok(PaymentResponse.Payment.builder()
                 .userId(1L)
                 .paymentAmount(request.getAmount())
                 .status("SUCCESS")
                 .createdAt(LocalDateTime.now())
-                .build();
+                .build());
     }
 
 }
