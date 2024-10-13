@@ -1,7 +1,7 @@
-package io.hhplus.reserve.token.interfaces.api;
+package io.hhplus.reserve.waiting.interfaces.api;
 
-import io.hhplus.reserve.token.interfaces.dto.TokenRequest;
-import io.hhplus.reserve.token.interfaces.dto.TokenResponse;
+import io.hhplus.reserve.waiting.interfaces.dto.TokenRequest;
+import io.hhplus.reserve.waiting.interfaces.dto.TokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class TokenController {
     }
 
     @PostMapping("/status" )
-    @Operation(summary = "토큰 상태 조회", description = "현재 대기열 상태 조회 및 갱신")
+    @Operation(summary = "대기열 상태 조회", description = "현재 대기열 상태 조회 및 갱신")
     public ResponseEntity<TokenResponse.Status> getStatus(
             @RequestBody TokenRequest.Status request
     ) {

@@ -1,4 +1,4 @@
-package io.hhplus.reserve.token.interfaces.dto;
+package io.hhplus.reserve.waiting.interfaces.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
