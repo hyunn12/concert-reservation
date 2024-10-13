@@ -56,7 +56,7 @@
               └── dto
 ```
 
-Layered 아키텍처를 베이스로 한 Clean 아키텍처를 적용하고자 함
+Layered 아키텍처를 베이스로 한 Clean 아키텍처를 적용하고자 함   
 각 도메인 패키지를 최상단에 두고 그 아래에 각 레이어 패키지를 생성
 
 <br>
@@ -66,7 +66,6 @@ Layered 아키텍처를 베이스로 한 Clean 아키텍처를 적용하고자 �
 
 <details>
 <summary>구현 상세</summary>
-<div markdown="1">
 
 #### Description
 - `콘서트 예약 서비스`를 구현해 봅니다.
@@ -123,7 +122,6 @@ Layered 아키텍처를 베이스로 한 Clean 아키텍처를 적용하고자 �
 - e.g. 특정 시간 동안 N 명에게만 권한을 부여한다.
 - e.g. 한번에 활성화된 최대 유저를 N 으로 유지한다.
 
-</div>
 </details>
 
 <br>
