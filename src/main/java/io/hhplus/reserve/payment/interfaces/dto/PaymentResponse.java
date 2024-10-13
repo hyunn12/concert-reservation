@@ -1,5 +1,6 @@
 package io.hhplus.reserve.payment.interfaces.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,13 +13,21 @@ public class PaymentResponse {
 
     @Getter
     @Builder
+    @Schema(name = "PaymentResponse.Payment", description = "결제 결과 객체")
     public static class Payment {
-        private Long paymentId;
+
+        @Schema(description = "회원 ID", example = "1")
         private Long userId;
-        private Long reservationId;
+
+        @Schema(description = "결제금액", example = "50000")
         private int paymentAmount;
+
+        @Schema(description = "결제상태", example = "SUCCESS")
         private String status;
+
+        @Schema(description = "생성일", example = "2024-10-13 12:00:00")
         private LocalDateTime createdAt;
+
     }
 
 }

@@ -1,5 +1,6 @@
 package io.hhplus.reserve.token.interfaces.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,11 +12,26 @@ public class TokenRequest {
 
     @Getter
     @Builder
-    public static class Token {
+    @Schema(name = "TokenRequest.Generate", description = "토큰 생성 요청 객체")
+    public static class Generate {
+
         @NotNull
+        @Schema(description = "회원 ID", example = "1")
+        private Long userId;
+
+    }
+
+    @Getter
+    @Builder
+    @Schema(name = "TokenRequest.Status", description = "토큰 상태 조회 요청 객체")
+    public static class Status {
+
+        @NotNull
+        @Schema(description = "회원 ID", example = "1")
         private Long userId;
 
         @NotNull
+        @Schema(description = "토큰", example = "testtokentokentoken")
         private String token;
     }
 

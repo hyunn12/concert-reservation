@@ -1,5 +1,6 @@
 package io.hhplus.reserve.point.interfaces.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,15 +11,12 @@ public class PointResponse {
 
     @Getter
     @Builder
+    @Schema(name = "PointResponse.Point", description = "포인트 조회 결과 객체")
     public static class Point {
-        private Long userId;
-        private int point;
-    }
 
-    @Getter
-    @Builder
-    public static class Charge {
+        @Schema(description = "포인트", example = "40000")
         private int point;
+
     }
 
 }
