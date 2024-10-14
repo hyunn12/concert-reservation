@@ -1,7 +1,6 @@
 package io.hhplus.reserve.waiting.domain;
 
 import io.hhplus.reserve.common.domain.BaseEntity;
-import io.hhplus.reserve.waiting.application.TokenCommand;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -27,22 +26,22 @@ public class Waiting extends BaseEntity {
     @Column(name = "token")
     private String token;
 
-    @Setter
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'WAIT'")
     private WaitingStatus status;
 
     @Builder(builderMethodName = "createTokenBuilder")
-    public Waiting(TokenCommand.Generate command) {
-        this.userId = command.getUserId();
-        this.concertId = command.getConcertId();
+    public Waiting(Long userId, Long concertId, WaitingStatus status) {
+        this.userId = userId;
+        this.concertId = concertId;
+        this.status = status;
     }
 
     @Builder(builderMethodName = "refreshTokenBuilder")
-    public Waiting(TokenCommand.Status command) {
-        this.userId = command.getUserId();
-        this.token = command.getToken();
+    public Waiting(String token, WaitingStatus status) {
+        this.token = token;
+        this.status = status;
     }
 
 }

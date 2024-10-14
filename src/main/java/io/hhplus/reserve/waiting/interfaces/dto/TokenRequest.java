@@ -19,6 +19,10 @@ public class TokenRequest {
         @Schema(description = "회원 ID", example = "1")
         private Long userId;
 
+        @NotNull
+        @Schema(description = "콘서트 ID", example = "1")
+        private Long concertId;
+
     }
 
     @Getter
@@ -27,12 +31,9 @@ public class TokenRequest {
     public static class Status {
 
         @NotNull
-        @Schema(description = "회원 ID", example = "1")
-        private Long userId;
-
-        @NotNull
         @Schema(description = "토큰", example = "testtokentokentoken")
         private String token;
+
     }
 
 }

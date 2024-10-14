@@ -1,5 +1,6 @@
 package io.hhplus.reserve.waiting.interfaces.dto;
 
+import io.hhplus.reserve.waiting.domain.TokenInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,6 +21,12 @@ public class TokenResponse {
         @Schema(description = "대기상태", example = "WAIT")
         private String status;
 
+        public static Token of(TokenInfo.Token info) {
+            return Token.builder()
+                    .token(info.getToken())
+                    .status(info.getStatus())
+                    .build();
+        }
     }
 
     @Getter
@@ -36,6 +43,13 @@ public class TokenResponse {
         @Schema(description = "대기인원", example = "10")
         private int waitingCount;
 
+        public static Status of(TokenInfo.Status info) {
+            return Status.builder()
+                    .token(info.getToken())
+                    .status(info.getStatus())
+                    .waitingCount(info.getWaitingCount())
+                    .build();
+        }
     }
 
 }
