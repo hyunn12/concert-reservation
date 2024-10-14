@@ -1,6 +1,6 @@
 package io.hhplus.reserve.concert.domain;
 
-import io.hhplus.common.domain.BaseEntity;
+import io.hhplus.reserve.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "CONCERT_SEAT")
+@Table(name = "concert_seat")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,21 +18,21 @@ public class ConcertSeat extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "SEAT_ID")
+    @Column(name = "seat_id")
     private Long seatId;
 
-    @Column(name = "CONCERT_ID")
+    @Column(name = "concert_id")
     private Long concertId;
 
-    @Column(name = "SEAT_NUM")
+    @Column(name = "seat_num")
     private int seatNum;
 
-    @Column(name = "STATUS")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'AVAILABLE'")
     private SeatStatus status;
 
-    @Column(name = "RESERVED_AT")
+    @Column(name = "reserved_at")
     private LocalDateTime reservedAt;
 
 }

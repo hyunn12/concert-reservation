@@ -1,6 +1,6 @@
 package io.hhplus.reserve.payment.domain;
 
-import io.hhplus.common.domain.BaseEntity;
+import io.hhplus.reserve.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@Table(name = "PAYMENT")
+@Table(name = "payment")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,19 +16,19 @@ public class Payment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PAYMENT_ID")
+    @Column(name = "payment_id")
     private Long paymentId;
 
-    @Column(name = "RESERVATION_ID")
+    @Column(name = "reservation_id")
     private Long reservationId;
 
-    @Column(name = "USER_ID")
+    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "PAYMENT_AMOUNT")
+    @Column(name = "payment_amount")
     private int paymentAmount;
 
-    @Column(name = "STATUS")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'SUCCESS'")
     private PaymentStatus status;

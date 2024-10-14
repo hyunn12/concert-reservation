@@ -1,6 +1,6 @@
 package io.hhplus.reserve.user.domain;
 
-import io.hhplus.common.domain.BaseEntity;
+import io.hhplus.reserve.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "user")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,13 +16,13 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
+    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "USER_NAME")
+    @Column(name = "user_name")
     private String userName;
 
-    @Column(name = "POINT")
+    @Column(name = "point")
     @ColumnDefault("0")
     private int point;
 

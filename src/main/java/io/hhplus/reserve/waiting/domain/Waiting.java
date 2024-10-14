@@ -1,36 +1,48 @@
 package io.hhplus.reserve.waiting.domain;
 
-import io.hhplus.common.domain.BaseEntity;
+import io.hhplus.reserve.common.domain.BaseEntity;
+import io.hhplus.reserve.waiting.application.TokenCommand;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@Table(name = "WAITING")
+@Table(name = "waiting")
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Waiting extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "WAITING_ID")
+    @Column(name = "waiting_id")
     private Long waitingId;
 
-    @Column(name = "USER_ID")
+    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "CONCERT_ID")
+    @Column(name = "concert_id")
     private Long concertId;
 
-    @Column(name = "TOKEN")
+    @Column(name = "token")
     private String token;
 
-    @Column(name = "STATUS")
+    @Setter
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'WAIT'")
     private WaitingStatus status;
+
+    @Builder(builderMethodName = "createTokenBuilder")
+    public Waiting(TokenCommand.Generate command) {
+        this.userId = command.getUserId();
+        this.concertId = command.getConcertId();
+    }
+
+    @Builder(builderMethodName = "refreshTokenBuilder")
+    public Waiting(TokenCommand.Status command) {
+        this.userId = command.getUserId();
+        this.token = command.getToken();
+    }
 
 }

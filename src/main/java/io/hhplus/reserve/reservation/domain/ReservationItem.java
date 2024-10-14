@@ -1,13 +1,13 @@
 package io.hhplus.reserve.reservation.domain;
 
-import io.hhplus.common.domain.BaseEntity;
+import io.hhplus.reserve.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "RESERVATION_ITEM")
+@Table(name = "reservation_item")
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,13 +15,13 @@ public class ReservationItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ITEM_ID")
+    @Column(name = "item_id")
     private Long itemId;
 
-    @Column(name = "RESERVATION_ID")
+    @Column(name = "reservation_id")
     private Long reservationId;
 
-    @Column(name = "SEAT_ID")
+    @Column(name = "seat_id")
     private Long seatId;
 
 }
