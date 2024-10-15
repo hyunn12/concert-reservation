@@ -1,4 +1,4 @@
-package io.hhplus.reserve.waiting.domain;
+package io.hhplus.reserve.waiting.application;
 
 import lombok.AccessLevel;
 import lombok.Builder;
