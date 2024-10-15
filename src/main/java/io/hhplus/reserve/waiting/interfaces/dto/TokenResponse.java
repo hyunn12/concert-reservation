@@ -1,6 +1,6 @@
 package io.hhplus.reserve.waiting.interfaces.dto;
 
-import io.hhplus.reserve.waiting.domain.TokenInfo;
+import io.hhplus.reserve.waiting.application.TokenInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;

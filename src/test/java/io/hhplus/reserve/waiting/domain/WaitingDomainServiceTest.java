@@ -1,5 +1,7 @@
 package io.hhplus.reserve.waiting.domain;
 
+import io.hhplus.reserve.waiting.application.TokenCommand;
+import io.hhplus.reserve.waiting.application.TokenInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
