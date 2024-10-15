@@ -3,6 +3,7 @@ package io.hhplus.reserve.reservation.domain;
 import io.hhplus.reserve.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -37,5 +38,13 @@ public class Reservation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'SUCCESS'")
     private ReservationStatus status;
+
+    @Builder(builderMethodName = "createBuilder")
+    public Reservation(Long userId, String concertTitle, LocalDateTime concertStartAt, LocalDateTime concertEndAt) {
+        this.userId = userId;
+        this.concertTitle = concertTitle;
+        this.concertStartAt = concertStartAt;
+        this.concertEndAt = concertEndAt;
+    }
 
 }

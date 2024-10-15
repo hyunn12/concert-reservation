@@ -3,6 +3,7 @@ package io.hhplus.reserve.reservation.domain;
 import io.hhplus.reserve.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,5 +24,11 @@ public class ReservationItem extends BaseEntity {
 
     @Column(name = "seat_id")
     private Long seatId;
+
+    @Builder(builderMethodName = "createBuilder")
+    public ReservationItem(long reservationId, long seatId) {
+        this.reservationId = reservationId;
+        this.seatId = seatId;
+    }
 
 }
