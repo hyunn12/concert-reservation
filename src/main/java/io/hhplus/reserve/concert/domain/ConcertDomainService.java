@@ -1,5 +1,6 @@
 package io.hhplus.reserve.concert.domain;
 
+import io.hhplus.reserve.concert.application.ConcertInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,18 +8,26 @@ import java.util.List;
 @Service
 public class ConcertDomainService {
 
-    private final ConcertReader concertReader;
+    private final ConcertRepository concertRepository;
 
-    public ConcertDomainService(ConcertReader concertReader) {
-        this.concertReader = concertReader;
+    public ConcertDomainService(ConcertRepository concertRepository) {
+        this.concertRepository = concertRepository;
     }
 
-    public List<Concert> getAvailableConcertList(String date) {
-        return concertReader.getConcertList(date);
+    public List<ConcertInfo.ConcertDetail> getAvailableConcertList(String date) {
+        List<Concert> concertList = concertRepository.getConcertList(date);
+
+        return concertList.stream()
+                .map(ConcertInfo.ConcertDetail::of)
+                .toList();
     }
 
-    public List<ConcertSeat> getSeatListByConcertId(Long concertId) {
-        return concertReader.getConcertSeatListByConcertId(concertId);
+    public List<ConcertInfo.SeatDetail> getSeatListByConcertId(Long concertId) {
+        List<ConcertSeat> seatList = concertRepository.getConcertSeatListByConcertId(concertId);
+
+        return seatList.stream()
+                .map(ConcertInfo.SeatDetail::of)
+                .toList();
     }
 
 }

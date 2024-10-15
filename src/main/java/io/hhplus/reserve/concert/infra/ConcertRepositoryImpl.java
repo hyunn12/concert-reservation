@@ -1,7 +1,7 @@
 package io.hhplus.reserve.concert.infra;
 
 import io.hhplus.reserve.concert.domain.Concert;
-import io.hhplus.reserve.concert.domain.ConcertReader;
+import io.hhplus.reserve.concert.domain.ConcertRepository;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import org.springframework.stereotype.Repository;
 
@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public class ConcertReaderImpl implements ConcertReader {
+public class ConcertRepositoryImpl implements ConcertRepository {
 
     private final ConcertJpaRepository concertJpaRepository;
     private final ConcertSeatJpaRepository concertSeatJpaRepository;
 
-    public ConcertReaderImpl(ConcertJpaRepository concertJpaRepository, ConcertSeatJpaRepository concertSeatJpaRepository) {
+    public ConcertRepositoryImpl(ConcertJpaRepository concertJpaRepository, ConcertSeatJpaRepository concertSeatJpaRepository) {
         this.concertJpaRepository = concertJpaRepository;
         this.concertSeatJpaRepository = concertSeatJpaRepository;
     }

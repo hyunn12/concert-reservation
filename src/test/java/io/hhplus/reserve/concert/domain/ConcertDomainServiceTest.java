@@ -1,5 +1,6 @@
 package io.hhplus.reserve.concert.domain;
 
+import io.hhplus.reserve.concert.application.ConcertInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.times;
 class ConcertDomainServiceTest {
 
     @Mock
-    private ConcertReader concertReader;
+    private ConcertRepository concertRepository;
 
     @InjectMocks
     private ConcertDomainService concertDomainService;
@@ -52,16 +53,16 @@ class ConcertDomainServiceTest {
                             LocalDateTime.of(2024, 11, 23, 23, 59))
             );
 
-            given(concertReader.getConcertList(date)).willReturn(mockConcertList);
+            given(concertRepository.getConcertList(date)).willReturn(mockConcertList);
 
             // when
-            List<Concert> result = concertDomainService.getAvailableConcertList(date);
+            List<ConcertInfo.ConcertDetail> result = concertDomainService.getAvailableConcertList(date);
 
             // then
             assertThat(result).hasSize(2);
             assertEquals(result.get(0).getTitle(), "AA Concert");
             assertEquals(result.get(1).getTitle(), "BB Concert");
-            then(concertReader).should(times(1)).getConcertList(date);
+            then(concertRepository).should(times(1)).getConcertList(date);
         }
 
         @Test
@@ -69,14 +70,14 @@ class ConcertDomainServiceTest {
         void shouldReturnEmptyListWhenNoConcertsAvailable() {
             // given
             String date = "2024-10-15";
-            given(concertReader.getConcertList(date)).willReturn(List.of());
+            given(concertRepository.getConcertList(date)).willReturn(List.of());
 
             // when
-            List<Concert> result = concertDomainService.getAvailableConcertList(date);
+            List<ConcertInfo.ConcertDetail> result = concertDomainService.getAvailableConcertList(date);
 
             // then
             assertThat(result).isEmpty();
-            then(concertReader).should(times(1)).getConcertList(date);
+            then(concertRepository).should(times(1)).getConcertList(date);
         }
     }
 
@@ -94,16 +95,16 @@ class ConcertDomainServiceTest {
                     new ConcertSeat(2L, concertId, 2, SeatStatus.AVAILABLE, null)
             );
 
-            given(concertReader.getConcertSeatListByConcertId(concertId)).willReturn(mockSeatList);
+            given(concertRepository.getConcertSeatListByConcertId(concertId)).willReturn(mockSeatList);
 
             // when
-            List<ConcertSeat> result = concertDomainService.getSeatListByConcertId(concertId);
+            List<ConcertInfo.SeatDetail> result = concertDomainService.getSeatListByConcertId(concertId);
 
             // then
             assertThat(result).hasSize(2);
             assertEquals(result.get(0).getSeatNum(), 1);
             assertEquals(result.get(1).getSeatNum(), 2);
-            then(concertReader).should(times(1)).getConcertSeatListByConcertId(concertId);
+            then(concertRepository).should(times(1)).getConcertSeatListByConcertId(concertId);
         }
 
         @Test
@@ -111,14 +112,14 @@ class ConcertDomainServiceTest {
         void shouldReturnEmptySeatList() {
             // given
             Long concertId = 1L;
-            given(concertReader.getConcertSeatListByConcertId(concertId)).willReturn(List.of());
+            given(concertRepository.getConcertSeatListByConcertId(concertId)).willReturn(List.of());
 
             // when
-            List<ConcertSeat> result = concertDomainService.getSeatListByConcertId(concertId);
+            List<ConcertInfo.SeatDetail> result = concertDomainService.getSeatListByConcertId(concertId);
 
             // then
             assertThat(result).isEmpty();
-            then(concertReader).should(times(1)).getConcertSeatListByConcertId(concertId);
+            then(concertRepository).should(times(1)).getConcertSeatListByConcertId(concertId);
         }
     }
 
