@@ -19,35 +19,7 @@
 
 ### 패키지 구조
 ```
-├── concert
-│         ├── application
-│         ├── domain
-│         ├── infra
-│         └── interfaces
-│             ├── api
-│             └── dto
-├── payment
-│         ├── application
-│         ├── domain
-│         ├── infra
-│         └── interfaces
-│             ├── api
-│             └── dto
-├── point
-│         ├── application
-│         ├── domain
-│         ├── infra
-│         └── interfaces
-│             ├── api
-│             └── dto
-├── reservation
-│         ├── application
-│         ├── domain
-│         ├── infra
-│         └── interfaces
-│             ├── api
-│             └── dto
-└── token
+└── domain
           ├── application
           ├── domain
           ├── infra
