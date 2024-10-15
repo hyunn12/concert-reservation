@@ -1,6 +1,6 @@
 package io.hhplus.reserve.waiting.domain;
 
-public interface WaitingReader {
+public interface WaitingRepository {
 
     int getActiveCount(long concertId);
 
@@ -9,5 +9,7 @@ public interface WaitingReader {
     boolean isWaitingEmpty(long concertId);
 
     Waiting getWaiting(String token);
+
+    Waiting createWaiting(Waiting waiting);
 
 }

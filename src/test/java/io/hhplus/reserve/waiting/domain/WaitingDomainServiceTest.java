@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
@@ -18,9 +18,7 @@ import static org.mockito.BDDMockito.*;
 class WaitingDomainServiceTest {
 
     @Mock
-    private WaitingStore waitingStore;
-    @Mock
-    private WaitingReader waitingReader;
+    private WaitingRepository waitingRepository;
 
     @InjectMocks
     private WaitingDomainService waitingDomainService;
@@ -34,22 +32,18 @@ class WaitingDomainServiceTest {
         void generateActiveToken() {
             // given
             TokenCommand.Generate command = TokenCommand.Generate.builder().userId(1L).concertId(1L).build();
-            given(waitingReader.getActiveCount(command.getConcertId())).willReturn(5);
+            given(waitingRepository.getActiveCount(command.getConcertId())).willReturn(5);
 
-            Waiting waiting = Waiting.createTokenBuilder()
-                    .userId(command.getUserId())
-                    .concertId(command.getConcertId())
-                    .status(WaitingStatus.ACTIVE)
-                    .build();
-            given(waitingStore.createWaiting(any(Waiting.class))).willReturn(waiting);
+            Waiting waiting = Waiting.createToken(command.getUserId(), command.getConcertId(), WaitingStatus.ACTIVE);
+            given(waitingRepository.createWaiting(any(Waiting.class))).willReturn(waiting);
 
             // when
             TokenInfo.Token result = waitingDomainService.generateToken(command);
 
             // then
-            assertThat(result.getStatus()).isEqualTo(WaitingStatus.ACTIVE.toString());
-            then(waitingReader).should(times(1)).getActiveCount(command.getConcertId());
-            then(waitingStore).should(times(1)).createWaiting(any(Waiting.class));
+            assertEquals(result.getStatus(), WaitingStatus.ACTIVE.toString());
+            then(waitingRepository).should(times(1)).getActiveCount(command.getConcertId());
+            then(waitingRepository).should(times(1)).createWaiting(any(Waiting.class));
         }
 
         @Test
@@ -57,22 +51,18 @@ class WaitingDomainServiceTest {
         void generateWaitToken() {
             // given
             TokenCommand.Generate command = TokenCommand.Generate.builder().userId(1L).concertId(1L).build();
-            given(waitingReader.getActiveCount(command.getConcertId())).willReturn(10);
+            given(waitingRepository.getActiveCount(command.getConcertId())).willReturn(10);
 
-            Waiting waiting = Waiting.createTokenBuilder()
-                    .userId(command.getUserId())
-                    .concertId(command.getConcertId())
-                    .status(WaitingStatus.WAIT)
-                    .build();
-            given(waitingStore.createWaiting(any(Waiting.class))).willReturn(waiting);
+            Waiting waiting = Waiting.createToken(command.getUserId(), command.getConcertId(), WaitingStatus.WAIT);
+            given(waitingRepository.createWaiting(any(Waiting.class))).willReturn(waiting);
 
             // when
             TokenInfo.Token result = waitingDomainService.generateToken(command);
 
             // then
-            assertThat(result.getStatus()).isEqualTo(WaitingStatus.WAIT.toString());
-            then(waitingReader).should(times(1)).getActiveCount(command.getConcertId());
-            then(waitingStore).should(times(1)).createWaiting(any(Waiting.class));
+            assertEquals(result.getStatus(), WaitingStatus.WAIT.toString());
+            then(waitingRepository).should(times(1)).getActiveCount(command.getConcertId());
+            then(waitingRepository).should(times(1)).createWaiting(any(Waiting.class));
         }
 
     }
@@ -88,17 +78,17 @@ class WaitingDomainServiceTest {
             TokenCommand.Status command = TokenCommand.Status.builder().token("testtoken_123123").build();
             Waiting givenToken = new Waiting(1L, 1L, 1L, command.getToken(), WaitingStatus.WAIT);
 
-            given(waitingReader.getWaiting(command.getToken())).willReturn(givenToken);
-            given(waitingReader.isWaitingEmpty(givenToken.getConcertId())).willReturn(true);
-            given(waitingReader.getWaitingCount(givenToken.getConcertId())).willReturn(0);
+            given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
+            given(waitingRepository.isWaitingEmpty(givenToken.getConcertId())).willReturn(true);
+            given(waitingRepository.getWaitingCount(givenToken.getConcertId())).willReturn(0);
 
             // when
             TokenInfo.Status result = waitingDomainService.refreshToken(command);
 
             // then
-            assertThat(result.getStatus()).isEqualTo(WaitingStatus.ACTIVE.toString());
-            then(waitingReader).should(times(1)).isWaitingEmpty(givenToken.getConcertId());
-            then(waitingReader).should(times(1)).getWaitingCount(givenToken.getConcertId());
+            assertEquals(result.getStatus(), WaitingStatus.ACTIVE.toString());
+            then(waitingRepository).should(times(1)).isWaitingEmpty(givenToken.getConcertId());
+            then(waitingRepository).should(times(1)).getWaitingCount(givenToken.getConcertId());
         }
 
         @Test
@@ -108,17 +98,17 @@ class WaitingDomainServiceTest {
             TokenCommand.Status command = TokenCommand.Status.builder().token("testtoken_123123").build();
             Waiting givenToken = new Waiting(1L, 1L, 1L, command.getToken(), WaitingStatus.WAIT);
 
-            given(waitingReader.getWaiting(command.getToken())).willReturn(givenToken);
-            given(waitingReader.isWaitingEmpty(givenToken.getConcertId())).willReturn(false);
-            given(waitingReader.getWaitingCount(givenToken.getConcertId())).willReturn(10);
+            given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
+            given(waitingRepository.isWaitingEmpty(givenToken.getConcertId())).willReturn(false);
+            given(waitingRepository.getWaitingCount(givenToken.getConcertId())).willReturn(10);
 
             // when
             TokenInfo.Status result = waitingDomainService.refreshToken(command);
 
             // then
-            assertThat(result.getStatus()).isEqualTo(WaitingStatus.WAIT.toString());
-            then(waitingReader).should(times(1)).isWaitingEmpty(givenToken.getConcertId());
-            then(waitingReader).should(times(1)).getWaitingCount(givenToken.getConcertId());
+            assertEquals(result.getStatus(), WaitingStatus.WAIT.toString());
+            then(waitingRepository).should(times(1)).isWaitingEmpty(givenToken.getConcertId());
+            then(waitingRepository).should(times(1)).getWaitingCount(givenToken.getConcertId());
         }
 
     }

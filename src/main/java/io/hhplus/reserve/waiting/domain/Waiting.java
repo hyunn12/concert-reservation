@@ -44,4 +44,18 @@ public class Waiting extends BaseEntity {
         this.status = status;
     }
 
+    // 토큰 생성
+    public static Waiting createToken(Long userId, Long concertId, WaitingStatus status) {
+        return Waiting.createTokenBuilder()
+                .userId(userId)
+                .concertId(concertId)
+                .status(status)
+                .build();
+    }
+
+    // 토큰 갱신
+    public void refreshStatus(WaitingStatus newStatus) {
+        this.status = newStatus;
+    }
+
 }

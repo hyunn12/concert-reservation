@@ -1,15 +1,17 @@
 package io.hhplus.reserve.waiting.infra;
 
 import io.hhplus.reserve.waiting.domain.Waiting;
-import io.hhplus.reserve.waiting.domain.WaitingReader;
-import lombok.RequiredArgsConstructor;
+import io.hhplus.reserve.waiting.domain.WaitingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
-public class WaitingReaderImpl implements WaitingReader {
+public class WaitingRepositoryImpl implements WaitingRepository {
 
     private final WaitingJpaRepository waitingJpaRepository;
+
+    public WaitingRepositoryImpl(WaitingJpaRepository waitingJpaRepository) {
+        this.waitingJpaRepository = waitingJpaRepository;
+    }
 
     @Override
     public int getActiveCount(long concertId) {
@@ -31,5 +33,8 @@ public class WaitingReaderImpl implements WaitingReader {
         return waitingJpaRepository.findByToken(token);
     }
 
-
+    @Override
+    public Waiting createWaiting(Waiting waiting) {
+        return waitingJpaRepository.save(waiting);
+    }
 }
