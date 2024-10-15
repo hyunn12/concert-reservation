@@ -3,6 +3,7 @@ package io.hhplus.reserve.concert.domain;
 import io.hhplus.reserve.common.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -34,5 +35,19 @@ public class ConcertSeat extends BaseEntity {
 
     @Column(name = "reserved_at")
     private LocalDateTime reservedAt;
+
+    @Builder(builderMethodName = "createBuilder")
+    public ConcertSeat(long concertId, int seatNum, LocalDateTime reservedAt) {
+        this.concertId = concertId;
+        this.seatNum = seatNum;
+        this.reservedAt = reservedAt;
+    }
+
+    @Builder(builderMethodName = "updateBuilder")
+    public ConcertSeat(long seatId, SeatStatus status, LocalDateTime reservedAt) {
+        this.seatId = seatId;
+        this.status = status;
+        this.reservedAt = reservedAt;
+    }
 
 }
