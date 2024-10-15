@@ -1,6 +1,7 @@
 package io.hhplus.reserve.reservation.domain;
 
 import io.hhplus.reserve.reservation.application.ReserveCommand;
+import io.hhplus.reserve.reservation.application.ReserveInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -23,7 +25,7 @@ import static org.mockito.Mockito.times;
 class ReservationDomainServiceTest {
 
     @Mock
-    private ReserveStore reserveStore;
+    private ReserveRepository reserveRepository;
 
     @InjectMocks
     private ReservationDomainService reservationDomainService;
@@ -53,20 +55,19 @@ class ReservationDomainServiceTest {
 
             Reservation reservation = new Reservation(1L, userId, concertTitle, concertStartAt, concertEndAt, ReservationStatus.SUCCESS);
 
-            given(reserveStore.generateReservation(any(Reservation.class))).willReturn(reservation);
+            given(reserveRepository.generateReservation(any(Reservation.class))).willReturn(reservation);
 
             // when
-            Reservation result = reservationDomainService.reserve(command);
+            ReserveInfo.Reserve result = reservationDomainService.reserve(command);
 
             // then
             assertNotNull(result);
-            assertEquals(result.getUserId(), userId);
             assertEquals(result.getConcertTitle(), concertTitle);
             assertEquals(result.getConcertStartAt(), concertStartAt);
             assertEquals(result.getConcertEndAt(), concertEndAt);
 
-            then(reserveStore).should(times(1)).generateReservation(any(Reservation.class));
-            then(reserveStore).should(times(seatIdList.size())).generateReservationItem(any(ReservationItem.class));
+            then(reserveRepository).should(times(1)).generateReservation(any(Reservation.class));
+            then(reserveRepository).should(times(1)).generateReservationItemList(anyList());
         }
 
         @Test
@@ -89,13 +90,13 @@ class ReservationDomainServiceTest {
 
             Reservation reservation = new Reservation(1L, userId, concertTitle, concertStartAt, concertEndAt, ReservationStatus.SUCCESS);
 
-            given(reserveStore.generateReservation(any(Reservation.class))).willReturn(reservation);
+            given(reserveRepository.generateReservation(any(Reservation.class))).willReturn(reservation);
 
             // when
             reservationDomainService.reserve(command);
 
             // then
-            then(reserveStore).should(times(seatIdList.size())).generateReservationItem(any(ReservationItem.class));
+            then(reserveRepository).should(times(1)).generateReservationItemList(anyList());
         }
 
     }

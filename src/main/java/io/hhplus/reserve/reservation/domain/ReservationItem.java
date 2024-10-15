@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "reservation_item")
 @Getter
@@ -29,6 +31,17 @@ public class ReservationItem extends BaseEntity {
     public ReservationItem(long reservationId, long seatId) {
         this.reservationId = reservationId;
         this.seatId = seatId;
+    }
+
+    public static ReservationItem createItem(long reservationId, long seatId) {
+        return ReservationItem.createBuilder()
+                .reservationId(reservationId)
+                .seatId(seatId)
+                .build();
+    }
+
+    public static List<ReservationItem> assignItemList(long reservationId, List<Long> seatIdList) {
+        return seatIdList.stream().map(seatId -> ReservationItem.createItem(reservationId, seatId)).toList();
     }
 
 }

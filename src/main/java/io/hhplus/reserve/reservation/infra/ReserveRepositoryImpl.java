@@ -2,27 +2,31 @@ package io.hhplus.reserve.reservation.infra;
 
 import io.hhplus.reserve.reservation.domain.Reservation;
 import io.hhplus.reserve.reservation.domain.ReservationItem;
-import io.hhplus.reserve.reservation.domain.ReserveStore;
+import io.hhplus.reserve.reservation.domain.ReserveRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public class ReserveStoreImpl implements ReserveStore {
+public class ReserveRepositoryImpl implements ReserveRepository {
 
     private final ReservationJpaRepository reservationJpaRepository;
     private final ReservationItemJpaRepository reservationItemJpaRepository;
 
-    public ReserveStoreImpl(ReservationJpaRepository reservationJpaRepository,
+    public ReserveRepositoryImpl(ReservationJpaRepository reservationJpaRepository,
                             ReservationItemJpaRepository reservationItemJpaRepository) {
         this.reservationJpaRepository = reservationJpaRepository;
         this.reservationItemJpaRepository = reservationItemJpaRepository;
     }
 
+    @Override
     public Reservation generateReservation(Reservation reservation) {
         return reservationJpaRepository.save(reservation);
     }
 
-    public ReservationItem generateReservationItem(ReservationItem reservationItem) {
-        return reservationItemJpaRepository.save(reservationItem);
+    @Override
+    public List<ReservationItem> generateReservationItemList(List<ReservationItem> itemList) {
+        return reservationItemJpaRepository.saveAll(itemList);
     }
 
 }

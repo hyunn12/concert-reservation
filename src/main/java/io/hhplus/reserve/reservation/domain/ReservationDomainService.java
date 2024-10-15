@@ -1,38 +1,36 @@
 package io.hhplus.reserve.reservation.domain;
 
 import io.hhplus.reserve.reservation.application.ReserveCommand;
+import io.hhplus.reserve.reservation.application.ReserveInfo;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ReservationDomainService {
 
-    private final ReserveStore reserveStore;
+    private final ReserveRepository reserveRepository;
 
-    public ReservationDomainService(ReserveStore reserveStore) {
-        this.reserveStore = reserveStore;
+    public ReservationDomainService(ReserveRepository reserveRepository) {
+        this.reserveRepository = reserveRepository;
     }
 
-    public Reservation reserve(ReserveCommand.Reservation command) {
+    public ReserveInfo.Reserve reserve(ReserveCommand.Reservation command) {
 
-        Reservation savedReservation = Reservation.createBuilder()
-                .userId(command.getUserId())
-                .concertTitle(command.getConcertTitle())
-                .concertStartAt(command.getConcertStartAt())
-                .concertEndAt(command.getConcertEndAt())
-                .build();
+        Reservation savedReservation = Reservation.createReservation(
+                command.getUserId(),
+                command.getConcertTitle(),
+                command.getConcertStartAt(),
+                command.getConcertEndAt()
+        );
 
-        Reservation reservation = reserveStore.generateReservation(savedReservation);
+        Reservation reservation = reserveRepository.generateReservation(savedReservation);
 
-        for (Long seatId : command.getSeatIdList()) {
-            ReservationItem item = ReservationItem.createBuilder()
-                    .reservationId(reservation.getReservationId())
-                    .seatId(seatId)
-                    .build();
+        List<ReservationItem> itemList = ReservationItem.assignItemList(reservation.getReservationId(), command.getSeatIdList());
 
-            reserveStore.generateReservationItem(item);
-        }
+        reserveRepository.generateReservationItemList(itemList);
 
-        return reservation;
+        return ReserveInfo.Reserve.of(reservation);
     }
 
 }
