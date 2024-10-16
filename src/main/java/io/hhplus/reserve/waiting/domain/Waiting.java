@@ -58,4 +58,11 @@ public class Waiting extends BaseEntity {
         this.status = newStatus;
     }
 
+    // 유효성 검증
+    public void validateToken() {
+        if (this.status == WaitingStatus.DELETE) {
+            throw new IllegalStateException("유효하지 않은 토큰입니다.");
+        }
+    }
+
 }

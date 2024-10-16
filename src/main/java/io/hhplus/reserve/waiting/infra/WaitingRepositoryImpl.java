@@ -2,6 +2,7 @@ package io.hhplus.reserve.waiting.infra;
 
 import io.hhplus.reserve.waiting.domain.Waiting;
 import io.hhplus.reserve.waiting.domain.WaitingRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -30,7 +31,7 @@ public class WaitingRepositoryImpl implements WaitingRepository {
 
     @Override
     public Waiting getWaiting(String token) {
-        return waitingJpaRepository.findByToken(token);
+        return waitingJpaRepository.findByToken(token).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override

@@ -41,6 +41,8 @@ public class WaitingDomainService {
     public TokenInfo.Status refreshToken(TokenCommand.Status command) {
         Waiting givenToken = waitingRepository.getWaiting(command.getToken());
 
+        givenToken.validateToken();
+
         boolean isWaitingEmpty = waitingRepository.isWaitingEmpty(givenToken.getConcertId());
 
         WaitingStatus newStatus = isWaitingEmpty ? WaitingStatus.ACTIVE : WaitingStatus.WAIT;

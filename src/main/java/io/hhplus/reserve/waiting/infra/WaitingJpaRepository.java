@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface WaitingJpaRepository extends JpaRepository<Waiting, Long> {
 
@@ -18,6 +20,6 @@ public interface WaitingJpaRepository extends JpaRepository<Waiting, Long> {
     @Query("select count(w) from Waiting w where w.concertId = :concertId and w.status = 'WAIT'")
     int countWaitByConcertId(long concertId);
 
-    Waiting findByToken(String token);
+    Optional<Waiting> findByToken(String token);
 
 }

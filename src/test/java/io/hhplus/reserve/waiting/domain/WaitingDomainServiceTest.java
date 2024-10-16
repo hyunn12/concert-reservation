@@ -2,6 +2,7 @@ package io.hhplus.reserve.waiting.domain;
 
 import io.hhplus.reserve.waiting.application.TokenCommand;
 import io.hhplus.reserve.waiting.application.TokenInfo;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
@@ -109,6 +111,43 @@ class WaitingDomainServiceTest {
             assertEquals(result.getStatus(), WaitingStatus.WAIT.toString());
             then(waitingRepository).should(times(1)).isWaitingEmpty(givenToken.getConcertId());
             then(waitingRepository).should(times(1)).getWaitingCount(givenToken.getConcertId());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 토큰으로 조회 시 예외 발생")
+        void shouldThrowExceptionWhenTokenNotFound() {
+            // given
+            TokenCommand.Status command = TokenCommand.Status.builder().token("invalid_token").build();
+
+            given(waitingRepository.getWaiting(command.getToken())).willThrow(new EntityNotFoundException());
+
+            // when / then
+            assertThrows(EntityNotFoundException.class, () -> {
+                waitingDomainService.refreshToken(command);
+            });
+
+            then(waitingRepository).should(times(1)).getWaiting(command.getToken());
+            then(waitingRepository).should(never()).isWaitingEmpty(any(Long.class));
+            then(waitingRepository).should(never()).getWaitingCount(any(Long.class));
+        }
+
+        @Test
+        @DisplayName("유효하지 않은 토큰으로 조회 시 예외 발생")
+        void shouldThrowExceptionWhenTokenIsDeleted() {
+            // given
+            TokenCommand.Status command = TokenCommand.Status.builder().token("testtokentokentoken").build();
+            Waiting givenToken = new Waiting(1L, 1L, 1L, command.getToken(), WaitingStatus.DELETE);
+
+            given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
+
+            // when / then
+            assertThrows(IllegalStateException.class, () -> {
+                waitingDomainService.refreshToken(command);
+            });
+
+            then(waitingRepository).should(times(1)).getWaiting(command.getToken());
+            then(waitingRepository).should(never()).isWaitingEmpty(any(Long.class));
+            then(waitingRepository).should(never()).getWaitingCount(any(Long.class));
         }
 
     }
