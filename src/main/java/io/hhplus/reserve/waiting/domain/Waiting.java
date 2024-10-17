@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "waiting")
 @Getter
@@ -36,6 +38,7 @@ public class Waiting extends BaseEntity {
         this.userId = userId;
         this.concertId = concertId;
         this.status = status;
+        this.token = UUID.randomUUID().toString();
     }
 
     @Builder(builderMethodName = "refreshTokenBuilder")
