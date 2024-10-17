@@ -3,7 +3,7 @@ package io.hhplus.reserve.reservation.application;
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertDomainService;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
-import io.hhplus.reserve.config.annotation.ApplicationService;
+import io.hhplus.reserve.config.annotation.Facade;
 import io.hhplus.reserve.reservation.domain.ReservationDomainService;
 import io.hhplus.reserve.waiting.domain.Waiting;
 import io.hhplus.reserve.waiting.domain.WaitingDomainService;
@@ -11,7 +11,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 
-@ApplicationService
+@Facade
 public class ReserveFacade {
 
     private final ConcertDomainService concertDomainService;

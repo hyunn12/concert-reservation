@@ -1,6 +1,6 @@
 package io.hhplus.reserve.payment.domain;
 
-import io.hhplus.reserve.payment.application.PaymentCommand;
+import io.hhplus.reserve.payment.application.PaymentCriteria;
 import io.hhplus.reserve.payment.application.PaymentInfo;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +13,8 @@ public class PaymentDomainService {
         this.paymentRepository = paymentRepository;
     }
 
-    public PaymentInfo.Main pay(PaymentCommand.Payment command) {
-        Payment payment = Payment.createPayment(command);
+    public PaymentInfo.Main pay(PaymentCriteria.Main criteria) {
+        Payment payment = Payment.createPayment(criteria);
         paymentRepository.createPayment(payment);
         return PaymentInfo.Main.of(payment);
     }

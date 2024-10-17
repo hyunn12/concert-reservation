@@ -1,6 +1,6 @@
 package io.hhplus.reserve.payment.domain;
 
-import io.hhplus.reserve.payment.application.PaymentCommand;
+import io.hhplus.reserve.payment.application.PaymentCriteria;
 import io.hhplus.reserve.payment.application.PaymentInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class PaymentDomainServiceTest {
     @DisplayName("결제 성공")
     void testPay() {
         // given
-        PaymentCommand.Payment command = PaymentCommand.Payment.builder()
+        PaymentCriteria.Main command = PaymentCriteria.Main.builder()
                 .reservationId(1L)
                 .userId(1L)
                 .amount(10000)

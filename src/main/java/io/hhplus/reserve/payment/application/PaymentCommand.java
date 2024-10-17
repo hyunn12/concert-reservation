@@ -11,6 +11,7 @@ public class PaymentCommand {
     @Getter
     @Builder
     public static class Payment {
+        private String token;
         private Long userId;
         private Long reservationId;
         private int amount;
