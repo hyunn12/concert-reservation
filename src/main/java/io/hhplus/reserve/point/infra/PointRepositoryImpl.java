@@ -15,8 +15,8 @@ public class PointRepositoryImpl implements PointRepository {
     }
 
     @Override
-    public Point getPointByUserId(Long userId) {
-        return pointJpaRepository.findByUserId(userId).orElseThrow(EntityNotFoundException::new);
+    public Point getPointWithLock(Long userId) {
+        return pointJpaRepository.findByUserIdWithLock(userId).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override

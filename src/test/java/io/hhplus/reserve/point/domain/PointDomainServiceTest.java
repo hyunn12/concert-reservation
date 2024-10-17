@@ -41,14 +41,14 @@ class PointDomainServiceTest {
 
             Point mockPoint = new Point(1L, userId, point);
 
-            given(pointRepository.getPointByUserId(userId)).willReturn(mockPoint);
+            given(pointRepository.getPointWithLock(userId)).willReturn(mockPoint);
 
             // when
             PointInfo.Main result = pointDomainService.getPointByUserId(userId);
 
             //then
             assertEquals(result.getPoint(), point);
-            then(pointRepository).should(times(1)).getPointByUserId(userId);
+            then(pointRepository).should(times(1)).getPointWithLock(userId);
         }
 
         @Test
@@ -56,14 +56,12 @@ class PointDomainServiceTest {
         void testUserNotExist() {
             // given
             Long userId = 999L;
-            given(pointRepository.getPointByUserId(userId)).willThrow(new EntityNotFoundException());
+            given(pointRepository.getPointWithLock(userId)).willThrow(new EntityNotFoundException());
 
             // when / then
-            assertThrows(EntityNotFoundException.class, () -> {
-                pointDomainService.getPointByUserId(userId);
-            });
+            assertThrows(EntityNotFoundException.class, () -> pointDomainService.getPointByUserId(userId));
 
-            then(pointRepository).should(times(1)).getPointByUserId(userId);
+            then(pointRepository).should(times(1)).getPointWithLock(userId);
         }
 
     }
@@ -83,7 +81,7 @@ class PointDomainServiceTest {
             Point mockPoint = new Point(1L, userId, orgPoint);
             PointCommand.Action command = PointCommand.Action.builder().userId(userId).point(chargePoint).build();
 
-            given(pointRepository.getPointByUserId(userId)).willReturn(mockPoint);
+            given(pointRepository.getPointWithLock(userId)).willReturn(mockPoint);
             given(pointRepository.savePoint(mockPoint)).willReturn(mockPoint);
 
             // when
@@ -91,7 +89,7 @@ class PointDomainServiceTest {
 
             // then
             assertEquals(result.getPoint(), orgPoint + chargePoint);
-            then(pointRepository).should(times(1)).getPointByUserId(userId);
+            then(pointRepository).should(times(1)).getPointWithLock(userId);
             then(pointRepository).should(times(1)).savePoint(mockPoint);
         }
 
@@ -104,14 +102,12 @@ class PointDomainServiceTest {
 
             PointCommand.Action command = PointCommand.Action.builder().userId(userId).point(chargePoint).build();
 
-            given(pointRepository.getPointByUserId(userId)).willThrow(new EntityNotFoundException());
+            given(pointRepository.getPointWithLock(userId)).willThrow(new EntityNotFoundException());
 
             // when / then
-            assertThrows(EntityNotFoundException.class, () -> {
-                pointDomainService.chargePoint(command);
-            });
+            assertThrows(EntityNotFoundException.class, () -> pointDomainService.chargePoint(command));
 
-            then(pointRepository).should(times(1)).getPointByUserId(userId);
+            then(pointRepository).should(times(1)).getPointWithLock(userId);
             then(pointRepository).should(never()).savePoint(any(Point.class));
         }
     }
