@@ -81,7 +81,7 @@ class PointDomainServiceTest {
             int chargePoint = 30000;
 
             Point mockPoint = new Point(1L, userId, orgPoint);
-            PointCommand.Charge command = PointCommand.Charge.builder().userId(userId).point(chargePoint).build();
+            PointCommand.Action command = PointCommand.Action.builder().userId(userId).point(chargePoint).build();
 
             given(pointRepository.getPointByUserId(userId)).willReturn(mockPoint);
             given(pointRepository.savePoint(mockPoint)).willReturn(mockPoint);
@@ -102,7 +102,7 @@ class PointDomainServiceTest {
             Long userId = 999L;
             int chargePoint = 30000;
 
-            PointCommand.Charge command = PointCommand.Charge.builder().userId(userId).point(chargePoint).build();
+            PointCommand.Action command = PointCommand.Action.builder().userId(userId).point(chargePoint).build();
 
             given(pointRepository.getPointByUserId(userId)).willThrow(new EntityNotFoundException());
 

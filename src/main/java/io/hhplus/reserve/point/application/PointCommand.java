@@ -10,7 +10,7 @@ public class PointCommand {
 
     @Getter
     @Builder
-    public static class Charge {
+    public static class Action {
         private Long userId;
         private int point;
     }

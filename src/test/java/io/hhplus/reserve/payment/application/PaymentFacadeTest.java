@@ -3,6 +3,7 @@ package io.hhplus.reserve.payment.application;
 import io.hhplus.reserve.payment.domain.Payment;
 import io.hhplus.reserve.payment.domain.PaymentDomainService;
 import io.hhplus.reserve.payment.infra.PaymentJpaRepository;
+import io.hhplus.reserve.point.domain.PointDomainService;
 import io.hhplus.reserve.waiting.domain.WaitingDomainService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,13 +25,15 @@ class PaymentFacadeTest {
     @Autowired
     private WaitingDomainService waitingDomainService;
     @Autowired
+    private PointDomainService pointDomainService;
+    @Autowired
     private PaymentJpaRepository paymentRepository;
 
     private PaymentFacade paymentFacade;
 
     @BeforeEach
     void setUp() {
-        paymentFacade = new PaymentFacade(paymentDomainService, waitingDomainService);
+        paymentFacade = new PaymentFacade(paymentDomainService, waitingDomainService, pointDomainService);
     }
 
     @Test
@@ -50,7 +55,6 @@ class PaymentFacadeTest {
         assertEquals(result.getPaymentAmount(), 10000);
         assertEquals(result.getStatus(), "SUCCESS");
 
-        // 결제가 DB에 성공적으로 저장되었는지 확인
         Payment savedPayment = paymentRepository.findById(result.getPaymentId()).orElse(null);
         assertNotNull(savedPayment);
         assertEquals(savedPayment.getPaymentAmount(), 10000);
@@ -58,7 +62,7 @@ class PaymentFacadeTest {
 
     @Test
     @DisplayName("DELETE 토큰으로 결제")
-    void shouldFailWhenTokenIsDeleted() {
+    void testDeleteToken() {
         // given
         int initialPaymentCount = paymentRepository.findAll().size();
         PaymentCommand.Payment command = PaymentCommand.Payment.builder()
@@ -71,7 +75,23 @@ class PaymentFacadeTest {
         // when / then
         assertThrows(IllegalStateException.class, () -> paymentFacade.pay(command));
 
-        // 결제가 DB에 저장되지 않음 확인
+        assertEquals(paymentRepository.findAll().size(), initialPaymentCount);
+    }
+
+    @Test
+    @DisplayName("소지 포인트보다 많이 사용")
+    void testUseOverPoint() {
+        int initialPaymentCount = paymentRepository.findAll().size();
+        PaymentCommand.Payment command = PaymentCommand.Payment.builder()
+                .userId(2L)
+                .reservationId(1L)
+                .amount(5000)
+                .token("testtokenuser2")
+                .build();
+
+        assertThrows(IllegalStateException.class, () -> paymentFacade.pay(command));
+
+        List<Payment> paymentList = paymentRepository.findAll();
         assertEquals(paymentRepository.findAll().size(), initialPaymentCount);
     }
 

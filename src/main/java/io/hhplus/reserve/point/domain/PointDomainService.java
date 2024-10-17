@@ -13,17 +13,26 @@ public class PointDomainService {
         this.pointRepository = pointRepository;
     }
 
+    // 사용자 포인트 조회
     public PointInfo.Main getPointByUserId(Long userId) {
         return PointInfo.Main.of(pointRepository.getPointByUserId(userId));
     }
 
-    public PointInfo.Main chargePoint(PointCommand.Charge command) {
+    // 포인트 충전
+    public PointInfo.Main chargePoint(PointCommand.Action command) {
         Point point = pointRepository.getPointByUserId(command.getUserId());
 
         point.chargePoint(command.getPoint());
         pointRepository.savePoint(point);
 
         return PointInfo.Main.of(point);
+    }
+
+    // 포인트 사용
+    public void usePoint(PointCommand.Action command) {
+        Point point = pointRepository.getPointByUserId(command.getUserId());
+        point.usePoint(command.getPoint());
+        pointRepository.savePoint(point);
     }
 
 }
