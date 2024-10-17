@@ -4,9 +4,9 @@ public interface WaitingRepository {
 
     int getActiveCount(long concertId);
 
-    int getWaitingCount(long concertId);
+    int getWaitingCount(Waiting waiting);
 
-    boolean isWaitingEmpty(long concertId);
+    boolean isWaitingEmpty(Waiting waiting);
 
     Waiting getWaiting(String token);
 

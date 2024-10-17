@@ -20,13 +20,13 @@ public class WaitingRepositoryImpl implements WaitingRepository {
     }
 
     @Override
-    public int getWaitingCount(long concertId) {
-        return waitingJpaRepository.countWaitByConcertId(concertId);
+    public int getWaitingCount(Waiting waiting) {
+        return waitingJpaRepository.countWaitByConcertId(waiting.getConcertId(), waiting.getCreatedAt());
     }
 
     @Override
-    public boolean isWaitingEmpty(long concertId) {
-        return waitingJpaRepository.countWaitByConcertId(concertId) == 0;
+    public boolean isWaitingEmpty(Waiting waiting) {
+        return waitingJpaRepository.countWaitByConcertId(waiting.getConcertId(), waiting.getCreatedAt()) == 0;
     }
 
     @Override

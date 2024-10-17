@@ -81,16 +81,16 @@ class WaitingDomainServiceTest {
             Waiting givenToken = new Waiting(1L, 1L, 1L, command.getToken(), WaitingStatus.WAIT);
 
             given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
-            given(waitingRepository.isWaitingEmpty(givenToken.getConcertId())).willReturn(true);
-            given(waitingRepository.getWaitingCount(givenToken.getConcertId())).willReturn(0);
+            given(waitingRepository.isWaitingEmpty(givenToken)).willReturn(true);
+            given(waitingRepository.getWaitingCount(givenToken)).willReturn(0);
 
             // when
             TokenInfo.Status result = waitingDomainService.refreshToken(command);
 
             // then
             assertEquals(result.getStatus(), WaitingStatus.ACTIVE.toString());
-            then(waitingRepository).should(times(1)).isWaitingEmpty(givenToken.getConcertId());
-            then(waitingRepository).should(times(1)).getWaitingCount(givenToken.getConcertId());
+            then(waitingRepository).should(times(1)).isWaitingEmpty(givenToken);
+            then(waitingRepository).should(times(1)).getWaitingCount(givenToken);
         }
 
         @Test
@@ -101,16 +101,16 @@ class WaitingDomainServiceTest {
             Waiting givenToken = new Waiting(1L, 1L, 1L, command.getToken(), WaitingStatus.WAIT);
 
             given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
-            given(waitingRepository.isWaitingEmpty(givenToken.getConcertId())).willReturn(false);
-            given(waitingRepository.getWaitingCount(givenToken.getConcertId())).willReturn(10);
+            given(waitingRepository.isWaitingEmpty(givenToken)).willReturn(false);
+            given(waitingRepository.getWaitingCount(givenToken)).willReturn(10);
 
             // when
             TokenInfo.Status result = waitingDomainService.refreshToken(command);
 
             // then
             assertEquals(result.getStatus(), WaitingStatus.WAIT.toString());
-            then(waitingRepository).should(times(1)).isWaitingEmpty(givenToken.getConcertId());
-            then(waitingRepository).should(times(1)).getWaitingCount(givenToken.getConcertId());
+            then(waitingRepository).should(times(1)).isWaitingEmpty(givenToken);
+            then(waitingRepository).should(times(1)).getWaitingCount(givenToken);
         }
 
         @Test
@@ -127,8 +127,8 @@ class WaitingDomainServiceTest {
             });
 
             then(waitingRepository).should(times(1)).getWaiting(command.getToken());
-            then(waitingRepository).should(never()).isWaitingEmpty(any(Long.class));
-            then(waitingRepository).should(never()).getWaitingCount(any(Long.class));
+            then(waitingRepository).should(never()).isWaitingEmpty(any(Waiting.class));
+            then(waitingRepository).should(never()).getWaitingCount(any(Waiting.class));
         }
 
         @Test
@@ -146,8 +146,8 @@ class WaitingDomainServiceTest {
             });
 
             then(waitingRepository).should(times(1)).getWaiting(command.getToken());
-            then(waitingRepository).should(never()).isWaitingEmpty(any(Long.class));
-            then(waitingRepository).should(never()).getWaitingCount(any(Long.class));
+            then(waitingRepository).should(never()).isWaitingEmpty(any(Waiting.class));
+            then(waitingRepository).should(never()).getWaitingCount(any(Waiting.class));
         }
 
     }

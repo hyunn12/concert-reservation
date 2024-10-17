@@ -32,13 +32,13 @@ public class WaitingDomainService {
 
         givenToken.validateToken();
 
-        boolean isWaitingEmpty = waitingRepository.isWaitingEmpty(givenToken.getConcertId());
+        boolean isWaitingEmpty = waitingRepository.isWaitingEmpty(givenToken);
 
         WaitingStatus newStatus = isWaitingEmpty ? WaitingStatus.ACTIVE : WaitingStatus.WAIT;
 
         givenToken.refreshStatus(newStatus);
 
-        int waitingCount = waitingRepository.getWaitingCount(givenToken.getConcertId());
+        int waitingCount = waitingRepository.getWaitingCount(givenToken);
 
         return TokenInfo.Status.of(givenToken, waitingCount);
     }
