@@ -15,6 +15,7 @@ public class WaitingDomainService {
         this.waitingRepository = waitingRepository;
     }
 
+    // 토큰 생성
     public TokenInfo.Token generateToken(TokenCommand.Generate command) {
         int activeCount = waitingRepository.getActiveCount(command.getConcertId());
 
@@ -27,6 +28,7 @@ public class WaitingDomainService {
         return TokenInfo.Token.of(savedWaiting);
     }
 
+    // 토큰 조회 및 갱신
     public TokenInfo.Status refreshToken(TokenCommand.Status command) {
         Waiting givenToken = validateToken(command.getToken());
 
@@ -41,6 +43,7 @@ public class WaitingDomainService {
         return TokenInfo.Status.of(givenToken, waitingCount);
     }
 
+    // 토큰 검증
     public Waiting validateToken(String token) {
         Waiting givenToken = waitingRepository.getWaiting(token);
         givenToken.validateToken();
