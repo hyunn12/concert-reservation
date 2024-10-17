@@ -28,9 +28,7 @@ public class WaitingDomainService {
     }
 
     public TokenInfo.Status refreshToken(TokenCommand.Status command) {
-        Waiting givenToken = waitingRepository.getWaiting(command.getToken());
-
-        givenToken.validateToken();
+        Waiting givenToken = validateToken(command.getToken());
 
         boolean isWaitingEmpty = waitingRepository.isWaitingEmpty(givenToken);
 
@@ -41,6 +39,12 @@ public class WaitingDomainService {
         int waitingCount = waitingRepository.getWaitingCount(givenToken);
 
         return TokenInfo.Status.of(givenToken, waitingCount);
+    }
+
+    public Waiting validateToken(String token) {
+        Waiting givenToken = waitingRepository.getWaiting(token);
+        givenToken.validateToken();
+        return givenToken;
     }
 
 }

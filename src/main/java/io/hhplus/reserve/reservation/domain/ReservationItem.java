@@ -1,6 +1,7 @@
 package io.hhplus.reserve.reservation.domain;
 
 import io.hhplus.reserve.common.domain.BaseEntity;
+import io.hhplus.reserve.concert.domain.ConcertSeat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,8 +41,8 @@ public class ReservationItem extends BaseEntity {
                 .build();
     }
 
-    public static List<ReservationItem> assignItemList(long reservationId, List<Long> seatIdList) {
-        return seatIdList.stream().map(seatId -> ReservationItem.createItem(reservationId, seatId)).toList();
+    public static List<ReservationItem> assignItemList(long reservationId, List<ConcertSeat> seatList) {
+        return seatList.stream().map(seat -> ReservationItem.createItem(reservationId, seat.getSeatId())).toList();
     }
 
 }

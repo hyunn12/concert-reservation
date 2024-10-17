@@ -50,4 +50,15 @@ public class ConcertSeat extends BaseEntity {
         this.reservedAt = reservedAt;
     }
 
+    public boolean isInvalid() {
+        boolean isExpired = this.reservedAt != null && reservedAt.plusMinutes(5).isBefore(LocalDateTime.now());
+        boolean isConfirmed = this.status == SeatStatus.CONFIRMED;
+
+        return isExpired || isConfirmed;
+    }
+
+    public void reserveSeat() {
+        this.reservedAt = LocalDateTime.now();
+    }
+
 }

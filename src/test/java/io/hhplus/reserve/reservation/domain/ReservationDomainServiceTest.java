@@ -1,7 +1,11 @@
 package io.hhplus.reserve.reservation.domain;
 
-import io.hhplus.reserve.reservation.application.ReserveCommand;
+import io.hhplus.reserve.concert.domain.Concert;
+import io.hhplus.reserve.concert.domain.ConcertSeat;
+import io.hhplus.reserve.concert.domain.SeatStatus;
+import io.hhplus.reserve.reservation.application.ReserveCriteria;
 import io.hhplus.reserve.reservation.application.ReserveInfo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -30,6 +34,26 @@ class ReservationDomainServiceTest {
     @InjectMocks
     private ReservationDomainService reservationDomainService;
 
+    private Concert mockConcert;
+    private List<ConcertSeat> mockSeatList;
+
+    @BeforeEach
+    void setUp() {
+        long concertId = 1L;
+        String concertTitle = "X-mas Concert";
+        String desc = "Concert Description";
+        LocalDateTime concertStartAt = LocalDateTime.of(2024, 12, 25, 12, 0);
+        LocalDateTime concertEndAt = LocalDateTime.of(2024, 12, 25, 16, 0);
+        LocalDateTime reservationStartAt = LocalDateTime.of(2024, 9, 21, 0, 0);
+        LocalDateTime reservationEndAt = LocalDateTime.of(2024, 11, 23, 23, 59);
+        mockConcert = new Concert(concertId, concertTitle, desc, concertStartAt, concertEndAt, reservationStartAt, reservationEndAt);
+
+        ConcertSeat seat1 = new ConcertSeat(1L, concertId, 1, SeatStatus.AVAILABLE, null);
+        ConcertSeat seat2 = new ConcertSeat(2L, concertId, 2, SeatStatus.AVAILABLE, null);
+        ConcertSeat seat3 = new ConcertSeat(3L, concertId, 3, SeatStatus.AVAILABLE, null);
+        mockSeatList = List.of(seat1, seat2, seat3);
+    }
+
     @Nested
     @DisplayName("예약 생성 테스트")
     class Reserve {
@@ -39,32 +63,30 @@ class ReservationDomainServiceTest {
         void createReservation() {
             // given
             Long userId = 1L;
-            String concertTitle = "X-mas Concert";
-            LocalDateTime concertStartAt = LocalDateTime.of(2024, 12, 25, 12, 0);
-            LocalDateTime concertEndAt = LocalDateTime.of(2024, 12, 25, 16, 0);
-
-            List<Long> seatIdList = List.of(1L, 2L, 3L);
-
-            ReserveCommand.Reservation command = ReserveCommand.Reservation.builder()
+            ReserveCriteria.Reserve criteria = ReserveCriteria.Reserve.builder()
                     .userId(userId)
-                    .concertTitle(concertTitle)
-                    .concertStartAt(concertStartAt)
-                    .concertEndAt(concertEndAt)
-                    .seatIdList(seatIdList)
+                    .concert(mockConcert)
+                    .seatList(mockSeatList)
                     .build();
 
-            Reservation reservation = new Reservation(1L, userId, concertTitle, concertStartAt, concertEndAt, ReservationStatus.SUCCESS);
+            Reservation reservation = new Reservation(1L,
+                    userId,
+                    criteria.getConcert().getTitle(),
+                    criteria.getConcert().getConcertStartAt(),
+                    criteria.getConcert().getConcertEndAt(),
+                    ReservationStatus.SUCCESS
+            );
 
             given(reserveRepository.generateReservation(any(Reservation.class))).willReturn(reservation);
 
             // when
-            ReserveInfo.Reserve result = reservationDomainService.reserve(command);
+            ReserveInfo.Reserve result = reservationDomainService.reserve(criteria);
 
             // then
             assertNotNull(result);
-            assertEquals(result.getConcertTitle(), concertTitle);
-            assertEquals(result.getConcertStartAt(), concertStartAt);
-            assertEquals(result.getConcertEndAt(), concertEndAt);
+            assertEquals(result.getConcertTitle(), mockConcert.getTitle());
+            assertEquals(result.getConcertStartAt(), mockConcert.getConcertStartAt());
+            assertEquals(result.getConcertEndAt(), mockConcert.getConcertEndAt());
 
             then(reserveRepository).should(times(1)).generateReservation(any(Reservation.class));
             then(reserveRepository).should(times(1)).generateReservationItemList(anyList());
@@ -75,25 +97,18 @@ class ReservationDomainServiceTest {
         void createReservationItems() {
             // given
             Long userId = 1L;
-            String concertTitle = "X-mas Concert";
-            LocalDateTime concertStartAt = LocalDateTime.of(2024, 12, 25, 12, 0);
-            LocalDateTime concertEndAt = LocalDateTime.of(2024, 12, 25, 16, 0);
-            List<Long> seatIdList = List.of(1L, 2L, 3L);
-
-            ReserveCommand.Reservation command = ReserveCommand.Reservation.builder()
+            ReserveCriteria.Reserve criteria = ReserveCriteria.Reserve.builder()
                     .userId(userId)
-                    .concertTitle(concertTitle)
-                    .concertStartAt(concertStartAt)
-                    .concertEndAt(concertEndAt)
-                    .seatIdList(seatIdList)
+                    .concert(mockConcert)
+                    .seatList(mockSeatList)
                     .build();
 
-            Reservation reservation = new Reservation(1L, userId, concertTitle, concertStartAt, concertEndAt, ReservationStatus.SUCCESS);
+            Reservation reservation = new Reservation(1L, userId, criteria.getConcert().getTitle(), criteria.getConcert().getConcertStartAt(), criteria.getConcert().getConcertEndAt(), ReservationStatus.SUCCESS);
 
             given(reserveRepository.generateReservation(any(Reservation.class))).willReturn(reservation);
 
             // when
-            reservationDomainService.reserve(command);
+            reservationDomainService.reserve(criteria);
 
             // then
             then(reserveRepository).should(times(1)).generateReservationItemList(anyList());

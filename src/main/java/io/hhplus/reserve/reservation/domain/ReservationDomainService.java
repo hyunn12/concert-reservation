@@ -1,6 +1,6 @@
 package io.hhplus.reserve.reservation.domain;
 
-import io.hhplus.reserve.reservation.application.ReserveCommand;
+import io.hhplus.reserve.reservation.application.ReserveCriteria;
 import io.hhplus.reserve.reservation.application.ReserveInfo;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +15,18 @@ public class ReservationDomainService {
         this.reserveRepository = reserveRepository;
     }
 
-    public ReserveInfo.Reserve reserve(ReserveCommand.Reservation command) {
+    public ReserveInfo.Reserve reserve(ReserveCriteria.Reserve criteria) {
 
         Reservation savedReservation = Reservation.createReservation(
-                command.getUserId(),
-                command.getConcertTitle(),
-                command.getConcertStartAt(),
-                command.getConcertEndAt()
+                criteria.getUserId(),
+                criteria.getConcert().getTitle(),
+                criteria.getConcert().getConcertStartAt(),
+                criteria.getConcert().getConcertEndAt()
         );
 
         Reservation reservation = reserveRepository.generateReservation(savedReservation);
 
-        List<ReservationItem> itemList = ReservationItem.assignItemList(reservation.getReservationId(), command.getSeatIdList());
+        List<ReservationItem> itemList = ReservationItem.assignItemList(reservation.getReservationId(), criteria.getSeatList());
 
         reserveRepository.generateReservationItemList(itemList);
 
