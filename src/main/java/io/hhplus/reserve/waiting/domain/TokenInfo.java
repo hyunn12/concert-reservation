@@ -1,6 +1,5 @@
-package io.hhplus.reserve.waiting.application;
+package io.hhplus.reserve.waiting.domain;
 
-import io.hhplus.reserve.waiting.domain.Waiting;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

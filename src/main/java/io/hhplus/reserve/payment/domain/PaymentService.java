@@ -1,15 +1,13 @@
 package io.hhplus.reserve.payment.domain;
 
-import io.hhplus.reserve.payment.application.PaymentCriteria;
-import io.hhplus.reserve.payment.application.PaymentInfo;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentDomainService {
+public class PaymentService {
 
     private final PaymentRepository paymentRepository;
 
-    public PaymentDomainService(PaymentRepository paymentRepository) {
+    public PaymentService(PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
 

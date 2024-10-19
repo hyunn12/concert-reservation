@@ -1,16 +1,15 @@
 package io.hhplus.reserve.concert.domain;
 
-import io.hhplus.reserve.concert.application.ConcertInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ConcertDomainService {
+public class ConcertService {
 
     private final ConcertRepository concertRepository;
 
-    public ConcertDomainService(ConcertRepository concertRepository) {
+    public ConcertService(ConcertRepository concertRepository) {
         this.concertRepository = concertRepository;
     }
 
@@ -37,8 +36,8 @@ public class ConcertDomainService {
     }
 
     // 콘서트 좌석 상태 조회
-    public boolean hasInvalidSeat(List<ConcertSeat> seatList) {
-        return seatList.stream().anyMatch(ConcertSeat::isInvalid);
+    public void hasInvalidSeat(List<ConcertSeat> seatList) {
+        seatList.forEach(ConcertSeat::checkInvalid);
     }
 
 }

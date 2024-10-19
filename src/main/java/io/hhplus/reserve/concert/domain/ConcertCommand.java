@@ -1,4 +1,4 @@
-package io.hhplus.reserve.concert.application;
+package io.hhplus.reserve.concert.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;

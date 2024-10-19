@@ -1,7 +1,6 @@
 package io.hhplus.reserve.point.domain;
 
 import io.hhplus.reserve.common.domain.BaseEntity;
-import io.hhplus.reserve.point.application.PointCommand;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

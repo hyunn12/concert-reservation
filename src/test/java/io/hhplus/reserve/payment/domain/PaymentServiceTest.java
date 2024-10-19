@@ -1,7 +1,5 @@
 package io.hhplus.reserve.payment.domain;
 
-import io.hhplus.reserve.payment.application.PaymentCriteria;
-import io.hhplus.reserve.payment.application.PaymentInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,13 +15,13 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class PaymentDomainServiceTest {
+class PaymentServiceTest {
 
     @Mock
     private PaymentRepository paymentRepository;
 
     @InjectMocks
-    private PaymentDomainService paymentDomainService;
+    private PaymentService paymentService;
 
     @Test
     @DisplayName("결제 성공")
@@ -40,7 +38,7 @@ class PaymentDomainServiceTest {
         given(paymentRepository.createPayment(any(Payment.class))).willReturn(payment);
 
         // when
-        PaymentInfo.Main result = paymentDomainService.pay(command);
+        PaymentInfo.Main result = paymentService.pay(command);
 
         // then
         assertNotNull(result);

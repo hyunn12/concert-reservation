@@ -1,4 +1,4 @@
-package io.hhplus.reserve.payment.application;
+package io.hhplus.reserve.point.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -6,15 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PaymentCommand {
+public class PointCommand {
 
     @Getter
     @Builder
-    public static class Payment {
-        private String token;
+    public static class Action {
         private Long userId;
-        private Long reservationId;
-        private int amount;
+        private int point;
     }
 
 }

@@ -1,7 +1,5 @@
 package io.hhplus.reserve.waiting.domain;
 
-import io.hhplus.reserve.waiting.application.TokenCommand;
-import io.hhplus.reserve.waiting.application.TokenInfo;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,13 +15,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class WaitingDomainServiceTest {
+class WaitingServiceTest {
 
     @Mock
     private WaitingRepository waitingRepository;
 
     @InjectMocks
-    private WaitingDomainService waitingDomainService;
+    private WaitingService waitingService;
 
     @Nested
     @DisplayName("토큰 생성")
@@ -37,15 +35,15 @@ class WaitingDomainServiceTest {
             given(waitingRepository.getActiveCount(command.getConcertId())).willReturn(5);
 
             Waiting waiting = Waiting.createToken(command.getUserId(), command.getConcertId(), WaitingStatus.ACTIVE);
-            given(waitingRepository.createWaiting(any(Waiting.class))).willReturn(waiting);
+            given(waitingRepository.saveWaiting(any(Waiting.class))).willReturn(waiting);
 
             // when
-            TokenInfo.Token result = waitingDomainService.generateToken(command);
+            TokenInfo.Token result = waitingService.generateToken(command);
 
             // then
             assertEquals(result.getStatus(), WaitingStatus.ACTIVE.toString());
             then(waitingRepository).should(times(1)).getActiveCount(command.getConcertId());
-            then(waitingRepository).should(times(1)).createWaiting(any(Waiting.class));
+            then(waitingRepository).should(times(1)).saveWaiting(any(Waiting.class));
         }
 
         @Test
@@ -56,15 +54,15 @@ class WaitingDomainServiceTest {
             given(waitingRepository.getActiveCount(command.getConcertId())).willReturn(10);
 
             Waiting waiting = Waiting.createToken(command.getUserId(), command.getConcertId(), WaitingStatus.WAIT);
-            given(waitingRepository.createWaiting(any(Waiting.class))).willReturn(waiting);
+            given(waitingRepository.saveWaiting(any(Waiting.class))).willReturn(waiting);
 
             // when
-            TokenInfo.Token result = waitingDomainService.generateToken(command);
+            TokenInfo.Token result = waitingService.generateToken(command);
 
             // then
             assertEquals(result.getStatus(), WaitingStatus.WAIT.toString());
             then(waitingRepository).should(times(1)).getActiveCount(command.getConcertId());
-            then(waitingRepository).should(times(1)).createWaiting(any(Waiting.class));
+            then(waitingRepository).should(times(1)).saveWaiting(any(Waiting.class));
         }
 
     }
@@ -85,7 +83,7 @@ class WaitingDomainServiceTest {
             given(waitingRepository.getWaitingCount(givenToken)).willReturn(0);
 
             // when
-            TokenInfo.Status result = waitingDomainService.refreshToken(command);
+            TokenInfo.Status result = waitingService.refreshToken(command);
 
             // then
             assertEquals(result.getStatus(), WaitingStatus.ACTIVE.toString());
@@ -105,7 +103,7 @@ class WaitingDomainServiceTest {
             given(waitingRepository.getWaitingCount(givenToken)).willReturn(10);
 
             // when
-            TokenInfo.Status result = waitingDomainService.refreshToken(command);
+            TokenInfo.Status result = waitingService.refreshToken(command);
 
             // then
             assertEquals(result.getStatus(), WaitingStatus.WAIT.toString());
@@ -122,9 +120,7 @@ class WaitingDomainServiceTest {
             given(waitingRepository.getWaiting(command.getToken())).willThrow(new EntityNotFoundException());
 
             // when / then
-            assertThrows(EntityNotFoundException.class, () -> {
-                waitingDomainService.refreshToken(command);
-            });
+            assertThrows(EntityNotFoundException.class, () -> waitingService.refreshToken(command));
 
             then(waitingRepository).should(times(1)).getWaiting(command.getToken());
             then(waitingRepository).should(never()).isWaitingEmpty(any(Waiting.class));
@@ -141,9 +137,7 @@ class WaitingDomainServiceTest {
             given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
 
             // when / then
-            assertThrows(IllegalStateException.class, () -> {
-                waitingDomainService.refreshToken(command);
-            });
+            assertThrows(IllegalStateException.class, () -> waitingService.refreshToken(command));
 
             then(waitingRepository).should(times(1)).getWaiting(command.getToken());
             then(waitingRepository).should(never()).isWaitingEmpty(any(Waiting.class));
@@ -166,7 +160,7 @@ class WaitingDomainServiceTest {
             given(waitingRepository.getWaiting(token)).willReturn(givenToken);
 
             // when
-            Waiting result = waitingDomainService.validateToken(token);
+            Waiting result = waitingService.validateToken(token);
 
             // then
             assertEquals(result.getToken(), token);
@@ -184,7 +178,7 @@ class WaitingDomainServiceTest {
 
             // when / then
             assertThrows(IllegalStateException.class, () -> {
-                waitingDomainService.validateToken(token);
+                waitingService.validateToken(token);
             });
 
             then(waitingRepository).should(times(1)).getWaiting(token);
@@ -200,7 +194,7 @@ class WaitingDomainServiceTest {
 
             // when / then
             assertThrows(EntityNotFoundException.class, () -> {
-                waitingDomainService.validateToken(token);
+                waitingService.validateToken(token);
             });
 
             then(waitingRepository).should(times(1)).getWaiting(token);

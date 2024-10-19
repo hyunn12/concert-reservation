@@ -1,6 +1,5 @@
-package io.hhplus.reserve.reservation.application;
+package io.hhplus.reserve.reservation.domain;
 
-import io.hhplus.reserve.reservation.domain.Reservation;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

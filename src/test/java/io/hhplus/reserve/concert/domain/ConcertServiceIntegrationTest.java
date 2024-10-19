@@ -1,6 +1,5 @@
 package io.hhplus.reserve.concert.domain;
 
-import io.hhplus.reserve.concert.application.ConcertInfo;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,16 +13,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-class ConcertDomainServiceIntegrationTest {
+class ConcertServiceIntegrationTest {
 
     @Autowired
-    private ConcertDomainService concertDomainService;
+    private ConcertService concertService;
 
     @Test
     @DisplayName("콘서트 목록 조회")
     void testGetAvailableConcertList() {
         String date = "2024-10-15";
-        List<ConcertInfo.ConcertDetail> concertList = concertDomainService.getAvailableConcertList(date);
+        List<ConcertInfo.ConcertDetail> concertList = concertService.getAvailableConcertList(date);
 
         assertNotNull(concertList);
         assertEquals(2, concertList.size());
@@ -34,7 +33,7 @@ class ConcertDomainServiceIntegrationTest {
     void testGetConcertSeatList() {
         Long concertId = 1L;
 
-        List<ConcertInfo.SeatDetail> seatList = concertDomainService.getSeatListByConcertId(concertId);
+        List<ConcertInfo.SeatDetail> seatList = concertService.getSeatListByConcertId(concertId);
 
         assertNotNull(seatList);
         assertEquals(50, seatList.size());

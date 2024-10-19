@@ -1,10 +1,12 @@
 package io.hhplus.reserve.reservation.application;
 
-import io.hhplus.reserve.concert.domain.ConcertDomainService;
+import io.hhplus.reserve.concert.domain.ConcertService;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
-import io.hhplus.reserve.reservation.domain.ReservationDomainService;
+import io.hhplus.reserve.reservation.domain.ReservationService;
+import io.hhplus.reserve.reservation.domain.ReserveCommand;
+import io.hhplus.reserve.reservation.domain.ReserveInfo;
 import io.hhplus.reserve.waiting.domain.Waiting;
-import io.hhplus.reserve.waiting.domain.WaitingDomainService;
+import io.hhplus.reserve.waiting.domain.WaitingService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,17 +23,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class ReserveFacadeTest {
 
     @Autowired
-    private ConcertDomainService concertDomainService;
+    private ConcertService concertService;
     @Autowired
-    private ReservationDomainService reservationDomainService;
+    private ReservationService reservationService;
     @Autowired
-    private WaitingDomainService waitingDomainService;
+    private WaitingService waitingService;
 
     private ReserveFacade reserveFacade;
 
     @BeforeEach
     void setUp() {
-        reserveFacade = new ReserveFacade(concertDomainService, reservationDomainService, waitingDomainService);
+        reserveFacade = new ReserveFacade(concertService, reservationService, waitingService);
     }
 
     @Test
@@ -44,9 +46,9 @@ class ReserveFacadeTest {
                 .seatIdList(List.of(1L, 2L, 3L))
                 .build();
 
-        Waiting waiting = waitingDomainService.validateToken(command.getToken());
+        Waiting waiting = waitingService.validateToken(command.getToken());
 
-        List<ConcertSeat> seatList = concertDomainService.getSeatListWithLock(command.getSeatIdList());
+        List<ConcertSeat> seatList = concertService.getSeatListWithLock(command.getSeatIdList());
 
         // when
         ReserveInfo.Reserve result = reserveFacade.reserve(command);
@@ -94,9 +96,9 @@ class ReserveFacadeTest {
                 .seatIdList(List.of(4L, 2L, 3L))
                 .build();
 
-        Waiting waiting = waitingDomainService.validateToken(command.getToken());
+        Waiting waiting = waitingService.validateToken(command.getToken());
 
-        List<ConcertSeat> seatList = concertDomainService.getSeatListWithLock(command.getSeatIdList());
+        List<ConcertSeat> seatList = concertService.getSeatListWithLock(command.getSeatIdList());
 
         // when / then
         assertThrows(IllegalStateException.class, () -> reserveFacade.reserve(command));

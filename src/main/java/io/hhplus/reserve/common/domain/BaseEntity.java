@@ -27,4 +27,8 @@ public abstract class BaseEntity {
 
     private LocalDateTime deletedAt;
 
+    protected void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
 }

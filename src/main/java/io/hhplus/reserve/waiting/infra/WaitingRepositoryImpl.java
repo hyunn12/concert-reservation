@@ -35,7 +35,7 @@ public class WaitingRepositoryImpl implements WaitingRepository {
     }
 
     @Override
-    public Waiting createWaiting(Waiting waiting) {
+    public Waiting saveWaiting(Waiting waiting) {
         return waitingJpaRepository.save(waiting);
     }
 }

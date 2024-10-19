@@ -1,4 +1,4 @@
-package io.hhplus.reserve.reservation.application;
+package io.hhplus.reserve.reservation.domain;
 
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
@@ -25,10 +25,6 @@ public class ReserveCriteria {
                     .userId(command.getUserId())
                     .seatIdList(command.getSeatIdList())
                     .build();
-        }
-
-        public boolean isValid() {
-            return token != null && !seatIdList.isEmpty();
         }
     }
 

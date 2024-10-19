@@ -1,17 +1,15 @@
 package io.hhplus.reserve.waiting.domain;
 
-import io.hhplus.reserve.waiting.application.TokenCommand;
-import io.hhplus.reserve.waiting.application.TokenInfo;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WaitingDomainService {
+public class WaitingService {
 
     private final int ACTIVE_COUNT = 10;
 
     private final WaitingRepository waitingRepository;
 
-    public WaitingDomainService(WaitingRepository waitingRepository) {
+    public WaitingService(WaitingRepository waitingRepository) {
         this.waitingRepository = waitingRepository;
     }
 
@@ -23,7 +21,7 @@ public class WaitingDomainService {
 
         Waiting waiting = Waiting.createToken(command.getUserId(), command.getConcertId(), status);
 
-        Waiting savedWaiting = waitingRepository.createWaiting(waiting);
+        Waiting savedWaiting = waitingRepository.saveWaiting(waiting);
 
         return TokenInfo.Token.of(savedWaiting);
     }
@@ -33,10 +31,9 @@ public class WaitingDomainService {
         Waiting givenToken = validateToken(command.getToken());
 
         boolean isWaitingEmpty = waitingRepository.isWaitingEmpty(givenToken);
-
-        WaitingStatus newStatus = isWaitingEmpty ? WaitingStatus.ACTIVE : WaitingStatus.WAIT;
-
-        givenToken.refreshStatus(newStatus);
+        if (isWaitingEmpty) {
+            givenToken.updateStatus(WaitingStatus.ACTIVE);
+        }
 
         int waitingCount = waitingRepository.getWaitingCount(givenToken);
 
@@ -48,6 +45,12 @@ public class WaitingDomainService {
         Waiting givenToken = waitingRepository.getWaiting(token);
         givenToken.validateToken();
         return givenToken;
+    }
+
+    // 토큰 삭제
+    public void deleteToken(Waiting waiting) {
+        waiting.deleteToken();
+        waitingRepository.saveWaiting(waiting);
     }
 
 }

@@ -1,16 +1,14 @@
 package io.hhplus.reserve.point.domain;
 
-import io.hhplus.reserve.point.application.PointCommand;
-import io.hhplus.reserve.point.application.PointInfo;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PointDomainService {
+public class PointService {
 
     private final PointRepository pointRepository;
 
-    public PointDomainService(PointRepository pointRepository) {
+    public PointService(PointRepository pointRepository) {
         this.pointRepository = pointRepository;
     }
 

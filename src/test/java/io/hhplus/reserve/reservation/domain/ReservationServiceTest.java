@@ -3,8 +3,6 @@ package io.hhplus.reserve.reservation.domain;
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.domain.SeatStatus;
-import io.hhplus.reserve.reservation.application.ReserveCriteria;
-import io.hhplus.reserve.reservation.application.ReserveInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,13 +24,13 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class ReservationDomainServiceTest {
+class ReservationServiceTest {
 
     @Mock
     private ReserveRepository reserveRepository;
 
     @InjectMocks
-    private ReservationDomainService reservationDomainService;
+    private ReservationService reservationService;
 
     private Concert mockConcert;
     private List<ConcertSeat> mockSeatList;
@@ -80,7 +78,7 @@ class ReservationDomainServiceTest {
             given(reserveRepository.generateReservation(any(Reservation.class))).willReturn(reservation);
 
             // when
-            ReserveInfo.Reserve result = reservationDomainService.reserve(criteria);
+            ReserveInfo.Reserve result = reservationService.reserve(criteria);
 
             // then
             assertNotNull(result);
@@ -108,7 +106,7 @@ class ReservationDomainServiceTest {
             given(reserveRepository.generateReservation(any(Reservation.class))).willReturn(reservation);
 
             // when
-            reservationDomainService.reserve(criteria);
+            reservationService.reserve(criteria);
 
             // then
             then(reserveRepository).should(times(1)).generateReservationItemList(anyList());

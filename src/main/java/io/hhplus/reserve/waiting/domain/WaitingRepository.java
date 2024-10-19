@@ -10,6 +10,6 @@ public interface WaitingRepository {
 
     Waiting getWaiting(String token);
 
-    Waiting createWaiting(Waiting waiting);
+    Waiting saveWaiting(Waiting waiting);
 
 }

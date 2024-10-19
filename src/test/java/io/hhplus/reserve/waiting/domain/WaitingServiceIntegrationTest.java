@@ -1,7 +1,5 @@
 package io.hhplus.reserve.waiting.domain;
 
-import io.hhplus.reserve.waiting.application.TokenCommand;
-import io.hhplus.reserve.waiting.application.TokenInfo;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class WaitingDomainServiceIntegrationTest {
+class WaitingServiceIntegrationTest {
 
     @Autowired
-    private WaitingDomainService waitingDomainService;
+    private WaitingService waitingService;
 
     @Autowired
     private WaitingRepository waitingRepository;
@@ -29,7 +27,7 @@ class WaitingDomainServiceIntegrationTest {
                 .concertId(1L)
                 .build();
 
-        TokenInfo.Token result = waitingDomainService.generateToken(command);
+        TokenInfo.Token result = waitingService.generateToken(command);
 
         assertNotNull(result);
         assertEquals(WaitingStatus.ACTIVE.toString(), result.getStatus());
@@ -42,9 +40,9 @@ class WaitingDomainServiceIntegrationTest {
                 .token("testtokentokentoken")
                 .build();
 
-        Waiting savedWaiting = waitingRepository.createWaiting(Waiting.createToken(1L, 1L, WaitingStatus.WAIT));
+        Waiting savedWaiting = waitingRepository.saveWaiting(Waiting.createToken(1L, 1L, WaitingStatus.WAIT));
 
-        TokenInfo.Status result = waitingDomainService.refreshToken(command);
+        TokenInfo.Status result = waitingService.refreshToken(command);
 
         assertNotNull(result);
         assertEquals(WaitingStatus.ACTIVE.toString(), result.getStatus());
@@ -58,7 +56,7 @@ class WaitingDomainServiceIntegrationTest {
                 .build();
 
         // EntityNotFoundException 아닌 해당 예외가 발생하는 이유?
-        assertThrows(JpaObjectRetrievalFailureException.class, () -> waitingDomainService.refreshToken(command));
+        assertThrows(JpaObjectRetrievalFailureException.class, () -> waitingService.refreshToken(command));
     }
 
     @Test
@@ -69,10 +67,10 @@ class WaitingDomainServiceIntegrationTest {
                 .token("deleted_token")
                 .build();
 
-        waitingRepository.createWaiting(Waiting.createToken(1L, 1L, WaitingStatus.DELETE));
+        waitingRepository.saveWaiting(Waiting.createToken(1L, 1L, WaitingStatus.DELETE));
 
         // when & then
-        assertThrows(IllegalStateException.class, () -> waitingDomainService.refreshToken(command));
+        assertThrows(IllegalStateException.class, () -> waitingService.refreshToken(command));
     }
 
     @Test
@@ -80,10 +78,10 @@ class WaitingDomainServiceIntegrationTest {
     void testValidateToken() {
         // given
         String token = "testtokenuser2";
-        waitingRepository.createWaiting(Waiting.createToken(1L, 1L, WaitingStatus.ACTIVE));
+        waitingRepository.saveWaiting(Waiting.createToken(1L, 1L, WaitingStatus.ACTIVE));
 
         // when
-        Waiting result = waitingDomainService.validateToken(token);
+        Waiting result = waitingService.validateToken(token);
 
         // then
         assertNotNull(result);

@@ -1,23 +1,26 @@
 package io.hhplus.reserve.payment.application;
 
 import io.hhplus.reserve.config.annotation.Facade;
-import io.hhplus.reserve.payment.domain.PaymentDomainService;
-import io.hhplus.reserve.point.application.PointCommand;
-import io.hhplus.reserve.point.domain.PointDomainService;
-import io.hhplus.reserve.waiting.domain.WaitingDomainService;
+import io.hhplus.reserve.payment.domain.PaymentCommand;
+import io.hhplus.reserve.payment.domain.PaymentCriteria;
+import io.hhplus.reserve.payment.domain.PaymentService;
+import io.hhplus.reserve.payment.domain.PaymentInfo;
+import io.hhplus.reserve.point.domain.PointCommand;
+import io.hhplus.reserve.point.domain.PointService;
+import io.hhplus.reserve.waiting.domain.WaitingService;
 import jakarta.transaction.Transactional;
 
 @Facade
 public class PaymentFacade {
 
-    private final PaymentDomainService paymentDomainService;
-    private final WaitingDomainService waitingDomainService;
-    private final PointDomainService pointDomainService;
+    private final PaymentService paymentService;
+    private final WaitingService waitingService;
+    private final PointService pointService;
 
-    public PaymentFacade(PaymentDomainService paymentDomainService, WaitingDomainService waitingDomainService, PointDomainService pointDomainService) {
-        this.paymentDomainService = paymentDomainService;
-        this.waitingDomainService = waitingDomainService;
-        this.pointDomainService = pointDomainService;
+    public PaymentFacade(PaymentService paymentService, WaitingService waitingService, PointService pointService) {
+        this.paymentService = paymentService;
+        this.waitingService = waitingService;
+        this.pointService = pointService;
     }
 
     @Transactional
@@ -26,17 +29,17 @@ public class PaymentFacade {
         PaymentCriteria.Main criteria = PaymentCriteria.Main.create(command);
 
         // 토큰 유효성 검사
-        waitingDomainService.validateToken(criteria.getToken());
+        waitingService.validateToken(criteria.getToken());
 
         // 포인트 사용
         PointCommand.Action pointCommand = PointCommand.Action.builder()
                 .userId(criteria.getUserId())
                 .point(criteria.getAmount())
                 .build();
-        pointDomainService.usePoint(pointCommand);
+        pointService.usePoint(pointCommand);
 
         // 예약
-        return paymentDomainService.pay(criteria);
+        return paymentService.pay(criteria);
     }
 
 }

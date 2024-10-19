@@ -1,10 +1,12 @@
 package io.hhplus.reserve.payment.application;
 
 import io.hhplus.reserve.payment.domain.Payment;
-import io.hhplus.reserve.payment.domain.PaymentDomainService;
+import io.hhplus.reserve.payment.domain.PaymentCommand;
+import io.hhplus.reserve.payment.domain.PaymentService;
+import io.hhplus.reserve.payment.domain.PaymentInfo;
 import io.hhplus.reserve.payment.infra.PaymentJpaRepository;
-import io.hhplus.reserve.point.domain.PointDomainService;
-import io.hhplus.reserve.waiting.domain.WaitingDomainService;
+import io.hhplus.reserve.point.domain.PointService;
+import io.hhplus.reserve.waiting.domain.WaitingService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,11 +23,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class PaymentFacadeTest {
 
     @Autowired
-    private PaymentDomainService paymentDomainService;
+    private PaymentService paymentService;
     @Autowired
-    private WaitingDomainService waitingDomainService;
+    private WaitingService waitingService;
     @Autowired
-    private PointDomainService pointDomainService;
+    private PointService pointService;
     @Autowired
     private PaymentJpaRepository paymentRepository;
 
@@ -33,7 +35,7 @@ class PaymentFacadeTest {
 
     @BeforeEach
     void setUp() {
-        paymentFacade = new PaymentFacade(paymentDomainService, waitingDomainService, pointDomainService);
+        paymentFacade = new PaymentFacade(paymentService, waitingService, pointService);
     }
 
     @Test

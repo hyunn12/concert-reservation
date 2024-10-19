@@ -1,7 +1,5 @@
 package io.hhplus.reserve.point.domain;
 
-import io.hhplus.reserve.point.application.PointCommand;
-import io.hhplus.reserve.point.application.PointInfo;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,10 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 @Transactional
-class PointDomainServiceIntegrationTest {
+class PointServiceIntegrationTest {
 
     @Autowired
-    private PointDomainService pointDomainService;
+    private PointService pointService;
 
     @Autowired
     private PointRepository pointRepository;
@@ -25,7 +23,7 @@ class PointDomainServiceIntegrationTest {
     @DisplayName("유저 포인트 조회")
     void testGetUserPoint() {
         Long userId = 1L;
-        PointInfo.Main result = pointDomainService.getPointByUserId(userId);
+        PointInfo.Main result = pointService.getPointByUserId(userId);
         assertNotNull(result);
     }
 
@@ -40,7 +38,7 @@ class PointDomainServiceIntegrationTest {
                 .userId(1L)
                 .point(10000)
                 .build();
-        PointInfo.Main result = pointDomainService.chargePoint(command);
+        PointInfo.Main result = pointService.chargePoint(command);
 
         assertNotNull(result);
         assertEquals(result.getPoint(), orgPoint + 10000);

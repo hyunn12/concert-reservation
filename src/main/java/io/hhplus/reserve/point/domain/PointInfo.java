@@ -1,6 +1,5 @@
-package io.hhplus.reserve.point.application;
+package io.hhplus.reserve.point.domain;
 
-import io.hhplus.reserve.point.domain.Point;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

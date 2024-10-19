@@ -1,7 +1,5 @@
 package io.hhplus.reserve.point.domain;
 
-import io.hhplus.reserve.point.application.PointCommand;
-import io.hhplus.reserve.point.application.PointInfo;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,13 +18,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class PointDomainServiceTest {
+class PointServiceTest {
 
     @Mock
     private PointRepository pointRepository;
 
     @InjectMocks
-    private PointDomainService pointDomainService;
+    private PointService pointService;
 
     @Nested
     @DisplayName("포인트 조회")
@@ -44,7 +42,7 @@ class PointDomainServiceTest {
             given(pointRepository.getPointWithLock(userId)).willReturn(mockPoint);
 
             // when
-            PointInfo.Main result = pointDomainService.getPointByUserId(userId);
+            PointInfo.Main result = pointService.getPointByUserId(userId);
 
             //then
             assertEquals(result.getPoint(), point);
@@ -59,7 +57,7 @@ class PointDomainServiceTest {
             given(pointRepository.getPointWithLock(userId)).willThrow(new EntityNotFoundException());
 
             // when / then
-            assertThrows(EntityNotFoundException.class, () -> pointDomainService.getPointByUserId(userId));
+            assertThrows(EntityNotFoundException.class, () -> pointService.getPointByUserId(userId));
 
             then(pointRepository).should(times(1)).getPointWithLock(userId);
         }
@@ -85,7 +83,7 @@ class PointDomainServiceTest {
             given(pointRepository.savePoint(mockPoint)).willReturn(mockPoint);
 
             // when
-            PointInfo.Main result = pointDomainService.chargePoint(command);
+            PointInfo.Main result = pointService.chargePoint(command);
 
             // then
             assertEquals(result.getPoint(), orgPoint + chargePoint);
@@ -105,7 +103,7 @@ class PointDomainServiceTest {
             given(pointRepository.getPointWithLock(userId)).willThrow(new EntityNotFoundException());
 
             // when / then
-            assertThrows(EntityNotFoundException.class, () -> pointDomainService.chargePoint(command));
+            assertThrows(EntityNotFoundException.class, () -> pointService.chargePoint(command));
 
             then(pointRepository).should(times(1)).getPointWithLock(userId);
             then(pointRepository).should(never()).savePoint(any(Point.class));

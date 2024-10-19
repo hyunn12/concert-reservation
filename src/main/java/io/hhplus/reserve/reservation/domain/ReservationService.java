@@ -1,17 +1,15 @@
 package io.hhplus.reserve.reservation.domain;
 
-import io.hhplus.reserve.reservation.application.ReserveCriteria;
-import io.hhplus.reserve.reservation.application.ReserveInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ReservationDomainService {
+public class ReservationService {
 
     private final ReserveRepository reserveRepository;
 
-    public ReservationDomainService(ReserveRepository reserveRepository) {
+    public ReservationService(ReserveRepository reserveRepository) {
         this.reserveRepository = reserveRepository;
     }
 

@@ -1,6 +1,5 @@
 package io.hhplus.reserve.concert.domain;
 
-import io.hhplus.reserve.concert.application.ConcertInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,13 +18,13 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class ConcertDomainServiceTest {
+class ConcertServiceTest {
 
     @Mock
     private ConcertRepository concertRepository;
 
     @InjectMocks
-    private ConcertDomainService concertDomainService;
+    private ConcertService concertService;
 
     @Nested
     @DisplayName("예약 가능한 콘서트 목록 조회")
@@ -56,7 +55,7 @@ class ConcertDomainServiceTest {
             given(concertRepository.getConcertList(date)).willReturn(mockConcertList);
 
             // when
-            List<ConcertInfo.ConcertDetail> result = concertDomainService.getAvailableConcertList(date);
+            List<ConcertInfo.ConcertDetail> result = concertService.getAvailableConcertList(date);
 
             // then
             assertThat(result).hasSize(2);
@@ -73,7 +72,7 @@ class ConcertDomainServiceTest {
             given(concertRepository.getConcertList(date)).willReturn(List.of());
 
             // when
-            List<ConcertInfo.ConcertDetail> result = concertDomainService.getAvailableConcertList(date);
+            List<ConcertInfo.ConcertDetail> result = concertService.getAvailableConcertList(date);
 
             // then
             assertThat(result).isEmpty();
@@ -98,7 +97,7 @@ class ConcertDomainServiceTest {
             given(concertRepository.getConcertSeatListByConcertId(concertId)).willReturn(mockSeatList);
 
             // when
-            List<ConcertInfo.SeatDetail> result = concertDomainService.getSeatListByConcertId(concertId);
+            List<ConcertInfo.SeatDetail> result = concertService.getSeatListByConcertId(concertId);
 
             // then
             assertThat(result).hasSize(2);
@@ -115,7 +114,7 @@ class ConcertDomainServiceTest {
             given(concertRepository.getConcertSeatListByConcertId(concertId)).willReturn(List.of());
 
             // when
-            List<ConcertInfo.SeatDetail> result = concertDomainService.getSeatListByConcertId(concertId);
+            List<ConcertInfo.SeatDetail> result = concertService.getSeatListByConcertId(concertId);
 
             // then
             assertThat(result).isEmpty();
@@ -145,7 +144,7 @@ class ConcertDomainServiceTest {
             given(concertRepository.getConcert(concertId)).willReturn(concert);
 
             // when
-            Concert result = concertDomainService.getConcertDetail(concertId);
+            Concert result = concertService.getConcertDetail(concertId);
 
             // then
             assertNotNull(result);
@@ -172,7 +171,7 @@ class ConcertDomainServiceTest {
             given(concertRepository.getConcertSeatListWithLock(seatIdList)).willReturn(mockSeatList);
 
             // when
-            List<ConcertSeat> result = concertDomainService.getSeatListWithLock(seatIdList);
+            List<ConcertSeat> result = concertService.getSeatListWithLock(seatIdList);
 
             // then
             assertThat(result).hasSize(2);
@@ -187,7 +186,7 @@ class ConcertDomainServiceTest {
     class SeatStatusCheck {
 
         @Test
-        @DisplayName("유효하지 않은 좌석이 있을 때 true")
+        @DisplayName("유효하지 않은 좌석이 있을 시 예외 발생")
         void testExistInvalidSeat() {
             // given
             List<ConcertSeat> seatList = List.of(
@@ -195,27 +194,9 @@ class ConcertDomainServiceTest {
                     new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, null)
             );
 
-            // when
-            boolean result = concertDomainService.hasInvalidSeat(seatList);
+            // when / then
+            assertThrows(IllegalStateException.class, () -> concertService.hasInvalidSeat(seatList));
 
-            // then
-            assertTrue(result);
-        }
-
-        @Test
-        @DisplayName("유효하지 않은 좌석이 없을 때 false")
-        void testNotExistInvalidSeat() {
-            // given
-            List<ConcertSeat> seatList = List.of(
-                    new ConcertSeat(1L, 1L, 1, SeatStatus.AVAILABLE, null),
-                    new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, null)
-            );
-
-            // when
-            boolean result = concertDomainService.hasInvalidSeat(seatList);
-
-            // then
-            assertThat(result).isFalse();
         }
     }
 
