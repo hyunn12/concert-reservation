@@ -1,21 +1,23 @@
-package io.hhplus.reserve.token.interfaces.dto;
+package io.hhplus.reserve.waiting.application;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TokenRequest {
+public class TokenCommand {
 
     @Getter
     @Builder
-    public static class Token {
-        @NotNull
+    public static class Generate {
         private Long userId;
+        private Long concertId;
+    }
 
-        @NotNull
+    @Getter
+    @Builder
+    public static class Status {
         private String token;
     }
 

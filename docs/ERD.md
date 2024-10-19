@@ -5,7 +5,25 @@ erDiagram
     USER {
         BIGINT USER_ID PK "회원 ID"
         VARCHAR USER_NAME "회원명"
+        DATETIME CREATED_AT "생성일"
+        DATETIME UPDATED_AT "수정일"
+        DATETIME DELETED_AT "삭제일"
+    }
+
+    POINT {
+        INT POINT_ID PK "포인트 ID"
+        INT USER_ID FK "회원 ID"
         INT POINT "포인트"
+        DATETIME CREATED_AT "생성일"
+        DATETIME UPDATED_AT "수정일"
+        DATETIME DELETED_AT "삭제일"
+    }
+
+    POINT_HISTORY {
+        INT HISTORY_ID PK "포인트내역 ID"
+        INT POINT_ID FK "포인트 ID"
+        VARCHAR TYPE "유형"
+        INT AMOUNT "금액"
         DATETIME CREATED_AT "생성일"
         DATETIME UPDATED_AT "수정일"
         DATETIME DELETED_AT "삭제일"
@@ -79,9 +97,11 @@ erDiagram
         DATETIME DELETED_AT "삭제일"
     }
 
+    USER ||--|| POINT : "1:1"
+    POINT ||--o{ POINT_HISTORY : "1:N"
     USER ||--o{ RESERVATION : "1:N"
-    RESERVATION ||--o{ RESERVATION_ITEM : "1:N"
     RESERVATION ||--|| PAYMENT : "1:1"
+    RESERVATION ||--o{ RESERVATION_ITEM : "1:N"
     CONCERT ||--o{ CONCERT_SEAT : "1:N"
     CONCERT_SEAT ||--o{ RESERVATION_ITEM : "1:N"
 ```
