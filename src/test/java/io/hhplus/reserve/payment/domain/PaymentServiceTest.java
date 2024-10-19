@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -28,8 +30,9 @@ class PaymentServiceTest {
     void testPay() {
         // given
         PaymentCriteria.Main command = PaymentCriteria.Main.builder()
-                .reservationId(1L)
+                .token("testtokentokentoken")
                 .userId(1L)
+                .seatIdList(List.of(1L, 2L))
                 .amount(10000)
                 .build();
 
@@ -38,7 +41,7 @@ class PaymentServiceTest {
         given(paymentRepository.createPayment(any(Payment.class))).willReturn(payment);
 
         // when
-        PaymentInfo.Main result = paymentService.pay(command);
+        Payment result = paymentService.pay(command);
 
         // then
         assertNotNull(result);

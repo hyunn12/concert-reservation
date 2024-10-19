@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -25,10 +24,6 @@ public class ReserveRequest {
         @NotNull
         @Schema(description = "좌석 ID 목록", example = "[1, 2, 3]")
         private List<Long> seatIdList;
-
-        @NotNull
-        @Schema(description = "얘약할 콘서트 날짜", example = "2024-10-13")
-        private LocalDateTime concertDate;
 
     }
 

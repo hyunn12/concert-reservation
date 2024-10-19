@@ -50,18 +50,29 @@ public class ConcertSeat extends BaseEntity {
         this.reservedAt = reservedAt;
     }
 
-    public void checkInvalid() {
-        boolean isExpired = this.reservedAt != null && reservedAt.plusMinutes(5).isBefore(LocalDateTime.now());
+    // 좌석 선점
+    public void reserveSeat() {
+        boolean isReserved = this.reservedAt != null && reservedAt.plusMinutes(5).isAfter(LocalDateTime.now());
         boolean isConfirmed = this.status == SeatStatus.CONFIRMED;
 
-        boolean isInvalid = isExpired || isConfirmed;
-        if (isInvalid) {
+        if (isReserved || isConfirmed) {
             throw new IllegalStateException("예약이 불가능한 좌석입니다.");
+        }
+
+        this.reservedAt = LocalDateTime.now();
+    }
+
+    // 좌석 선점 상태 확인
+    public void checkSeatExpired() {
+        boolean isExpired = this.reservedAt != null && this.reservedAt.plusMinutes(5).isBefore(LocalDateTime.now());
+        if (isExpired) {
+            throw new IllegalStateException("좌석 선점이 만료되었습니다.");
         }
     }
 
-    public void reserveSeat() {
-        this.reservedAt = LocalDateTime.now();
+    // 좌석 확정
+    public void confirm() {
+        this.status = SeatStatus.CONFIRMED;
     }
 
 }

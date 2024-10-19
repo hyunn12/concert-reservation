@@ -13,7 +13,7 @@ public class ReservationService {
         this.reserveRepository = reserveRepository;
     }
 
-    public ReserveInfo.Reserve reserve(ReserveCriteria.Reserve criteria) {
+    public Reservation reserve(ReserveCriteria.Reserve criteria) {
 
         Reservation savedReservation = Reservation.createReservation(
                 criteria.getUserId(),
@@ -28,7 +28,7 @@ public class ReservationService {
 
         reserveRepository.generateReservationItemList(itemList);
 
-        return ReserveInfo.Reserve.of(reservation);
+        return reservation;
     }
 
 }

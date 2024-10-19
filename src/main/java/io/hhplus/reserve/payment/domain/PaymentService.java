@@ -11,10 +11,10 @@ public class PaymentService {
         this.paymentRepository = paymentRepository;
     }
 
-    public PaymentInfo.Main pay(PaymentCriteria.Main criteria) {
+    public Payment pay(PaymentCriteria.Main criteria) {
         Payment payment = Payment.createPayment(criteria);
         paymentRepository.createPayment(payment);
-        return PaymentInfo.Main.of(payment);
+        return payment;
     }
 
 }

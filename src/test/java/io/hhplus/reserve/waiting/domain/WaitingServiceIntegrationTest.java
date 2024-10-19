@@ -1,6 +1,5 @@
 package io.hhplus.reserve.waiting.domain;
 
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
 class WaitingServiceIntegrationTest {
 
     @Autowired

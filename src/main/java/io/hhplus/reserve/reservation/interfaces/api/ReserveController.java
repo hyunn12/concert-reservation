@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/reserve")
@@ -18,19 +18,16 @@ import java.time.LocalDateTime;
 public class ReserveController {
 
     @PostMapping("/reserve")
-    @Operation(summary = "예약 요청", description = "특정 좌석에 대한 예약 요청")
+    @Operation(summary = "좌석 선점 요청", description = "특정 좌석에 대한 선점 요청")
     public ResponseEntity<ReserveResponse.Reserve> reserve(
             @RequestBody ReserveRequest.Reserve request
     ) {
         // TODO 좌석 예약 요청 API 작성
 
         return ResponseEntity.ok(ReserveResponse.Reserve.builder()
-                .reservationId(1L)
-                .concertTitle("AA Concert")
-                .concertStartAt(LocalDateTime.of(2024, 12, 25, 12, 0))
-                .concertEndAt(LocalDateTime.of(2024, 12, 25, 16, 0))
-                .status("SUCCESS")
-                .createdAt(LocalDateTime.now())
+                .userId(1L)
+                .seatIdList(List.of(1L, 2L, 3L))
+                .token("test_token")
                 .build());
     }
 

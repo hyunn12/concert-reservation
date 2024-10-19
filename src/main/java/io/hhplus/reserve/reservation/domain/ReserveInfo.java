@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReserveInfo {
@@ -13,6 +14,18 @@ public class ReserveInfo {
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Reserve {
+        private Long userId;
+        private List<Long> seatIdList;
+        private String token;
+
+        public static Reserve of(Long userId, List<Long> seatIdList, String token) {
+            return new Reserve(userId, seatIdList, token);
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Main {
         private Long reservationId;
         private String concertTitle;
         private LocalDateTime concertStartAt;
@@ -20,8 +33,8 @@ public class ReserveInfo {
         private String status;
         private LocalDateTime createdAt;
 
-        public static Reserve of(Reservation reservation) {
-            return new Reserve(
+        public static Main of(Reservation reservation) {
+            return new Main(
                     reservation.getReservationId(),
                     reservation.getConcertTitle(),
                     reservation.getConcertStartAt(),

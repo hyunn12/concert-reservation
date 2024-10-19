@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaymentCommand {
 
@@ -13,6 +15,7 @@ public class PaymentCommand {
     public static class Payment {
         private String token;
         private Long userId;
+        private List<Long> seatIdList;
         private Long reservationId;
         private int amount;
     }

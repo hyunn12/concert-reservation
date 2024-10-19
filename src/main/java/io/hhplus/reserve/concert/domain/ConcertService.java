@@ -35,9 +35,20 @@ public class ConcertService {
         return concertRepository.getConcertSeatListWithLock(seatIdList);
     }
 
-    // 콘서트 좌석 상태 조회
-    public void hasInvalidSeat(List<ConcertSeat> seatList) {
-        seatList.forEach(ConcertSeat::checkInvalid);
+    // 콘서트 좌석 선점
+    public void reserveSeat(List<ConcertSeat> seatList) {
+        seatList.forEach(ConcertSeat::reserveSeat);
+        concertRepository.saveConcertSeatList(seatList);
+    }
+
+    // 콘서트 좌석 선점상태 확인
+    public void checkSeatExpired(List<ConcertSeat> seatList) {
+        seatList.forEach(ConcertSeat::checkSeatExpired);
+    }
+
+    // 콘서트 좌석 확정
+    public void confirmSeat(List<ConcertSeat> seatList) {
+        seatList.forEach(ConcertSeat::confirm);
     }
 
 }

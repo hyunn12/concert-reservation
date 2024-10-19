@@ -1,10 +1,8 @@
 package io.hhplus.reserve.reservation.application;
 
-import io.hhplus.reserve.concert.domain.Concert;
-import io.hhplus.reserve.concert.domain.ConcertService;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
+import io.hhplus.reserve.concert.domain.ConcertService;
 import io.hhplus.reserve.config.annotation.Facade;
-import io.hhplus.reserve.reservation.domain.ReservationService;
 import io.hhplus.reserve.reservation.domain.ReserveCommand;
 import io.hhplus.reserve.reservation.domain.ReserveCriteria;
 import io.hhplus.reserve.reservation.domain.ReserveInfo;
@@ -18,15 +16,14 @@ import java.util.List;
 public class ReserveFacade {
 
     private final ConcertService concertService;
-    private final ReservationService reservationService;
     private final WaitingService waitingService;
 
-    public ReserveFacade(ConcertService concertService, ReservationService reservationService, WaitingService waitingService) {
+    public ReserveFacade(ConcertService concertService, WaitingService waitingService) {
         this.concertService = concertService;
-        this.reservationService = reservationService;
         this.waitingService = waitingService;
     }
 
+    // 좌석 선점
     @Transactional
     public ReserveInfo.Reserve reserve(ReserveCommand.Reserve command) {
 
@@ -37,17 +34,9 @@ public class ReserveFacade {
 
         // 좌석 예약 상태 확인 및 선점
         List<ConcertSeat> seatList = concertService.getSeatListWithLock(criteria.getSeatIdList());
-        concertService.hasInvalidSeat(seatList);
+        concertService.reserveSeat(seatList);
 
-        // 예약
-        Concert concert = concertService.getConcertDetail(waiting.getConcertId());
-
-        ReserveCriteria.Reserve reserveCriteria = ReserveCriteria.Reserve.create(criteria.getUserId(), seatList, concert);
-
-        // 토큰 삭제
-        waitingService.deleteToken(waiting);
-
-        return reservationService.reserve(reserveCriteria);
+        return ReserveInfo.Reserve.of(criteria.getUserId(), criteria.getSeatIdList(), waiting.getToken());
     }
 
 }

@@ -6,33 +6,24 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReserveResponse {
 
     @Getter
     @Builder
-    @Schema(name = "ReserveResponse.Reserve", description = "예약 결과 객체")
+    @Schema(name = "ReserveResponse.Reserve", description = "선점 결과 객체")
     public static class Reserve {
 
-        @Schema(description = "예약 ID", example = "1")
-        private Long reservationId;
+        @Schema(description = "회원 ID", example = "1")
+        private Long userId;
 
-        @Schema(description = "콘서트명", example = "AA Concert")
-        private String concertTitle;
+        @Schema(description = "좌석 ID 목록", example = "[1, 2, 3]")
+        private List<Long> seatIdList;
 
-        @Schema(description = "콘서트시작일", example = "2024-12-25 12:00:00")
-        private LocalDateTime concertStartAt;
-
-        @Schema(description = "콘서트종료일", example = "2024-12-25 16:00:00")
-        private LocalDateTime concertEndAt;
-
-        @Schema(description = "예약상태", example = "SUCCESS")
-        private String status;
-
-        @Schema(description = "예약일", example = "2024-10-13 12:00:00")
-        private LocalDateTime createdAt;
+        @Schema(description = "토큰", example = "test_token")
+        private String token;
 
     }
 

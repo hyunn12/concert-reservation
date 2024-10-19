@@ -78,7 +78,7 @@ class ReservationServiceTest {
             given(reserveRepository.generateReservation(any(Reservation.class))).willReturn(reservation);
 
             // when
-            ReserveInfo.Reserve result = reservationService.reserve(criteria);
+            Reservation result = reservationService.reserve(criteria);
 
             // then
             assertNotNull(result);

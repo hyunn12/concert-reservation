@@ -181,23 +181,23 @@ class ConcertServiceTest {
         }
     }
 
-    @Nested
-    @DisplayName("좌석 상태 조회")
-    class SeatStatusCheck {
-
-        @Test
-        @DisplayName("유효하지 않은 좌석이 있을 시 예외 발생")
-        void testExistInvalidSeat() {
-            // given
-            List<ConcertSeat> seatList = List.of(
-                    new ConcertSeat(1L, 1L, 1, SeatStatus.CONFIRMED, null),
-                    new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, null)
-            );
-
-            // when / then
-            assertThrows(IllegalStateException.class, () -> concertService.hasInvalidSeat(seatList));
-
-        }
-    }
+//    @Nested
+//    @DisplayName("좌석 상태 조회")
+//    class SeatStatusCheck {
+//
+//        @Test
+//        @DisplayName("유효하지 않은 좌석이 있을 시 예외 발생")
+//        void testExistInvalidSeat() {
+//            // given
+//            List<ConcertSeat> seatList = List.of(
+//                    new ConcertSeat(1L, 1L, 1, SeatStatus.CONFIRMED, null),
+//                    new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, null)
+//            );
+//
+//            // when / then
+//            assertThrows(IllegalStateException.class, () -> concertService.hasInvalidSeat(seatList));
+//
+//        }
+//    }
 
 }
