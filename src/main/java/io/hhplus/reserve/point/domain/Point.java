@@ -41,13 +41,22 @@ public class Point extends BaseEntity {
     }
 
     public void chargePoint(int point) {
+        if (point <= 0) {
+            throw new IllegalArgumentException("충전 포인트는 0보다 커야합니다.");
+        }
+
         this.point += point;
     }
 
     public void usePoint(int point) {
+        if (point <= 0) {
+            throw new IllegalArgumentException("사용 포인트는 0보다 커야합니다.");
+        }
+
         if (this.point < point) {
             throw new IllegalStateException("보유 포인트가 부족합니다.");
         }
+
         this.point -= point;
     }
 

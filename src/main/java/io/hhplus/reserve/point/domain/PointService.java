@@ -32,6 +32,7 @@ public class PointService {
     @Transactional
     public void usePoint(PointCommand.Action command) {
         Point point = pointRepository.getPointWithLock(command.getUserId());
+
         point.usePoint(command.getPoint());
         pointRepository.savePoint(point);
     }
