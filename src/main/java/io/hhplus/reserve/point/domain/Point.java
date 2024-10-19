@@ -1,7 +1,6 @@
 package io.hhplus.reserve.point.domain;
 
 import io.hhplus.reserve.common.domain.BaseEntity;
-import io.hhplus.reserve.point.application.PointCommand;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +33,7 @@ public class Point extends BaseEntity {
         this.point = point;
     }
 
-    public static Point createPoint(PointCommand.Charge command) {
+    public static Point createPoint(PointCommand.Action command) {
         return Point.createBuilder()
                 .userId(command.getUserId())
                 .point(command.getPoint())
@@ -43,6 +42,13 @@ public class Point extends BaseEntity {
 
     public void chargePoint(int point) {
         this.point += point;
+    }
+
+    public void usePoint(int point) {
+        if (this.point < point) {
+            throw new IllegalStateException("보유 포인트가 부족합니다.");
+        }
+        this.point -= point;
     }
 
 }

@@ -1,30 +1,53 @@
 package io.hhplus.reserve.reservation.application;
 
-import io.hhplus.reserve.config.annotation.ApplicationService;
+import io.hhplus.reserve.concert.domain.Concert;
+import io.hhplus.reserve.concert.domain.ConcertService;
+import io.hhplus.reserve.concert.domain.ConcertSeat;
+import io.hhplus.reserve.config.annotation.Facade;
+import io.hhplus.reserve.reservation.domain.ReservationService;
+import io.hhplus.reserve.reservation.domain.ReserveCommand;
+import io.hhplus.reserve.reservation.domain.ReserveCriteria;
+import io.hhplus.reserve.reservation.domain.ReserveInfo;
+import io.hhplus.reserve.waiting.domain.Waiting;
+import io.hhplus.reserve.waiting.domain.WaitingService;
+import jakarta.transaction.Transactional;
 
-@ApplicationService
+import java.util.List;
+
+@Facade
 public class ReserveFacade {
 
-    public void reserve(ReserveCommand.Reserve command) {
+    private final ConcertService concertService;
+    private final ReservationService reservationService;
+    private final WaitingService waitingService;
 
-        // 토큰 유효성 조회
+    public ReserveFacade(ConcertService concertService, ReservationService reservationService, WaitingService waitingService) {
+        this.concertService = concertService;
+        this.reservationService = reservationService;
+        this.waitingService = waitingService;
+    }
 
-        // 좌석 예약 상태 확인
+    @Transactional
+    public ReserveInfo.Reserve reserve(ReserveCommand.Reserve command) {
 
-        // 기예약된 좌석이 하나라도 있는 경우 return
+        ReserveCriteria.Main criteria = ReserveCriteria.Main.create(command);
 
-        // 모두 예약 가능한 경우 좌석 선점 및 선점 시각 기록
+        // 토큰 유효성 검사
+        Waiting waiting = waitingService.validateToken(criteria.getToken());
 
-        // 토큰 updatedAt 변경
+        // 좌석 예약 상태 확인 및 선점
+        List<ConcertSeat> seatList = concertService.getSeatListWithLock(criteria.getSeatIdList());
+        concertService.hasInvalidSeat(seatList);
 
-        // 좌석정보 가지고 예약 진행
+        // 예약
+        Concert concert = concertService.getConcertDetail(waiting.getConcertId());
 
-        // 예약 넘길 때 seat status 한번 더 확인해서 AVAILABLE 인지
+        ReserveCriteria.Reserve reserveCriteria = ReserveCriteria.Reserve.create(criteria.getUserId(), seatList, concert);
 
-        // 결제
+        // 토큰 삭제
+        waitingService.deleteToken(waiting);
 
-        // 예약 정보 반환
-
+        return reservationService.reserve(reserveCriteria);
     }
 
 }

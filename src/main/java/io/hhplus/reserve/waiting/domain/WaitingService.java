@@ -1,20 +1,19 @@
 package io.hhplus.reserve.waiting.domain;
 
-import io.hhplus.reserve.waiting.application.TokenCommand;
-import io.hhplus.reserve.waiting.application.TokenInfo;
 import org.springframework.stereotype.Service;
 
 @Service
-public class WaitingDomainService {
+public class WaitingService {
 
     private final int ACTIVE_COUNT = 10;
 
     private final WaitingRepository waitingRepository;
 
-    public WaitingDomainService(WaitingRepository waitingRepository) {
+    public WaitingService(WaitingRepository waitingRepository) {
         this.waitingRepository = waitingRepository;
     }
 
+    // 토큰 생성
     public TokenInfo.Token generateToken(TokenCommand.Generate command) {
         int activeCount = waitingRepository.getActiveCount(command.getConcertId());
 
@@ -22,25 +21,36 @@ public class WaitingDomainService {
 
         Waiting waiting = Waiting.createToken(command.getUserId(), command.getConcertId(), status);
 
-        Waiting savedWaiting = waitingRepository.createWaiting(waiting);
+        Waiting savedWaiting = waitingRepository.saveWaiting(waiting);
 
         return TokenInfo.Token.of(savedWaiting);
     }
 
+    // 토큰 조회 및 갱신
     public TokenInfo.Status refreshToken(TokenCommand.Status command) {
-        Waiting givenToken = waitingRepository.getWaiting(command.getToken());
-
-        givenToken.validateToken();
+        Waiting givenToken = validateToken(command.getToken());
 
         boolean isWaitingEmpty = waitingRepository.isWaitingEmpty(givenToken);
-
-        WaitingStatus newStatus = isWaitingEmpty ? WaitingStatus.ACTIVE : WaitingStatus.WAIT;
-
-        givenToken.refreshStatus(newStatus);
+        if (isWaitingEmpty) {
+            givenToken.updateStatus(WaitingStatus.ACTIVE);
+        }
 
         int waitingCount = waitingRepository.getWaitingCount(givenToken);
 
         return TokenInfo.Status.of(givenToken, waitingCount);
+    }
+
+    // 토큰 검증
+    public Waiting validateToken(String token) {
+        Waiting givenToken = waitingRepository.getWaiting(token);
+        givenToken.validateToken();
+        return givenToken;
+    }
+
+    // 토큰 삭제
+    public void deleteToken(Waiting waiting) {
+        waiting.deleteToken();
+        waitingRepository.saveWaiting(waiting);
     }
 
 }

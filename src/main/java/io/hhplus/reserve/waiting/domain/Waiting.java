@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Entity
 @Table(name = "waiting")
 @Getter
@@ -36,6 +39,7 @@ public class Waiting extends BaseEntity {
         this.userId = userId;
         this.concertId = concertId;
         this.status = status;
+        this.token = UUID.randomUUID().toString();
     }
 
     @Builder(builderMethodName = "refreshTokenBuilder")
@@ -54,7 +58,7 @@ public class Waiting extends BaseEntity {
     }
 
     // 토큰 갱신
-    public void refreshStatus(WaitingStatus newStatus) {
+    public void updateStatus(WaitingStatus newStatus) {
         this.status = newStatus;
     }
 
@@ -63,6 +67,12 @@ public class Waiting extends BaseEntity {
         if (this.status == WaitingStatus.DELETE) {
             throw new IllegalStateException("유효하지 않은 토큰입니다.");
         }
+    }
+
+    // 토큰 삭제
+    public void deleteToken() {
+        this.status = WaitingStatus.DELETE;
+        super.setDeletedAt(LocalDateTime.now());
     }
 
 }

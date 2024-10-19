@@ -1,7 +1,5 @@
-package io.hhplus.reserve.concert.application;
+package io.hhplus.reserve.concert.domain;
 
-import io.hhplus.reserve.concert.domain.Concert;
-import io.hhplus.reserve.concert.domain.ConcertSeat;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,6 @@
 package io.hhplus.reserve.payment.domain;
 
 import io.hhplus.reserve.common.domain.BaseEntity;
-import io.hhplus.reserve.payment.application.PaymentCommand;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,11 +42,11 @@ public class Payment extends BaseEntity {
         this.status = PaymentStatus.SUCCESS;
     }
 
-    public static Payment createPayment(PaymentCommand.Payment command) {
+    public static Payment createPayment(PaymentCriteria.Main criteria) {
         return Payment.createBuilder()
-                .reservationId(command.getReservationId())
-                .userId(command.getUserId())
-                .paymentAmount(command.getAmount())
+                .reservationId(criteria.getReservationId())
+                .userId(criteria.getUserId())
+                .paymentAmount(criteria.getAmount())
                 .build();
     }
 

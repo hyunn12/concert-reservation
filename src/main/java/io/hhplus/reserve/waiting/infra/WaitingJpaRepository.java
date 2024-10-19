@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface WaitingJpaRepository extends JpaRepository<Waiting, Long> {
 
-    @Query("select count(w) from Waiting w where w.concertId = :concertId and w.status = 'ACTIVE' and w.updatedAt > CURRENT_TIMESTAMP - 5/1440")
+    @Query("select count(w) from Waiting w where w.concertId = :concertId and w.status = 'ACTIVE'")
     int countActiveByConcertId(long concertId);
 
     @Query("select count(w) from Waiting w where w.concertId = :concertId and w.status = 'WAIT' and w.createdAt < :createdAt")

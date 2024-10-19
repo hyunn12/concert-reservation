@@ -45,6 +45,7 @@ public class Reservation extends BaseEntity {
         this.concertTitle = concertTitle;
         this.concertStartAt = concertStartAt;
         this.concertEndAt = concertEndAt;
+        this.status = ReservationStatus.SUCCESS;
     }
 
     public static Reservation createReservation(Long userId, String concertTitle, LocalDateTime concertStartAt, LocalDateTime concertEndAt) {
