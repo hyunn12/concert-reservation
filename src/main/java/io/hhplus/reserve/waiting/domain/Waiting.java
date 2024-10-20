@@ -57,9 +57,11 @@ public class Waiting extends BaseEntity {
                 .build();
     }
 
-    // 토큰 갱신
-    public void updateStatus(WaitingStatus newStatus) {
-        this.status = newStatus;
+    // 대기인원 확인
+    public void activateStatusNoWaiting(int count) {
+        if (count == 0) {
+            this.status = WaitingStatus.ACTIVE;
+        }
     }
 
     // 유효성 검증

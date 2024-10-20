@@ -30,12 +30,10 @@ public class WaitingService {
     public TokenInfo.Status refreshToken(TokenCommand.Status command) {
         Waiting givenToken = validateToken(command.getToken());
 
-        boolean isWaitingEmpty = waitingRepository.isWaitingEmpty(givenToken);
-        if (isWaitingEmpty) {
-            givenToken.updateStatus(WaitingStatus.ACTIVE);
-        }
-
         int waitingCount = waitingRepository.getWaitingCount(givenToken);
+        givenToken.activateStatusNoWaiting(waitingCount);
+
+        waitingRepository.saveWaiting(givenToken);
 
         return TokenInfo.Status.of(givenToken, waitingCount);
     }
