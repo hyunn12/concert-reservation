@@ -1,6 +1,8 @@
 package io.hhplus.reserve.point.domain;
 
 import io.hhplus.reserve.common.domain.BaseEntity;
+import io.hhplus.reserve.common.exception.BusinessException;
+import io.hhplus.reserve.common.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,7 +44,7 @@ public class Point extends BaseEntity {
 
     public void chargePoint(int point) {
         if (point <= 0) {
-            throw new IllegalArgumentException("충전 포인트는 0보다 커야합니다.");
+            throw new BusinessException(ErrorCode.INVALID_POINT);
         }
 
         this.point += point;
@@ -50,11 +52,11 @@ public class Point extends BaseEntity {
 
     public void usePoint(int point) {
         if (point <= 0) {
-            throw new IllegalArgumentException("사용 포인트는 0보다 커야합니다.");
+            throw new BusinessException(ErrorCode.INVALID_POINT);
         }
 
         if (this.point < point) {
-            throw new IllegalStateException("보유 포인트가 부족합니다.");
+            throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
         }
 
         this.point -= point;

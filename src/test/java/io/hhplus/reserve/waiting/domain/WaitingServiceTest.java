@@ -1,5 +1,6 @@
 package io.hhplus.reserve.waiting.domain;
 
+import io.hhplus.reserve.common.exception.BusinessException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -137,7 +138,7 @@ class WaitingServiceTest {
             given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
 
             // when / then
-            assertThrows(IllegalStateException.class, () -> waitingService.refreshToken(command));
+            assertThrows(BusinessException.class, () -> waitingService.refreshToken(command));
 
             then(waitingRepository).should(times(1)).getWaiting(command.getToken());
             then(waitingRepository).should(never()).isWaitingEmpty(any(Waiting.class));
@@ -177,9 +178,7 @@ class WaitingServiceTest {
             given(waitingRepository.getWaiting(token)).willReturn(givenToken);
 
             // when / then
-            assertThrows(IllegalStateException.class, () -> {
-                waitingService.validateToken(token);
-            });
+            assertThrows(BusinessException.class, () -> waitingService.validateToken(token));
 
             then(waitingRepository).should(times(1)).getWaiting(token);
         }
@@ -193,9 +192,7 @@ class WaitingServiceTest {
             given(waitingRepository.getWaiting(token)).willThrow(new EntityNotFoundException());
 
             // when / then
-            assertThrows(EntityNotFoundException.class, () -> {
-                waitingService.validateToken(token);
-            });
+            assertThrows(EntityNotFoundException.class, () -> waitingService.validateToken(token));
 
             then(waitingRepository).should(times(1)).getWaiting(token);
         }

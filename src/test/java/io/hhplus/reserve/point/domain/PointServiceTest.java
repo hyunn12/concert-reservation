@@ -1,5 +1,6 @@
 package io.hhplus.reserve.point.domain;
 
+import io.hhplus.reserve.common.exception.BusinessException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -122,7 +123,7 @@ class PointServiceTest {
             given(pointRepository.getPointWithLock(userId)).willReturn(point);
 
             // when / then
-            assertThrows(IllegalArgumentException.class, () -> pointService.chargePoint(command));
+            assertThrows(BusinessException.class, () -> pointService.chargePoint(command));
 
             then(pointRepository).should(times(1)).getPointWithLock(userId);
             then(pointRepository).should(never()).savePoint(any(Point.class));
@@ -188,7 +189,7 @@ class PointServiceTest {
             given(pointRepository.getPointWithLock(userId)).willReturn(point);
 
             // when / then
-            assertThrows(IllegalArgumentException.class, () -> pointService.usePoint(command));
+            assertThrows(BusinessException.class, () -> pointService.usePoint(command));
 
             then(pointRepository).should(times(1)).getPointWithLock(userId);
             then(pointRepository).should(never()).savePoint(any(Point.class));

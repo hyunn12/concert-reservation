@@ -1,6 +1,8 @@
 package io.hhplus.reserve.waiting.domain;
 
 import io.hhplus.reserve.common.domain.BaseEntity;
+import io.hhplus.reserve.common.exception.BusinessException;
+import io.hhplus.reserve.common.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -67,7 +69,7 @@ public class Waiting extends BaseEntity {
     // 유효성 검증
     public void validateToken() {
         if (this.status == WaitingStatus.DELETE) {
-            throw new IllegalStateException("유효하지 않은 토큰입니다.");
+            throw new BusinessException(ErrorCode.INVALID_TOKEN);
         }
     }
 
