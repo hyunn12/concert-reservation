@@ -1,5 +1,7 @@
 package io.hhplus.reserve.waiting.domain;
 
+import java.util.List;
+
 public interface WaitingRepository {
 
     int getActiveCount(long concertId);
@@ -11,5 +13,7 @@ public interface WaitingRepository {
     Waiting getWaiting(String token);
 
     Waiting saveWaiting(Waiting waiting);
+
+    List<Waiting> getExpiredWaitingList();
 
 }

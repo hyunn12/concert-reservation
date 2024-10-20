@@ -64,7 +64,7 @@ public class ConcertSeat extends BaseEntity {
 
     // 좌석 선점 상태 확인
     public void checkSeatExpired() {
-        boolean isExpired = this.reservedAt != null && this.reservedAt.plusMinutes(5).isBefore(LocalDateTime.now());
+        boolean isExpired = this.reservedAt == null || this.reservedAt.plusMinutes(5).isBefore(LocalDateTime.now());
         if (isExpired) {
             throw new IllegalStateException("좌석 선점이 만료되었습니다.");
         }
