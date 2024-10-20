@@ -2,7 +2,7 @@ package io.hhplus.reserve.reservation.application;
 
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.domain.ConcertService;
-import io.hhplus.reserve.config.annotation.Facade;
+import io.hhplus.reserve.common.annotation.Facade;
 import io.hhplus.reserve.reservation.domain.ReserveCommand;
 import io.hhplus.reserve.reservation.domain.ReserveCriteria;
 import io.hhplus.reserve.reservation.domain.ReserveInfo;

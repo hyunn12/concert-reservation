@@ -1,4 +1,4 @@
-package io.hhplus.reserve.config;
+package io.hhplus.reserve.common.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;

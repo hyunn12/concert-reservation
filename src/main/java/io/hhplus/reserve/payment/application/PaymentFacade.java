@@ -3,7 +3,7 @@ package io.hhplus.reserve.payment.application;
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.domain.ConcertService;
-import io.hhplus.reserve.config.annotation.Facade;
+import io.hhplus.reserve.common.annotation.Facade;
 import io.hhplus.reserve.payment.domain.*;
 import io.hhplus.reserve.point.domain.PointCommand;
 import io.hhplus.reserve.point.domain.PointService;
