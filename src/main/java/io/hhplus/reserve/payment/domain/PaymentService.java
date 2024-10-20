@@ -1,5 +1,6 @@
 package io.hhplus.reserve.payment.domain;
 
+import io.hhplus.reserve.payment.application.PaymentCriteria;
 import org.springframework.stereotype.Service;
 
 @Service
