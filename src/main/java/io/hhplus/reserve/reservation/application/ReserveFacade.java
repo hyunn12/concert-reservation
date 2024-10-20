@@ -4,7 +4,6 @@ import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.domain.ConcertService;
 import io.hhplus.reserve.common.annotation.Facade;
 import io.hhplus.reserve.reservation.domain.ReserveCommand;
-import io.hhplus.reserve.reservation.domain.ReserveCriteria;
 import io.hhplus.reserve.reservation.domain.ReserveInfo;
 import io.hhplus.reserve.waiting.domain.Waiting;
 import io.hhplus.reserve.waiting.domain.WaitingService;

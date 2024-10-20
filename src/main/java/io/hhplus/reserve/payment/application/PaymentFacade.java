@@ -9,7 +9,7 @@ import io.hhplus.reserve.point.domain.PointCommand;
 import io.hhplus.reserve.point.domain.PointService;
 import io.hhplus.reserve.reservation.domain.Reservation;
 import io.hhplus.reserve.reservation.domain.ReservationService;
-import io.hhplus.reserve.reservation.domain.ReserveCriteria;
+import io.hhplus.reserve.reservation.application.ReserveCriteria;
 import io.hhplus.reserve.waiting.domain.Waiting;
 import io.hhplus.reserve.waiting.domain.WaitingService;
 import jakarta.transaction.Transactional;
