@@ -1,5 +1,6 @@
 package io.hhplus.reserve.concert.interfaces.dto;
 
+import io.hhplus.reserve.concert.domain.ConcertInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -37,6 +38,17 @@ public class ConcertResponse {
         @Schema(description = "예약종료일", example = "2024-11-23 23:59:59")
         private LocalDateTime reservationEndAt;
 
+        public static Concert of(ConcertInfo.ConcertDetail info) {
+            return Concert.builder()
+                    .concertId(info.getConcertId())
+                    .title(info.getTitle())
+                    .description(info.getDescription())
+                    .concertStartAt(info.getConcertStartAt())
+                    .concertEndAt(info.getConcertEndAt())
+                    .reservationStartAt(info.getReservationStartAt())
+                    .reservationEndAt(info.getReservationEndAt())
+                    .build();
+        }
     }
 
     @Getter
@@ -58,6 +70,16 @@ public class ConcertResponse {
 
         @Schema(description = "예약일", example = "2024-10-13 12:00:00")
         private LocalDateTime reservedAt;
+
+        public static Seat of(ConcertInfo.SeatDetail info) {
+            return Seat.builder()
+                    .seatId(info.getSeatId())
+                    .concertId(info.getConcertId())
+                    .seatNum(info.getSeatNum())
+                    .status(info.getStatus())
+                    .reservedAt(info.getReservedAt())
+                    .build();
+        }
 
     }
 

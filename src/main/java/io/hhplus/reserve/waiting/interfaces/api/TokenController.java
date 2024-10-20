@@ -1,5 +1,7 @@
 package io.hhplus.reserve.waiting.interfaces.api;
 
+import io.hhplus.reserve.waiting.domain.TokenInfo;
+import io.hhplus.reserve.waiting.domain.WaitingService;
 import io.hhplus.reserve.waiting.interfaces.dto.TokenRequest;
 import io.hhplus.reserve.waiting.interfaces.dto.TokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,20 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Token", description = "Token 관련 API")
 public class TokenController {
 
-    // 토큰 발급
-    // 토큰 상태 조회 = 대기 상태 조회 (polling) == 갱신
+    private final WaitingService waitingService;
+
+    public TokenController(WaitingService waitingService) {
+        this.waitingService = waitingService;
+    }
 
     @PostMapping("/generate")
     @Operation(summary = "토큰 신규 발급", description = "토큰 신규 발급")
     public ResponseEntity<TokenResponse.Token> generateToken(
             @RequestBody TokenRequest.Generate request
     ) {
-        // TODO 토큰 발급 API 작성
 
-        return ResponseEntity.ok(TokenResponse.Token.builder()
-                .token("testtokentokentoken")
-                .status("WAIT")
-                .build());
+        TokenInfo.Token result = waitingService.generateToken(request.toCommand());
+
+        return ResponseEntity.ok(TokenResponse.Token.of(result));
     }
 
     @PostMapping("/status" )
@@ -36,13 +39,10 @@ public class TokenController {
     public ResponseEntity<TokenResponse.Status> getStatus(
             @RequestBody TokenRequest.Status request
     ) {
-        // TODO 대기열 상태 조회 API 작성
 
-        return ResponseEntity.ok(TokenResponse.Status.builder()
-                .token(request.getToken())
-                .status("WAIT")
-                .waitingCount(10)
-                .build());
+        TokenInfo.Status result = waitingService.refreshToken(request.toCommand());
+
+        return ResponseEntity.ok(TokenResponse.Status.of(result));
     }
 
 }

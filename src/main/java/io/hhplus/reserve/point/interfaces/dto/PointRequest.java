@@ -1,5 +1,6 @@
 package io.hhplus.reserve.point.interfaces.dto;
 
+import io.hhplus.reserve.point.domain.PointCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -24,6 +25,13 @@ public class PointRequest {
         @Positive
         @Schema(description = "포인트", example = "30000")
         private int point;
+
+        public PointCommand.Action toCommand() {
+            return PointCommand.Action.builder()
+                    .userId(userId)
+                    .point(point)
+                    .build();
+        }
 
     }
 

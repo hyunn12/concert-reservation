@@ -1,5 +1,6 @@
 package io.hhplus.reserve.point.interfaces.dto;
 
+import io.hhplus.reserve.point.domain.PointInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -16,6 +17,10 @@ public class PointResponse {
 
         @Schema(description = "포인트", example = "40000")
         private int point;
+
+        public static Point of(PointInfo.Main info) {
+            return Point.builder().point(info.getPoint()).build();
+        }
 
     }
 

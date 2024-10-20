@@ -1,5 +1,6 @@
 package io.hhplus.reserve.payment.interfaces.dto;
 
+import io.hhplus.reserve.payment.domain.PaymentCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -28,6 +29,14 @@ public class PaymentRequest {
         @Positive
         @Schema(description = "결제 금액", example = "50000")
         private int amount;
+
+        public PaymentCommand.Payment toCommand() {
+            return PaymentCommand.Payment.builder()
+                    .userId(userId)
+                    .reservationId(reservationId)
+                    .amount(amount)
+                    .build();
+        }
     }
 
 }

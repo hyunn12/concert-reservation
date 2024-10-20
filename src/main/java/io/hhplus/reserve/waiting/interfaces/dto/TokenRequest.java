@@ -1,5 +1,6 @@
 package io.hhplus.reserve.waiting.interfaces.dto;
 
+import io.hhplus.reserve.waiting.domain.TokenCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,6 +24,13 @@ public class TokenRequest {
         @Schema(description = "콘서트 ID", example = "1")
         private Long concertId;
 
+        public TokenCommand.Generate toCommand() {
+            return TokenCommand.Generate.builder()
+                    .userId(userId)
+                    .concertId(concertId)
+                    .build();
+        }
+
     }
 
     @Getter
@@ -33,6 +41,12 @@ public class TokenRequest {
         @NotNull
         @Schema(description = "토큰", example = "testtokentokentoken")
         private String token;
+
+        public TokenCommand.Status toCommand() {
+            return TokenCommand.Status.builder()
+                    .token(token)
+                    .build();
+        }
 
     }
 

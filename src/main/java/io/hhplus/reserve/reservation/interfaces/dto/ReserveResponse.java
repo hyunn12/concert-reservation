@@ -1,5 +1,6 @@
 package io.hhplus.reserve.reservation.interfaces.dto;
 
+import io.hhplus.reserve.reservation.domain.ReserveInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -25,6 +26,13 @@ public class ReserveResponse {
         @Schema(description = "토큰", example = "test_token")
         private String token;
 
+        public static Reserve of(ReserveInfo.Reserve info) {
+            return Reserve.builder()
+                    .userId(info.getUserId())
+                    .seatIdList(info.getSeatIdList())
+                    .token(info.getToken())
+                    .build();
+        }
     }
 
 }
