@@ -46,7 +46,8 @@ public class WaitingService {
     }
 
     // 토큰 삭제
-    public void deleteToken(Waiting waiting) {
+    public void deleteToken(String token) {
+        Waiting waiting = waitingRepository.getWaiting(token);
         waiting.deleteToken();
         waitingRepository.saveWaiting(waiting);
     }

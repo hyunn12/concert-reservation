@@ -7,7 +7,6 @@ import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
 import io.hhplus.reserve.reservation.domain.ReserveCommand;
 import io.hhplus.reserve.reservation.domain.ReserveInfo;
 import io.hhplus.reserve.waiting.domain.Waiting;
-import io.hhplus.reserve.waiting.domain.WaitingService;
 import io.hhplus.reserve.waiting.infra.WaitingJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,14 +36,12 @@ class ReserveFacadeTest {
     // sut --
     @Autowired
     private ConcertService concertService;
-    @Autowired
-    private WaitingService waitingService;
 
     private ReserveFacade reserveFacade;
 
     @BeforeEach
     void setUp() {
-        reserveFacade = new ReserveFacade(concertService, waitingService);
+        reserveFacade = new ReserveFacade(concertService);
 
         concertSeatJpaRepository.deleteAll();
         waitingJpaRepository.deleteAll();
@@ -74,7 +71,6 @@ class ReserveFacadeTest {
         ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
                 .userId(userId)
                 .seatIdList(seatIdList)
-                .token(token)
                 .build();
 
         // when
@@ -84,7 +80,6 @@ class ReserveFacadeTest {
         assertNotNull(result);
         assertEquals(userId, result.getUserId());
         assertEquals(seatIdList, result.getSeatIdList());
-        assertEquals(token, result.getToken());
     }
 
     @Test
@@ -99,7 +94,6 @@ class ReserveFacadeTest {
         ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
                 .userId(userId)
                 .seatIdList(seatIdList)
-                .token(token)
                 .build();
 
         // when / then
@@ -118,7 +112,6 @@ class ReserveFacadeTest {
         ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
                 .userId(userId)
                 .seatIdList(seatIdList)
-                .token(token)
                 .build();
 
         // when / then

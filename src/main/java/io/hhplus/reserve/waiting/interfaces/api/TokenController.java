@@ -7,10 +7,7 @@ import io.hhplus.reserve.waiting.interfaces.dto.TokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/token")
@@ -37,9 +34,10 @@ public class TokenController {
     @PostMapping("/status" )
     @Operation(summary = "대기열 상태 조회", description = "현재 대기열 상태 조회 및 갱신")
     public ResponseEntity<TokenResponse.Status> getStatus(
-            @RequestBody TokenRequest.Status request
+            @RequestHeader("token") String token
     ) {
 
+        TokenRequest.Status request = TokenRequest.Status.builder().token(token).build();
         TokenInfo.Status result = waitingService.refreshToken(request.toCommand());
 
         return ResponseEntity.ok(TokenResponse.Status.of(result));

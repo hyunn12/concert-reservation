@@ -30,11 +30,12 @@ public class PaymentRequest {
         @Schema(description = "결제 금액", example = "50000")
         private int amount;
 
-        public PaymentCommand.Payment toCommand() {
+        public PaymentCommand.Payment toCommand(String token) {
             return PaymentCommand.Payment.builder()
                     .userId(userId)
                     .reservationId(reservationId)
                     .amount(amount)
+                    .token(token)
                     .build();
         }
     }

@@ -7,10 +7,7 @@ import io.hhplus.reserve.payment.interfaces.dto.PaymentResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -26,10 +23,11 @@ public class PaymentController {
     @Operation(summary = "결제", description = "예약한 콘서트 좌석 결제")
     @PostMapping("/payment")
     public ResponseEntity<PaymentResponse.Payment> pay(
+            @RequestHeader("token") String token,
             @RequestBody PaymentRequest.Payment request
     ) {
 
-        PaymentInfo.Main result = paymentFacade.pay(request.toCommand());
+        PaymentInfo.Main result = paymentFacade.pay(request.toCommand(token));
 
         return ResponseEntity.ok(PaymentResponse.Payment.of(result));
     }

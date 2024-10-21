@@ -16,13 +16,11 @@ public class ReserveCriteria {
     @Getter
     @Builder
     public static class Main {
-        private String token;
         private Long userId;
         private List<Long> seatIdList;
 
         public static ReserveCriteria.Main create(ReserveCommand.Reserve command) {
             return ReserveCriteria.Main.builder()
-                    .token(command.getToken())
                     .userId(command.getUserId())
                     .seatIdList(command.getSeatIdList())
                     .build();

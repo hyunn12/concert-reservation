@@ -3,16 +3,15 @@ package io.hhplus.reserve.waiting.interfaces.dto;
 import io.hhplus.reserve.waiting.domain.TokenCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TokenRequest {
 
     @Getter
     @Builder
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @Schema(name = "TokenRequest.Generate", description = "토큰 생성 요청 객체")
     public static class Generate {
 
@@ -39,7 +38,7 @@ public class TokenRequest {
     public static class Status {
 
         @NotNull
-        @Schema(description = "토큰", example = "testtokentokentoken")
+        @Schema(description = "토큰", example = "valid_token")
         private String token;
 
         public TokenCommand.Status toCommand() {
@@ -47,7 +46,5 @@ public class TokenRequest {
                     .token(token)
                     .build();
         }
-
     }
-
 }
