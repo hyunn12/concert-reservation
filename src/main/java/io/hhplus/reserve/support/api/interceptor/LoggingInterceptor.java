@@ -1,4 +1,4 @@
-package io.hhplus.reserve.common.interceptor;
+package io.hhplus.reserve.support.api.interceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,7 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Slf4j
 @Component
-public class RestInterceptor implements HandlerInterceptor {
+public class LoggingInterceptor implements HandlerInterceptor {
 
     private static final String CURRENT_TIME = "__current_time__";
 
