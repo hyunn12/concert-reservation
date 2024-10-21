@@ -1,8 +1,8 @@
 package io.hhplus.reserve.waiting.domain;
 
-import io.hhplus.reserve.common.domain.BaseEntity;
-import io.hhplus.reserve.common.exception.BusinessException;
-import io.hhplus.reserve.common.exception.ErrorCode;
+import io.hhplus.reserve.support.domain.BaseEntity;
+import io.hhplus.reserve.support.domain.exception.BusinessException;
+import io.hhplus.reserve.support.domain.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;

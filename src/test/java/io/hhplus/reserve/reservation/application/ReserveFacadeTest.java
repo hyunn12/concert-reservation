@@ -28,14 +28,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ReserveFacadeTest {
 
-    @Autowired
-    private ConcertService concertService;
-    @Autowired
-    private WaitingService waitingService;
+    // orm --
     @Autowired
     private WaitingJpaRepository waitingJpaRepository;
     @Autowired
     private ConcertSeatJpaRepository concertSeatJpaRepository;
+
+    // sut --
+    @Autowired
+    private ConcertService concertService;
+    @Autowired
+    private WaitingService waitingService;
 
     private ReserveFacade reserveFacade;
 

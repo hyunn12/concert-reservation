@@ -1,6 +1,6 @@
 package io.hhplus.reserve.waiting.domain;
 
-import io.hhplus.reserve.common.exception.BusinessException;
+import io.hhplus.reserve.support.domain.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

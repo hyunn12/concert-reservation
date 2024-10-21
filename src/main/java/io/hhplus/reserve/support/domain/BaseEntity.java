@@ -1,4 +1,4 @@
-package io.hhplus.reserve.common.domain;
+package io.hhplus.reserve.support.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

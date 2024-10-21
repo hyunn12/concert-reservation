@@ -1,6 +1,6 @@
 package io.hhplus.reserve.point.domain;
 
-import io.hhplus.reserve.common.exception.BusinessException;
+import io.hhplus.reserve.support.domain.exception.BusinessException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

@@ -1,4 +1,4 @@
-package io.hhplus.reserve.common.exception;
+package io.hhplus.reserve.support.domain.exception;
 
 import lombok.Getter;
 

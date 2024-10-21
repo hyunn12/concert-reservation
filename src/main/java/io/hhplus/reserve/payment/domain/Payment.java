@@ -1,6 +1,6 @@
 package io.hhplus.reserve.payment.domain;
 
-import io.hhplus.reserve.common.domain.BaseEntity;
+import io.hhplus.reserve.support.domain.BaseEntity;
 import io.hhplus.reserve.payment.application.PaymentCriteria;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

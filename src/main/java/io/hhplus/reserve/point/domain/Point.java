@@ -1,8 +1,8 @@
 package io.hhplus.reserve.point.domain;
 
-import io.hhplus.reserve.common.domain.BaseEntity;
-import io.hhplus.reserve.common.exception.BusinessException;
-import io.hhplus.reserve.common.exception.ErrorCode;
+import io.hhplus.reserve.support.domain.BaseEntity;
+import io.hhplus.reserve.support.domain.exception.BusinessException;
+import io.hhplus.reserve.support.domain.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,6 +44,8 @@ public class Point extends BaseEntity {
 
     public void chargePoint(int point) {
         if (point <= 0) {
+            // fixme 이건 실제로 데이터를 가져오는건 성공했지만, 내부적 조건으로 실패하는 경우?
+            // (500)에러는 아님. BusinessException 이니까 (200) + 특정메시지 처리
             throw new BusinessException(ErrorCode.INVALID_POINT);
         }
 

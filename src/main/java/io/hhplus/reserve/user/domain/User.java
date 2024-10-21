@@ -1,6 +1,6 @@
 package io.hhplus.reserve.user.domain;
 
-import io.hhplus.reserve.common.domain.BaseEntity;
+import io.hhplus.reserve.support.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
