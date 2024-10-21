@@ -2,7 +2,7 @@ package io.hhplus.reserve.point.domain;
 
 import io.hhplus.reserve.support.domain.BaseEntity;
 import io.hhplus.reserve.support.domain.exception.BusinessException;
-import io.hhplus.reserve.support.domain.exception.ErrorCode;
+import io.hhplus.reserve.support.domain.exception.ErrorType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,9 +44,7 @@ public class Point extends BaseEntity {
 
     public void chargePoint(int point) {
         if (point <= 0) {
-            // fixme 이건 실제로 데이터를 가져오는건 성공했지만, 내부적 조건으로 실패하는 경우?
-            // (500)에러는 아님. BusinessException 이니까 (200) + 특정메시지 처리
-            throw new BusinessException(ErrorCode.INVALID_POINT);
+            throw new BusinessException(ErrorType.BAD_POINT_REQUEST);
         }
 
         this.point += point;
@@ -54,11 +52,11 @@ public class Point extends BaseEntity {
 
     public void usePoint(int point) {
         if (point <= 0) {
-            throw new BusinessException(ErrorCode.INVALID_POINT);
+            throw new BusinessException(ErrorType.BAD_POINT_REQUEST);
         }
 
         if (this.point < point) {
-            throw new BusinessException(ErrorCode.INSUFFICIENT_POINT);
+            throw new BusinessException(ErrorType.INSUFFICIENT_POINT);
         }
 
         this.point -= point;
