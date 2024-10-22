@@ -16,8 +16,8 @@ public interface WaitingJpaRepository extends JpaRepository<Waiting, Long> {
     @Query("select count(w) from Waiting w where w.concertId = :concertId and w.status = 'ACTIVE'")
     int countActiveByConcertId(@Param("concertId") long concertId);
 
-    @Query("select count(w) from Waiting w where w.concertId = :concertId and w.status = 'WAIT' and w.createdAt < :createdAt")
-    int countWaitByConcertId(@Param("concertId") long concertId, @Param("createdAt") LocalDateTime createdAt);
+    @Query("select count(w) from Waiting w where w.concertId = :concertId and w.status = 'WAIT' and w.createdAt < :createdAt and w.userId <> :userId")
+    int countWaitByConcertId(@Param("concertId") long concertId, @Param("createdAt") LocalDateTime createdAt, @Param("userId") Long userId);
 
     Optional<Waiting> findByToken(String token);
 
