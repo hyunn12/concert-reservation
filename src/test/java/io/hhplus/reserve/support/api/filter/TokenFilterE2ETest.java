@@ -1,11 +1,12 @@
 package io.hhplus.reserve.support.api.filter;
 
 import io.hhplus.reserve.common.CommonConstant;
-import io.hhplus.reserve.payment.application.PaymentFacade;
 import io.hhplus.reserve.waiting.domain.TokenInfo;
 import io.hhplus.reserve.waiting.domain.Waiting;
-import io.hhplus.reserve.waiting.domain.WaitingService;
 import io.hhplus.reserve.waiting.domain.WaitingStatus;
+import io.hhplus.reserve.waiting.interfaces.api.TokenController;
+import io.hhplus.reserve.waiting.interfaces.dto.TokenResponse;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,17 +15,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("test")
+@Transactional
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class TokenFilterE2ETest {
 
@@ -32,18 +35,21 @@ class TokenFilterE2ETest {
     private MockMvc mockMvc;
 
     @MockBean
-    private PaymentFacade paymentFacade;
+    private TokenController tokenController;
 
-    @MockBean
-    private WaitingService waitingService;
+    private final String validToken = "valid_token";
 
     @BeforeEach
-    void setup() {
-        Waiting waiting = new Waiting(1L, 1L, 1L, "valid_token", WaitingStatus.WAIT);
-        when(waitingService.validateToken(anyString())).thenReturn(waiting);
+    void setUp() {
+        // TokenFilter 만 사용하도록 설정
+        this.mockMvc = MockMvcBuilders.standaloneSetup(tokenController)
+                .addFilters(new TokenFilter())
+                .build();
 
+        Waiting waiting = new Waiting(1L, 1L, 1L, "valid_token", WaitingStatus.WAIT);
         TokenInfo.Status mockStatus = TokenInfo.Status.of(waiting, 5);
-        when(waitingService.refreshToken(any())).thenReturn(mockStatus);
+        TokenResponse.Status response = TokenResponse.Status.of(mockStatus);
+        when(tokenController.getStatus(validToken)).thenReturn(ResponseEntity.ok(response));
     }
 
     @Test
@@ -65,7 +71,9 @@ class TokenFilterE2ETest {
     @DisplayName("정상 토큰으로 호출")
     void testFilter() throws Exception {
         mockMvc.perform(post("/api/token/status")
-                        .header(CommonConstant.TOKEN, "valid_token"))
-                .andExpect(status().isOk());
+                        .header(CommonConstant.TOKEN, validToken))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
     }
 }
