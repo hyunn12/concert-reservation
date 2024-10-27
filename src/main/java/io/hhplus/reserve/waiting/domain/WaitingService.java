@@ -28,7 +28,7 @@ public class WaitingService {
 
     // 토큰 조회 및 갱신
     public TokenInfo.Status refreshToken(TokenCommand.Status command) {
-        Waiting givenToken = validateToken(command.getToken());
+        Waiting givenToken = waitingRepository.getWaiting(command.getToken());
 
         int waitingCount = waitingRepository.getWaitingCount(givenToken);
         givenToken.activateStatusNoWaiting(waitingCount);

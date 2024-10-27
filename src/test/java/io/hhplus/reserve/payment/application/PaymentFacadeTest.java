@@ -15,6 +15,7 @@ import io.hhplus.reserve.point.infra.PointJpaRepository;
 import io.hhplus.reserve.reservation.domain.Reservation;
 import io.hhplus.reserve.reservation.domain.ReservationService;
 import io.hhplus.reserve.reservation.infra.ReservationJpaRepository;
+import io.hhplus.reserve.support.domain.exception.BusinessException;
 import io.hhplus.reserve.waiting.domain.Waiting;
 import io.hhplus.reserve.waiting.domain.WaitingService;
 import io.hhplus.reserve.waiting.infra.WaitingJpaRepository;
@@ -134,7 +135,7 @@ class PaymentFacadeTest {
                 .build();
 
         // when / then
-        assertThrows(IllegalStateException.class, () -> paymentFacade.pay(command));
+        assertThrows(BusinessException.class, () -> paymentFacade.pay(command));
     }
 
     @Test
@@ -150,7 +151,7 @@ class PaymentFacadeTest {
                 .build();
 
         // when / then
-        assertThrows(IllegalStateException.class, () -> paymentFacade.pay(command));
+        assertThrows(BusinessException.class, () -> paymentFacade.pay(command));
     }
 
 }

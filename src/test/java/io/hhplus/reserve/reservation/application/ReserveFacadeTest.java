@@ -6,6 +6,7 @@ import io.hhplus.reserve.concert.domain.SeatStatus;
 import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
 import io.hhplus.reserve.reservation.domain.ReserveCommand;
 import io.hhplus.reserve.reservation.domain.ReserveInfo;
+import io.hhplus.reserve.support.domain.exception.BusinessException;
 import io.hhplus.reserve.waiting.domain.Waiting;
 import io.hhplus.reserve.waiting.infra.WaitingJpaRepository;
 import jakarta.transaction.Transactional;
@@ -97,7 +98,7 @@ class ReserveFacadeTest {
                 .build();
 
         // when / then
-        assertThrows(IllegalStateException.class, () -> reserveFacade.reserve(command));
+        assertThrows(BusinessException.class, () -> reserveFacade.reserve(command));
     }
 
     @Test
@@ -115,7 +116,7 @@ class ReserveFacadeTest {
                 .build();
 
         // when / then
-        assertThrows(IllegalStateException.class, () -> reserveFacade.reserve(command));
+        assertThrows(BusinessException.class, () -> reserveFacade.reserve(command));
     }
 
 }
