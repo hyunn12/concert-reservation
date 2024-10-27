@@ -1,5 +1,6 @@
 package io.hhplus.reserve.payment.interfaces.api;
 
+import io.hhplus.reserve.common.CommonConstant;
 import io.hhplus.reserve.payment.application.PaymentFacade;
 import io.hhplus.reserve.payment.domain.PaymentInfo;
 import io.hhplus.reserve.payment.interfaces.dto.PaymentRequest;
@@ -23,7 +24,7 @@ public class PaymentController {
     @Operation(summary = "결제", description = "예약한 콘서트 좌석 결제")
     @PostMapping("/payment")
     public ResponseEntity<PaymentResponse.Payment> pay(
-            @RequestHeader("token") String token,
+            @RequestHeader(CommonConstant.TOKEN) String token,
             @RequestBody PaymentRequest.Payment request
     ) {
 

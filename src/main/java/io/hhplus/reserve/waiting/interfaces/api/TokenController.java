@@ -1,5 +1,6 @@
 package io.hhplus.reserve.waiting.interfaces.api;
 
+import io.hhplus.reserve.common.CommonConstant;
 import io.hhplus.reserve.waiting.domain.TokenInfo;
 import io.hhplus.reserve.waiting.domain.WaitingService;
 import io.hhplus.reserve.waiting.interfaces.dto.TokenRequest;
@@ -34,7 +35,7 @@ public class TokenController {
     @PostMapping("/status" )
     @Operation(summary = "대기열 상태 조회", description = "현재 대기열 상태 조회 및 갱신")
     public ResponseEntity<TokenResponse.Status> getStatus(
-            @RequestHeader("token") String token
+            @RequestHeader(CommonConstant.TOKEN) String token
     ) {
 
         TokenRequest.Status request = TokenRequest.Status.builder().token(token).build();

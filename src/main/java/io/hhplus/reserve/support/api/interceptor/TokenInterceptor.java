@@ -1,5 +1,6 @@
 package io.hhplus.reserve.support.api.interceptor;
 
+import io.hhplus.reserve.common.CommonConstant;
 import io.hhplus.reserve.waiting.domain.Waiting;
 import io.hhplus.reserve.waiting.domain.WaitingService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("token");
+        String token = request.getHeader(CommonConstant.TOKEN);
 
         if (isInvalidToken(token)) {
             log.error("#[TokenInterceptor] ::: Invalid token]");
@@ -28,7 +29,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        request.setAttribute("token", token);
+        request.setAttribute(CommonConstant.TOKEN, token);
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 

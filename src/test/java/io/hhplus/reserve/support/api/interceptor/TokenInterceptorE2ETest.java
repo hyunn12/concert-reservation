@@ -1,5 +1,6 @@
 package io.hhplus.reserve.support.api.interceptor;
 
+import io.hhplus.reserve.common.CommonConstant;
 import io.hhplus.reserve.waiting.domain.TokenInfo;
 import io.hhplus.reserve.waiting.domain.Waiting;
 import io.hhplus.reserve.waiting.domain.WaitingService;
@@ -43,7 +44,7 @@ public class TokenInterceptorE2ETest {
     @DisplayName("정상 토큰으로 호출")
     void testTokenInterceptor() throws Exception {
         mockMvc.perform(post("/api/token/status")
-                        .header("token", "valid_token"))
+                        .header(CommonConstant.TOKEN, "valid_token"))
                 .andExpect(status().isOk());
     }
 
@@ -53,7 +54,7 @@ public class TokenInterceptorE2ETest {
         when(waitingService.validateToken(anyString())).thenReturn(null);
 
         mockMvc.perform(post("/api/token/status")
-                        .header("token", "invalid_token"))
+                        .header(CommonConstant.TOKEN, "invalid_token"))
                 .andExpect(status().isForbidden());
     }
 }

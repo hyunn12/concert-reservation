@@ -1,6 +1,6 @@
 package io.hhplus.reserve.support.api.filter;
 
-
+import io.hhplus.reserve.common.CommonConstant;
 import io.hhplus.reserve.payment.application.PaymentFacade;
 import io.hhplus.reserve.waiting.domain.TokenInfo;
 import io.hhplus.reserve.waiting.domain.Waiting;
@@ -57,7 +57,7 @@ class TokenFilterE2ETest {
     @DisplayName("빈 토큰값으로 호출 시 401 반환")
     void testFilterWithEmptyToken() throws Exception {
         mockMvc.perform(post("/api/token/status")
-                        .header("token", ""))
+                        .header(CommonConstant.TOKEN, ""))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -65,7 +65,7 @@ class TokenFilterE2ETest {
     @DisplayName("정상 토큰으로 호출")
     void testFilter() throws Exception {
         mockMvc.perform(post("/api/token/status")
-                        .header("token", "valid_token"))
+                        .header(CommonConstant.TOKEN, "valid_token"))
                 .andExpect(status().isOk());
     }
 }

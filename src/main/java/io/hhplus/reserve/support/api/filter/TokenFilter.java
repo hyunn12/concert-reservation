@@ -1,5 +1,6 @@
 package io.hhplus.reserve.support.api.filter;
 
+import io.hhplus.reserve.common.CommonConstant;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +16,7 @@ public class TokenFilter implements Filter {
         HttpServletRequest httpServletRequest= (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse= (HttpServletResponse) servletResponse;
 
-        String token = httpServletRequest.getHeader("token");
+        String token = httpServletRequest.getHeader(CommonConstant.TOKEN);
 
         if (token == null || token.isEmpty()) {
             log.error("#[TokenFilter] ::: Token is empty");
