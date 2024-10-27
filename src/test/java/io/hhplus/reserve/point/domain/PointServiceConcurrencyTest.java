@@ -1,83 +1,123 @@
 package io.hhplus.reserve.point.domain;
 
+import io.hhplus.reserve.point.infra.PointJpaRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.IntStream;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@ActiveProfiles("test")
 class PointServiceConcurrencyTest {
 
-    @Mock
-    private PointRepository pointRepository;
+    // orm --
+    @Autowired
+    private PointJpaRepository pointJpaRepository;
 
-    @InjectMocks
+    // sut --
+    @Autowired
     private PointService pointService;
 
+    private final Long pointId = 1L;
     private final Long userId = 1L;
+    private final int initPoint = 10000;
+
+    @BeforeEach
+    void setUp() {
+        Point point = new Point(pointId, userId, initPoint);
+        pointJpaRepository.save(point);
+    }
 
     @Test
-    @DisplayName("동시에 포인트 사용")
-    void testUsePoint() {
+    @DisplayName("한 유저가 동시에 포인트 사용하는 경우 순서대로 사용됨")
+    void testUsePoint() throws InterruptedException {
         int threadCount = 10;
-        int initPoint = 10000;
-        int usePoint = 1000;
-        Point point = Point.createBuilder().userId(userId).point(initPoint).build();
+        int requestCount = 10;
+        int usePoint = 2000;
 
-        when(pointRepository.getPointWithLock(userId)).thenReturn(point);
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch latch = new CountDownLatch(requestCount);
+        AtomicInteger successCount = new AtomicInteger(0);
+        AtomicInteger failCount = new AtomicInteger(0);
 
-        final List<CompletableFuture<Void>> futures = IntStream.range(0, threadCount)
-                .mapToObj(i -> CompletableFuture.runAsync(() -> {
+        for (int i = 0; i < requestCount; i++) {
+            executorService.submit(() -> {
+                try {
                     PointCommand.Action command = PointCommand.Action.builder()
                             .userId(userId)
                             .point(usePoint)
                             .build();
                     pointService.usePoint(command);
-                }))
-                .toList();
+                    successCount.incrementAndGet();
+                } catch (Exception e) {
+                    failCount.incrementAndGet();
+                    System.out.println("[Exception] " + e.getMessage());
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
 
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        latch.await();
+        executorService.shutdown();
 
-        verify(pointRepository, times(threadCount)).getPointWithLock(userId);
-        verify(pointRepository, times(threadCount)).savePoint(point);
+        assertEquals(5, successCount.get());
+        assertEquals(requestCount - successCount.get(), failCount.get());
 
-        assertEquals(point.getPoint(), 0);
+        Point usedPoint = pointJpaRepository.findById(pointId).orElseThrow();
+        assertNotNull(usedPoint.getUpdatedAt());
+        assertEquals(0, usedPoint.getPoint());
     }
 
     @Test
-    @DisplayName("동시에 포인트 충전")
-    void testChargePoint() {
-        final int threadCount = 10;
-        final int chargePoint = 1000;
-        final Point point = Point.createBuilder().userId(userId).point(0).build();
+    @DisplayName("한 유저가 동시에 포인트 충전하는 경우 순서대로 충전됨")
+    void testChargePoint() throws InterruptedException {
+        int threadCount = 10;
+        int requestCount = 10;
+        int chargePoint = 1000;
 
-        when(pointRepository.getPointWithLock(userId)).thenReturn(point);
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch latch = new CountDownLatch(requestCount);
+        AtomicInteger successCount = new AtomicInteger(0);
+        AtomicInteger failCount = new AtomicInteger(0);
 
-        List<CompletableFuture<Void>> futures = IntStream.range(0, threadCount)
-                .mapToObj(i -> CompletableFuture.runAsync(() -> {
+        for (int i = 0; i < requestCount; i++) {
+            executorService.submit(() -> {
+                try {
                     PointCommand.Action command = PointCommand.Action.builder()
                             .userId(userId)
                             .point(chargePoint)
                             .build();
                     pointService.chargePoint(command);
-                }))
-                .toList();
+                    successCount.incrementAndGet();
+                } catch (Exception e) {
+                    failCount.incrementAndGet();
+                    System.out.println("[Exception] " + e.getMessage());
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
 
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        latch.await();
+        executorService.shutdown();
 
-        verify(pointRepository, times(threadCount)).getPointWithLock(userId);
-        verify(pointRepository, times(threadCount)).savePoint(point);
+        assertEquals(10, successCount.get());
+        assertEquals(0, failCount.get());
 
-        assertEquals(point.getPoint(), threadCount * chargePoint);
+        Point chargedPoint = pointJpaRepository.findById(pointId).orElseThrow();
+        assertNotNull(chargedPoint.getUpdatedAt());
+        assertEquals(initPoint + (chargePoint * requestCount), chargedPoint.getPoint());
     }
 
 }
