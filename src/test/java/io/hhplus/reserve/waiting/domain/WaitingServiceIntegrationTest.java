@@ -1,5 +1,6 @@
 package io.hhplus.reserve.waiting.domain;
 
+import io.hhplus.reserve.support.domain.exception.BusinessException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ class WaitingServiceIntegrationTest {
         waitingRepository.saveWaiting(Waiting.createToken(1L, 1L, WaitingStatus.DELETE));
 
         // when & then
-        assertThrows(IllegalStateException.class, () -> waitingService.refreshToken(command));
+        assertThrows(BusinessException.class, () -> waitingService.refreshToken(command));
     }
 
     @Test

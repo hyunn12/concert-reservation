@@ -1,5 +1,6 @@
-package io.hhplus.reserve.payment.domain;
+package io.hhplus.reserve.payment.application;
 
+import io.hhplus.reserve.payment.domain.PaymentCommand;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

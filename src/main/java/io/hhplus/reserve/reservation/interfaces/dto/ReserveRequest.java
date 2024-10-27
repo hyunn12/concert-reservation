@@ -1,5 +1,6 @@
 package io.hhplus.reserve.reservation.interfaces.dto;
 
+import io.hhplus.reserve.reservation.domain.ReserveCommand;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -25,6 +26,12 @@ public class ReserveRequest {
         @Schema(description = "좌석 ID 목록", example = "[1, 2, 3]")
         private List<Long> seatIdList;
 
+        public ReserveCommand.Reserve toCommand() {
+            return ReserveCommand.Reserve.builder()
+                    .userId(userId)
+                    .seatIdList(seatIdList)
+                    .build();
+        }
     }
 
 }

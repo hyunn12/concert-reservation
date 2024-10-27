@@ -1,5 +1,6 @@
 package io.hhplus.reserve.payment.domain;
 
+import io.hhplus.reserve.payment.application.PaymentCriteria;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

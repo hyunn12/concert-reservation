@@ -1,5 +1,6 @@
 package io.hhplus.reserve.reservation.domain;
 
+import io.hhplus.reserve.reservation.application.ReserveCriteria;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

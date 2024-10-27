@@ -16,10 +16,9 @@ public class ReserveInfo {
     public static class Reserve {
         private Long userId;
         private List<Long> seatIdList;
-        private String token;
 
-        public static Reserve of(Long userId, List<Long> seatIdList, String token) {
-            return new Reserve(userId, seatIdList, token);
+        public static Reserve of(Long userId, List<Long> seatIdList) {
+            return new Reserve(userId, seatIdList);
         }
     }
 

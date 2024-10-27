@@ -1,6 +1,8 @@
 package io.hhplus.reserve.concert.domain;
 
-import io.hhplus.reserve.common.domain.BaseEntity;
+import io.hhplus.reserve.support.domain.BaseEntity;
+import io.hhplus.reserve.support.domain.exception.BusinessException;
+import io.hhplus.reserve.support.domain.exception.ErrorType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -56,7 +58,7 @@ public class ConcertSeat extends BaseEntity {
         boolean isConfirmed = this.status == SeatStatus.CONFIRMED;
 
         if (isReserved || isConfirmed) {
-            throw new IllegalStateException("예약이 불가능한 좌석입니다.");
+            throw new BusinessException(ErrorType.INVALID_SEAT);
         }
 
         this.reservedAt = LocalDateTime.now();
@@ -64,9 +66,9 @@ public class ConcertSeat extends BaseEntity {
 
     // 좌석 선점 상태 확인
     public void checkSeatExpired() {
-        boolean isExpired = this.reservedAt != null && this.reservedAt.plusMinutes(5).isBefore(LocalDateTime.now());
+        boolean isExpired = this.reservedAt == null || this.reservedAt.plusMinutes(5).isBefore(LocalDateTime.now());
         if (isExpired) {
-            throw new IllegalStateException("좌석 선점이 만료되었습니다.");
+            throw new BusinessException(ErrorType.EXPIRED_SEAT);
         }
     }
 

@@ -5,6 +5,8 @@ import io.hhplus.reserve.waiting.domain.WaitingRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class WaitingRepositoryImpl implements WaitingRepository {
 
@@ -37,5 +39,10 @@ public class WaitingRepositoryImpl implements WaitingRepository {
     @Override
     public Waiting saveWaiting(Waiting waiting) {
         return waitingJpaRepository.save(waiting);
+    }
+
+    @Override
+    public List<Waiting> getExpiredWaitingList() {
+        return waitingJpaRepository.findExpiredWaitingList();
     }
 }

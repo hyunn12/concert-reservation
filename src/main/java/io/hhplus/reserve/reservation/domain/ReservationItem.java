@@ -1,6 +1,6 @@
 package io.hhplus.reserve.reservation.domain;
 
-import io.hhplus.reserve.common.domain.BaseEntity;
+import io.hhplus.reserve.support.domain.BaseEntity;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

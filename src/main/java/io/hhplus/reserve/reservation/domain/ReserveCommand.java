@@ -15,7 +15,6 @@ public class ReserveCommand {
     public static class Reserve {
         private Long userId;
         private List<Long> seatIdList;
-        private String token;
     }
 
 }

@@ -1,7 +1,8 @@
-package io.hhplus.reserve.reservation.domain;
+package io.hhplus.reserve.reservation.application;
 
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
+import io.hhplus.reserve.reservation.domain.ReserveCommand;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,13 +16,11 @@ public class ReserveCriteria {
     @Getter
     @Builder
     public static class Main {
-        private String token;
         private Long userId;
         private List<Long> seatIdList;
 
         public static ReserveCriteria.Main create(ReserveCommand.Reserve command) {
             return ReserveCriteria.Main.builder()
-                    .token(command.getToken())
                     .userId(command.getUserId())
                     .seatIdList(command.getSeatIdList())
                     .build();

@@ -3,6 +3,7 @@ package io.hhplus.reserve.reservation.domain;
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.domain.SeatStatus;
+import io.hhplus.reserve.reservation.application.ReserveCriteria;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
