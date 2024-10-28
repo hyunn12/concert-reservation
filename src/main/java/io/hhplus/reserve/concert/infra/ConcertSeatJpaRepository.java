@@ -15,7 +15,7 @@ public interface ConcertSeatJpaRepository extends JpaRepository<ConcertSeat, Lon
 
     List<ConcertSeat> findAllByConcertId(Long concertId);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
     @Query("SELECT cs FROM ConcertSeat cs WHERE cs.seatId IN :seatIdList")
     List<ConcertSeat> findConcertSeatListWithLock(@Param("seatIdList") List<Long> seatIdList);
 

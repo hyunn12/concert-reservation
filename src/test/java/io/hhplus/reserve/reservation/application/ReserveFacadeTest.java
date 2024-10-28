@@ -52,10 +52,10 @@ class ReserveFacadeTest {
         waitingJpaRepository.save(waiting1);
         waitingJpaRepository.save(waiting2);
 
-        ConcertSeat seat1 = new ConcertSeat(1L, 1L, 1, SeatStatus.AVAILABLE, null);
-        ConcertSeat seat2 = new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, null);
-        ConcertSeat seat3 = new ConcertSeat(3L, 1L, 3, SeatStatus.AVAILABLE, LocalDateTime.now().minusMinutes(3));
-        ConcertSeat seat4 = new ConcertSeat(4L, 1L, 4, SeatStatus.CONFIRMED, LocalDateTime.now().minusMinutes(10));
+        ConcertSeat seat1 = new ConcertSeat(1L, 1L, 1, SeatStatus.AVAILABLE, null, 0L);
+        ConcertSeat seat2 = new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, null, 0L);
+        ConcertSeat seat3 = new ConcertSeat(3L, 1L, 3, SeatStatus.AVAILABLE, LocalDateTime.now().minusMinutes(3), 0L);
+        ConcertSeat seat4 = new ConcertSeat(4L, 1L, 4, SeatStatus.CONFIRMED, LocalDateTime.now().minusMinutes(10), 0L);
         concertSeatJpaRepository.saveAll(List.of(seat1, seat2, seat3, seat4));
 
     }

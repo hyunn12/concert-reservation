@@ -47,9 +47,9 @@ class ReservationServiceTest {
         LocalDateTime reservationEndAt = LocalDateTime.of(2024, 11, 23, 23, 59);
         mockConcert = new Concert(concertId, concertTitle, desc, concertStartAt, concertEndAt, reservationStartAt, reservationEndAt);
 
-        ConcertSeat seat1 = new ConcertSeat(1L, concertId, 1, SeatStatus.AVAILABLE, null);
-        ConcertSeat seat2 = new ConcertSeat(2L, concertId, 2, SeatStatus.AVAILABLE, null);
-        ConcertSeat seat3 = new ConcertSeat(3L, concertId, 3, SeatStatus.AVAILABLE, null);
+        ConcertSeat seat1 = new ConcertSeat(1L, concertId, 1, SeatStatus.AVAILABLE, null, 0L);
+        ConcertSeat seat2 = new ConcertSeat(2L, concertId, 2, SeatStatus.AVAILABLE, null, 0L);
+        ConcertSeat seat3 = new ConcertSeat(3L, concertId, 3, SeatStatus.AVAILABLE, null, 0L);
         mockSeatList = List.of(seat1, seat2, seat3);
     }
 

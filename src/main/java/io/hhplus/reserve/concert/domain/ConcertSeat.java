@@ -38,6 +38,10 @@ public class ConcertSeat extends BaseEntity {
     @Column(name = "reserved_at")
     private LocalDateTime reservedAt;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     @Builder(builderMethodName = "createBuilder")
     public ConcertSeat(long concertId, int seatNum, LocalDateTime reservedAt) {
         this.concertId = concertId;

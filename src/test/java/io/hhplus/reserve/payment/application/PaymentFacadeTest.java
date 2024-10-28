@@ -82,9 +82,9 @@ class PaymentFacadeTest {
                 LocalDateTime.of(2024, 11, 23, 23, 59));
         concertJpaRepository.save(concert);
 
-        ConcertSeat seat1 = new ConcertSeat(1L, 1L, 1, SeatStatus.AVAILABLE, LocalDateTime.now().minusMinutes(3));
-        ConcertSeat seat2 = new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, LocalDateTime.now().minusMinutes(3));
-        ConcertSeat seat3 = new ConcertSeat(3L, 1L, 3, SeatStatus.AVAILABLE, LocalDateTime.now().minusMinutes(10));
+        ConcertSeat seat1 = new ConcertSeat(1L, 1L, 1, SeatStatus.AVAILABLE, LocalDateTime.now().minusMinutes(3), 0L);
+        ConcertSeat seat2 = new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, LocalDateTime.now().minusMinutes(3), 0L);
+        ConcertSeat seat3 = new ConcertSeat(3L, 1L, 3, SeatStatus.AVAILABLE, LocalDateTime.now().minusMinutes(10), 0L);
         concertSeatJpaRepository.saveAll(List.of(seat1, seat2, seat3));
 
         Point point = new Point(1L, 1L, 10000);

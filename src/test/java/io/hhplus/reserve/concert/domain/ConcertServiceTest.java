@@ -90,8 +90,8 @@ class ConcertServiceTest {
             // given
             Long concertId = 1L;
             List<ConcertSeat> mockSeatList = List.of(
-                    new ConcertSeat(1L, concertId, 1, SeatStatus.AVAILABLE, null),
-                    new ConcertSeat(2L, concertId, 2, SeatStatus.AVAILABLE, null)
+                    new ConcertSeat(1L, concertId, 1, SeatStatus.AVAILABLE, null, 0L),
+                    new ConcertSeat(2L, concertId, 2, SeatStatus.AVAILABLE, null, 0L)
             );
 
             given(concertRepository.getConcertSeatListByConcertId(concertId)).willReturn(mockSeatList);
@@ -164,8 +164,8 @@ class ConcertServiceTest {
             // given
             List<Long> seatIdList = List.of(1L, 2L);
             List<ConcertSeat> mockSeatList = List.of(
-                    new ConcertSeat(1L, 1L, 1, SeatStatus.AVAILABLE, null),
-                    new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, null)
+                    new ConcertSeat(1L, 1L, 1, SeatStatus.AVAILABLE, null, 0L),
+                    new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, null, 0L)
             );
 
             given(concertRepository.getConcertSeatListWithLock(seatIdList)).willReturn(mockSeatList);

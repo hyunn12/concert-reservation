@@ -1,6 +1,7 @@
 package io.hhplus.reserve.concert.domain;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,12 +31,14 @@ public class ConcertService {
         return concertRepository.getConcert(concertId);
     }
 
-    // 콘서트 좌석 목록 조회 (Pessimistic Lock)
+    // 콘서트 좌석 목록 조회 (Optimistic Lock)
+    @Transactional
     public List<ConcertSeat> getSeatListWithLock(List<Long> seatIdList) {
         return concertRepository.getConcertSeatListWithLock(seatIdList);
     }
 
     // 콘서트 좌석 선점
+    @Transactional
     public void reserveSeat(List<ConcertSeat> seatList) {
         seatList.forEach(ConcertSeat::reserveSeat);
         concertRepository.saveConcertSeatList(seatList);
@@ -47,6 +50,7 @@ public class ConcertService {
     }
 
     // 콘서트 좌석 확정
+    @Transactional
     public void confirmSeat(List<ConcertSeat> seatList) {
         seatList.forEach(ConcertSeat::confirm);
     }
