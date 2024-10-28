@@ -3,6 +3,7 @@ package io.hhplus.reserve.reservation.application;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
 import io.hhplus.reserve.reservation.domain.ReserveCommand;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
 class ReserveFacadeConcurrencyTest {
@@ -62,7 +64,7 @@ class ReserveFacadeConcurrencyTest {
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failCount.incrementAndGet();
-                    System.out.println("[Exception] " + e.getMessage());
+                    log.error("[Exception] {}", e.getMessage());
                 } finally {
                     latch.countDown();
                 }

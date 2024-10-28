@@ -1,6 +1,7 @@
 package io.hhplus.reserve.point.domain;
 
 import io.hhplus.reserve.point.infra.PointJpaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
 class PointServiceConcurrencyTest {
@@ -58,10 +60,11 @@ class PointServiceConcurrencyTest {
                             .point(usePoint)
                             .build();
                     pointService.usePoint(command);
+
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failCount.incrementAndGet();
-                    System.out.println("[Exception] " + e.getMessage());
+                    log.error("[Exception] {}", e.getMessage());
                 } finally {
                     latch.countDown();
                 }
@@ -102,7 +105,7 @@ class PointServiceConcurrencyTest {
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failCount.incrementAndGet();
-                    System.out.println("[Exception] " + e.getMessage());
+                    log.error("[Exception] {}", e.getMessage());
                 } finally {
                     latch.countDown();
                 }
