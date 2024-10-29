@@ -1,22 +1,45 @@
 package io.hhplus.reserve.waiting.domain;
 
+import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.support.domain.exception.BusinessException;
+import io.hhplus.reserve.waiting.infra.WaitingJpaRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class WaitingServiceIntegrationTest {
+@ActiveProfiles("test")
+class WaitingServiceIntegrationTest extends TestContainerSupport {
 
+    // orm --
+    @Autowired
+    private WaitingJpaRepository waitingJpaRepository;
+
+    // sut --
     @Autowired
     private WaitingService waitingService;
 
-    @Autowired
-    private WaitingRepository waitingRepository;
+    private Waiting waiting;
+    private Waiting deletedWaiting;
+    private String validToken;
+    private String deletedToken;
+
+    @BeforeEach
+    void setUp() {
+        waiting = new Waiting(1L, 1L, WaitingStatus.WAIT);
+        deletedWaiting = new Waiting(2L, 1L, WaitingStatus.DELETE);
+        waitingJpaRepository.saveAll(List.of(waiting, deletedWaiting));
+        validToken = waiting.getToken();
+        deletedToken = deletedWaiting.getToken();
+    }
 
     @Test
     @DisplayName("토큰 생성 성공")
@@ -36,10 +59,8 @@ class WaitingServiceIntegrationTest {
     @DisplayName("토큰 갱신")
     void testRefreshToken() {
         TokenCommand.Status command = TokenCommand.Status.builder()
-                .token("testtokentokentoken")
+                .token(validToken)
                 .build();
-
-        Waiting savedWaiting = waitingRepository.saveWaiting(Waiting.createToken(1L, 1L, WaitingStatus.WAIT));
 
         TokenInfo.Status result = waitingService.refreshToken(command);
 
@@ -63,10 +84,8 @@ class WaitingServiceIntegrationTest {
     void testRefreshDeleteToken() {
         // given
         TokenCommand.Status command = TokenCommand.Status.builder()
-                .token("deleted_token")
+                .token(deletedToken)
                 .build();
-
-        waitingRepository.saveWaiting(Waiting.createToken(1L, 1L, WaitingStatus.DELETE));
 
         // when & then
         assertThrows(BusinessException.class, () -> waitingService.refreshToken(command));
@@ -75,16 +94,12 @@ class WaitingServiceIntegrationTest {
     @Test
     @DisplayName("토큰 검증 성공")
     void testValidateToken() {
-        // given
-        String token = "testtokenuser2";
-        waitingRepository.saveWaiting(Waiting.createToken(1L, 1L, WaitingStatus.ACTIVE));
-
         // when
-        Waiting result = waitingService.validateToken(token);
+        Waiting result = waitingService.validateToken(validToken);
 
         // then
         assertNotNull(result);
-        assertEquals(token, result.getToken());
+        assertEquals(validToken, result.getToken());
     }
 
 }

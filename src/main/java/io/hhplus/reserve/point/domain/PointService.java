@@ -13,6 +13,7 @@ public class PointService {
     }
 
     // 사용자 포인트 조회
+    @Transactional
     public PointInfo.Main getPointByUserId(Long userId) {
         return PointInfo.Main.of(pointRepository.getPointWithLock(userId));
     }

@@ -1,5 +1,6 @@
 package io.hhplus.reserve.reservation.application;
 
+import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.domain.ConcertService;
 import io.hhplus.reserve.concert.domain.SeatStatus;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class ReserveFacadeTest {
+class ReserveFacadeTest extends TestContainerSupport {
 
     // orm --
     @Autowired

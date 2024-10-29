@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface ConcertJpaRepository extends JpaRepository<Concert, Long> {
 
-    @Query(value = "SELECT * FROM Concert c WHERE DATE(:date) BETWEEN DATE(c.reservation_start_at) AND DATE(c.reservation_end_at)", nativeQuery = true)
+    @Query(value = "select * from concert c where date(:date) between date(c.reservation_start_at) and date(c.reservation_end_at)", nativeQuery = true)
     List<Concert> findAllByDate(@Param("date") LocalDate date);
 
 }

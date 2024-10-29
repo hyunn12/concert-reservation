@@ -1,5 +1,6 @@
 package io.hhplus.reserve.reservation.application;
 
+import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
 import io.hhplus.reserve.reservation.domain.ReserveCommand;
@@ -23,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-class ReserveFacadeConcurrencyTest {
+class ReserveFacadeConcurrencyTest extends TestContainerSupport {
 
     // orm --
     @Autowired

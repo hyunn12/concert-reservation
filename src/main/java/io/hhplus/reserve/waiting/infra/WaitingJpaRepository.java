@@ -21,7 +21,7 @@ public interface WaitingJpaRepository extends JpaRepository<Waiting, Long> {
 
     Optional<Waiting> findByToken(String token);
 
-    @Query(value = "SELECT * FROM Waiting w WHERE w.status != 'DELETE' AND DATE_ADD(w.updated_at, INTERVAL 5 MINUTE) <= NOW()", nativeQuery = true)
+    @Query(value = "select * from waiting w where w.status != 'DELETE' and date_add(w.updated_at, interval 5 minute) <= now()", nativeQuery = true)
     List<Waiting> findExpiredWaitingList();
 
 }
