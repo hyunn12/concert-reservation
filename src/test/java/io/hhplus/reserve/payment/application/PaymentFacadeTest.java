@@ -1,5 +1,6 @@
 package io.hhplus.reserve.payment.application;
 
+import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.domain.ConcertService;
@@ -34,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class PaymentFacadeTest {
+class PaymentFacadeTest extends TestContainerSupport {
 
     @Autowired
     private PaymentService paymentService;

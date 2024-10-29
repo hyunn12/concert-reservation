@@ -1,5 +1,6 @@
 package io.hhplus.reserve.point.domain;
 
+import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.point.infra.PointJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-class PointServiceConcurrencyTest {
+class PointServiceConcurrencyTest extends TestContainerSupport {
 
     // orm --
     @Autowired

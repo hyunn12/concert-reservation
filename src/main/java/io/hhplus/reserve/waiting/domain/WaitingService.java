@@ -1,5 +1,6 @@
 package io.hhplus.reserve.waiting.domain;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,7 @@ public class WaitingService {
     }
 
     // 토큰 생성
+    @Transactional
     public TokenInfo.Token generateToken(TokenCommand.Generate command) {
         int activeCount = waitingRepository.getActiveCount(command.getConcertId());
 
@@ -27,8 +29,9 @@ public class WaitingService {
     }
 
     // 토큰 조회 및 갱신
+    @Transactional
     public TokenInfo.Status refreshToken(TokenCommand.Status command) {
-        Waiting givenToken = waitingRepository.getWaiting(command.getToken());
+        Waiting givenToken = validateToken(command.getToken());
 
         int waitingCount = waitingRepository.getWaitingCount(givenToken);
         givenToken.activateStatusNoWaiting(waitingCount);
@@ -39,6 +42,7 @@ public class WaitingService {
     }
 
     // 토큰 검증
+    @Transactional
     public Waiting validateToken(String token) {
         Waiting givenToken = waitingRepository.getWaiting(token);
         givenToken.validateToken();
@@ -46,6 +50,7 @@ public class WaitingService {
     }
 
     // 토큰 삭제
+    @Transactional
     public void deleteToken(String token) {
         Waiting waiting = waitingRepository.getWaiting(token);
         waiting.deleteToken();

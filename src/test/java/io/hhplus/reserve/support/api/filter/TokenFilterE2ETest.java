@@ -1,5 +1,6 @@
 package io.hhplus.reserve.support.api.filter;
 
+import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.common.CommonConstant;
 import io.hhplus.reserve.waiting.domain.TokenInfo;
 import io.hhplus.reserve.waiting.domain.Waiting;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class TokenFilterE2ETest {
+class TokenFilterE2ETest extends TestContainerSupport {
 
     @Autowired
     private MockMvc mockMvc;
