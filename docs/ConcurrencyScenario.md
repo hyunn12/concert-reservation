@@ -53,9 +53,9 @@
 
 #### 테스트 시간 측정
 - 테스트 상황: `threadCount: 10` / `requestCount: 1000` 
-    - 비관적락 적용 시 / 1148 ms
+    - 비관적락 적용 시 / 1148 ms   
         <img width="500" alt="image" src="https://github.com/user-attachments/assets/38f710bd-d1d9-41e9-b378-34a096dffb11">
-    - 낙관적락 적용 시 / 840 ms
+    - 낙관적락 적용 시 / 840 ms   
         <img width="500" alt="image" src="https://github.com/user-attachments/assets/a5ef86ac-2fb9-42bc-bd83-4c43c41c948e">
 
 
@@ -79,8 +79,8 @@
 
 #### 테스트 시간 측정
 - 테스트 상황: `threadCount: 10` / `requestCount: 10`
-    - 비관적락 적용 시 / 53 ms
+    - 비관적락 적용 시 / 53 ms   
         <img width="500" alt="image" src="https://github.com/user-attachments/assets/cd3e2e73-a083-4888-8d7d-fd58b5b4d032">
-    - 낙관적락 적용 시 / 110 ms
+    - 낙관적락 적용 시 / 110 ms   
         <img width="500" alt="image" src="https://github.com/user-attachments/assets/e950f827-567f-4051-81c4-83ee5cc6b333">
 
