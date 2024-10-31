@@ -109,3 +109,5 @@ Layered 아키텍처를 베이스로 한 Clean 아키텍처를 적용하고자 �
 #### [API 명세](./docs/API-Spec.md)
 
 #### [Swagger](./docs/Swagger.md)
+
+#### [동시성 문제 발생 시나리오 분석](./docs/ConcurrencyScenario.md)
