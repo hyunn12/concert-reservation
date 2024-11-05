@@ -10,6 +10,10 @@ public interface ConcertRepository {
 
     List<ConcertSeat> getConcertSeatListWithLock(List<Long> seatIdList);
 
+    List<ConcertSeat> getConcertSeatList(List<Long> seatIdList);
+
+    ConcertSeat getConcertSeat(Long seatId);
+
     List<ConcertSeat> saveConcertSeatList(List<ConcertSeat> seatList);
 
     Concert getConcert(Long concertId);

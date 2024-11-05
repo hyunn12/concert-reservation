@@ -1,9 +1,10 @@
 package io.hhplus.reserve.reservation.application;
 
 import io.hhplus.reserve.TestContainerSupport;
+import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
-import io.hhplus.reserve.concert.domain.ConcertService;
 import io.hhplus.reserve.concert.domain.SeatStatus;
+import io.hhplus.reserve.concert.infra.ConcertJpaRepository;
 import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
 import io.hhplus.reserve.reservation.domain.ReserveCommand;
 import io.hhplus.reserve.reservation.domain.ReserveInfo;
@@ -13,6 +14,7 @@ import io.hhplus.reserve.waiting.infra.WaitingJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,25 +35,28 @@ class ReserveFacadeTest extends TestContainerSupport {
     @Autowired
     private WaitingJpaRepository waitingJpaRepository;
     @Autowired
+    private ConcertJpaRepository concertJpaRepository;
+    @Autowired
     private ConcertSeatJpaRepository concertSeatJpaRepository;
 
     // sut --
     @Autowired
-    private ConcertService concertService;
-
     private ReserveFacade reserveFacade;
 
     @BeforeEach
     void setUp() {
-        reserveFacade = new ReserveFacade(concertService);
-
-        concertSeatJpaRepository.deleteAll();
-        waitingJpaRepository.deleteAll();
-
         Waiting waiting1 = new Waiting(1L, 1L, 1L, "valid_token", null);
         Waiting waiting2 = new Waiting(2L, 2L, 1L, "expired_token", null);
-        waitingJpaRepository.save(waiting1);
-        waitingJpaRepository.save(waiting2);
+        waitingJpaRepository.saveAll(List.of(waiting1, waiting2));
+
+        Concert concert = new Concert(1L,
+                "AA Concert",
+                "AA concert desc",
+                LocalDateTime.of(2024, 12, 25, 12, 0),
+                LocalDateTime.of(2024, 12, 25, 16, 0),
+                LocalDateTime.of(2024, 9, 21, 0, 0),
+                LocalDateTime.of(2024, 11, 23, 23, 59));
+        concertJpaRepository.save(concert);
 
         ConcertSeat seat1 = new ConcertSeat(1L, 1L, 1, SeatStatus.AVAILABLE, null, 0L);
         ConcertSeat seat2 = new ConcertSeat(2L, 1L, 2, SeatStatus.AVAILABLE, null, 0L);
@@ -61,63 +66,125 @@ class ReserveFacadeTest extends TestContainerSupport {
 
     }
 
-    @Test
-    @DisplayName("유효한 토큰으로 예약 성공")
-    @Transactional
-    void testReserveSuccess() {
-        // given
-        Long userId = 1L;
-        String token = "valid_token";
-        List<Long> seatIdList = List.of(1L, 2L);
+    @Nested
+    @DisplayName("낙관적락을 이용한 예약")
+    class OptimisticLock {
 
-        ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
-                .userId(userId)
-                .seatIdList(seatIdList)
-                .build();
+        @Test
+        @DisplayName("유효한 좌석에 대해 예약 성공")
+        @Transactional
+        void testReserveSuccess() {
+            // given
+            Long userId = 1L;
+            List<Long> seatIdList = List.of(1L, 2L);
 
-        // when
-        ReserveInfo.Reserve result = reserveFacade.reserve(command);
+            ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
+                    .userId(userId)
+                    .seatIdList(seatIdList)
+                    .build();
 
-        // then
-        assertNotNull(result);
-        assertEquals(userId, result.getUserId());
-        assertEquals(seatIdList, result.getSeatIdList());
+            // when
+            ReserveInfo.Reserve result = reserveFacade.reserve(command);
+
+            // then
+            assertNotNull(result);
+            assertEquals(userId, result.getUserId());
+            assertEquals(seatIdList, result.getSeatIdList());
+        }
+
+        @Test
+        @DisplayName("이미 예약된 좌석일 시 예외 발생")
+        @Transactional
+        void testSeatAlreadyReserved() {
+            // given
+            Long userId = 1L;
+            List<Long> seatIdList = List.of(1L, 3L);
+
+            ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
+                    .userId(userId)
+                    .seatIdList(seatIdList)
+                    .build();
+
+            // when / then
+            assertThrows(BusinessException.class, () -> reserveFacade.reserve(command));
+        }
+
+        @Test
+        @DisplayName("이미 확정된 좌석일 시 예외 발생")
+        @Transactional
+        void testSeatAlreadyConfirmed() {
+            // given
+            Long userId = 1L;
+            List<Long> seatIdList = List.of(1L, 4L);
+
+            ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
+                    .userId(userId)
+                    .seatIdList(seatIdList)
+                    .build();
+
+            // when / then
+            assertThrows(BusinessException.class, () -> reserveFacade.reserve(command));
+        }
+
     }
 
-    @Test
-    @DisplayName("이미 예약된 좌석일 시 예외 발생")
-    @Transactional
-    void testSeatAlreadyReserved() {
-        // given
-        Long userId = 1L;
-        String token = "valid_token";
-        List<Long> seatIdList = List.of(1L, 3L);
+    @Nested
+    @DisplayName("Redis 사용한 분산락을 이용한 예약")
+    class RedisLock {
 
-        ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
-                .userId(userId)
-                .seatIdList(seatIdList)
-                .build();
+        @Test
+        @DisplayName("유효한 좌석에 대해 예약 성공")
+        void testReserveSuccess() {
+            // given
+            Long userId = 1L;
+            Long concertId = 1L;
+            List<Long> seatIdList = List.of(1L);
 
-        // when / then
-        assertThrows(BusinessException.class, () -> reserveFacade.reserve(command));
+            ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
+                    .userId(userId)
+                    .concertId(concertId)
+                    .seatIdList(seatIdList)
+                    .build();
+
+            // when
+            ReserveInfo.Reserve result = reserveFacade.reserveWithRedis(command);
+
+            // then
+            assertNotNull(result);
+            assertEquals(userId, result.getUserId());
+            assertEquals(seatIdList, result.getSeatIdList());
+        }
+
+        @Test
+        @DisplayName("이미 예약된 좌석일 시 예외 발생")
+        void testSeatAlreadyReserved() {
+            // given
+            Long userId = 1L;
+            List<Long> seatIdList = List.of(1L, 3L);
+
+            ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
+                    .userId(userId)
+                    .seatIdList(seatIdList)
+                    .build();
+
+            // when / then
+            assertThrows(BusinessException.class, () -> reserveFacade.reserveWithRedis(command));
+        }
+
+        @Test
+        @DisplayName("이미 확정된 좌석일 시 예외 발생")
+        void testSeatAlreadyConfirmed() {
+            // given
+            Long userId = 1L;
+            List<Long> seatIdList = List.of(1L, 4L);
+
+            ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
+                    .userId(userId)
+                    .seatIdList(seatIdList)
+                    .build();
+
+            // when / then
+            assertThrows(BusinessException.class, () -> reserveFacade.reserveWithRedis(command));
+        }
     }
-
-    @Test
-    @DisplayName("이미 확정된 좌석일 시 예외 발생")
-    @Transactional
-    void testSeatAlreadyConfirmed() {
-        // given
-        Long userId = 1L;
-        String token = "valid_token";
-        List<Long> seatIdList = List.of(1L, 4L);
-
-        ReserveCommand.Reserve command = ReserveCommand.Reserve.builder()
-                .userId(userId)
-                .seatIdList(seatIdList)
-                .build();
-
-        // when / then
-        assertThrows(BusinessException.class, () -> reserveFacade.reserve(command));
-    }
-
 }

@@ -23,6 +23,10 @@ public class ReserveRequest {
         private Long userId;
 
         @NotNull
+        @Schema(description = "콘서트 ID", example = "1")
+        private Long concertId;
+
+        @NotNull
         @Schema(description = "좌석 ID 목록", example = "[1, 2, 3]")
         private List<Long> seatIdList;
 

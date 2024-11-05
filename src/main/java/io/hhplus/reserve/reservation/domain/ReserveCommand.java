@@ -14,6 +14,7 @@ public class ReserveCommand {
     @Builder
     public static class Reserve {
         private Long userId;
+        private Long concertId;
         private List<Long> seatIdList;
     }
 

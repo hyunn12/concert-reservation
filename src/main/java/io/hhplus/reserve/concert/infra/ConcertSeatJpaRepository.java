@@ -19,4 +19,7 @@ public interface ConcertSeatJpaRepository extends JpaRepository<ConcertSeat, Lon
     @Query("SELECT cs FROM ConcertSeat cs WHERE cs.seatId IN :seatIdList")
     List<ConcertSeat> findConcertSeatListWithLock(@Param("seatIdList") List<Long> seatIdList);
 
+    @Query("SELECT cs FROM ConcertSeat cs WHERE cs.seatId IN :seatIdList")
+    List<ConcertSeat> findConcertSeatList(@Param("seatIdList") List<Long> seatIdList);
+
 }

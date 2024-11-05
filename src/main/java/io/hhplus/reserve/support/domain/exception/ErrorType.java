@@ -13,6 +13,8 @@ public enum ErrorType {
     INSUFFICIENT_POINT(ErrorCode.VALIDATION_ERROR, "포인트가 부족합니다.", LogLevel.WARN),
     INVALID_SEAT(ErrorCode.VALIDATION_ERROR, "예약 불가능한 좌석입니다.", LogLevel.WARN),
     EXPIRED_SEAT(ErrorCode.VALIDATION_ERROR, "좌석 선점이 만료되었습니다.", LogLevel.WARN),
+
+    WAITING_KEY_BAD_REQUEST(ErrorCode.BAD_REQUEST, "키에 해당하는 대기열을 찾을 수 없습니다.", LogLevel.ERROR),
     ;
 
     private final ErrorCode errorCode;

@@ -1,5 +1,6 @@
 package io.hhplus.reserve.concert.domain;
 
+import io.hhplus.reserve.common.annotation.DistributedLock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,16 @@ public class ConcertService {
     @Transactional
     public List<ConcertSeat> getSeatListWithLock(List<Long> seatIdList) {
         return concertRepository.getConcertSeatListWithLock(seatIdList);
+    }
+
+    @DistributedLock(key = "'seatLock:' + #concertId + #seatIdList.sort()")
+    public List<ConcertSeat> getSeatListWithRedis(List<Long> seatIdList) {
+        return concertRepository.getConcertSeatList(seatIdList);
+    }
+
+    @DistributedLock(key = "'seatLock:' + #concertId + ':' + #seatId")
+    public ConcertSeat getConcertSeatWithRedis(Long concertId, Long seatId) {
+        return concertRepository.getConcertSeat(seatId);
     }
 
     // 콘서트 좌석 선점
