@@ -1,12 +1,14 @@
 package io.hhplus.reserve.waiting.domain;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+import static io.hhplus.reserve.waiting.domain.WaitingConstant.ACTIVE_KEY;
+import static io.hhplus.reserve.waiting.domain.WaitingConstant.ACTIVE_LIMIT;
 
 @Service
 public class WaitingService {
-
-    private final int ACTIVE_COUNT = 10;
 
     private final WaitingRepository waitingRepository;
 
@@ -14,47 +16,50 @@ public class WaitingService {
         this.waitingRepository = waitingRepository;
     }
 
-    // 토큰 생성
-    @Transactional
-    public TokenInfo.Token generateToken(TokenCommand.Generate command) {
-        int activeCount = waitingRepository.getActiveCount(command.getConcertId());
+    public TokenInfo.Token checkToken(String givenToken, Long concertId) {
+        String token = givenToken;
+        if (givenToken == null) {
+            // 토큰 없을 경우 신규 생성
+            token = UUID.randomUUID().toString();
 
-        WaitingStatus status = activeCount < ACTIVE_COUNT ? WaitingStatus.ACTIVE : WaitingStatus.WAIT;
+            long activeCount = waitingRepository.getActiveCount(ACTIVE_KEY);
+            if (activeCount < ACTIVE_LIMIT) {
+                // 대기인원 적을 경우 active
+                waitingRepository.addActiveQueue(token);
+                Waiting waiting = Waiting.builder()
+                        .token(token)
+                        .concertId(concertId)
+                        .build();
+                return TokenInfo.Token.of(waiting);
+            }
 
-        Waiting waiting = Waiting.createToken(command.getUserId(), command.getConcertId(), status);
+            // waiting 대기열 추가
+            waitingRepository.addWaitingQueue(token, concertId);
+            return TokenInfo.Token.of(getWaiting(token));
+        }
 
-        Waiting savedWaiting = waitingRepository.saveWaiting(waiting);
-
-        return TokenInfo.Token.of(savedWaiting);
+        // 토큰 존재 시 대기열 정보 조회
+        return TokenInfo.Token.of(getWaiting(token));
     }
 
-    // 토큰 조회 및 갱신
-    @Transactional
-    public TokenInfo.Status refreshToken(TokenCommand.Status command) {
-        Waiting givenToken = validateToken(command.getToken());
+    public Waiting getWaiting(String token) {
+        long waitingCount = waitingRepository.getWaitingCount(token);
+        if (waitingCount == 0) {
+            // 대기인원 없을 경우 active
+            return Waiting.builder()
+                    .token(token)
+                    .status(WaitingStatus.ACTIVE)
+                    .build();
+        }
 
-        int waitingCount = waitingRepository.getWaitingCount(givenToken);
-        givenToken.activateStatusNoWaiting(waitingCount);
-
-        waitingRepository.saveWaiting(givenToken);
-
-        return TokenInfo.Status.of(givenToken, waitingCount);
-    }
-
-    // 토큰 검증
-    @Transactional
-    public Waiting validateToken(String token) {
-        Waiting givenToken = waitingRepository.getWaiting(token);
-        givenToken.validateToken();
-        return givenToken;
-    }
-
-    // 토큰 삭제
-    @Transactional
-    public void deleteToken(String token) {
-        Waiting waiting = waitingRepository.getWaiting(token);
-        waiting.deleteToken();
-        waitingRepository.saveWaiting(waiting);
+        // 대기시간 계산
+        long waitingTime = (long) Math.ceil((double) (waitingCount - 1) / ACTIVE_LIMIT) * 10;
+        return Waiting.builder()
+                .token(token)
+                .waitingCount(waitingCount)
+                .waitingTime(waitingTime)
+                .status(WaitingStatus.WAIT)
+                .build();
     }
 
 }

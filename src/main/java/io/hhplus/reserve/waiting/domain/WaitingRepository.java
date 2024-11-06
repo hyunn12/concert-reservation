@@ -1,19 +1,13 @@
 package io.hhplus.reserve.waiting.domain;
 
-import java.util.List;
-
 public interface WaitingRepository {
 
-    int getActiveCount(long concertId);
+    long getActiveCount(String key);
 
-    int getWaitingCount(Waiting waiting);
+    void addActiveQueue(String token);
 
-    boolean isWaitingEmpty(Waiting waiting);
+    void addWaitingQueue(String token, Long concertId);
 
-    Waiting getWaiting(String token);
-
-    Waiting saveWaiting(Waiting waiting);
-
-    List<Waiting> getExpiredWaitingList();
+    long getWaitingCount(String token);
 
 }
