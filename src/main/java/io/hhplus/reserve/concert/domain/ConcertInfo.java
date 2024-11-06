@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -12,7 +14,11 @@ public class ConcertInfo {
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ConcertDetail {
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class ConcertDetail implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
         private Long concertId;
         private String title;
         private String description;
@@ -36,6 +42,7 @@ public class ConcertInfo {
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SeatDetail {
         private Long seatId;
         private Long concertId;
@@ -53,5 +60,4 @@ public class ConcertInfo {
             );
         }
     }
-
 }

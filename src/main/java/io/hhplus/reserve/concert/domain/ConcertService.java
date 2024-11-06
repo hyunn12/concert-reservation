@@ -1,19 +1,28 @@
 package io.hhplus.reserve.concert.domain;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.reserve.common.annotation.DistributedLock;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class ConcertService {
 
     private final ConcertRepository concertRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
-    public ConcertService(ConcertRepository concertRepository) {
-        this.concertRepository = concertRepository;
-    }
+    public static final String CONCERT_CACHE_NAME = "concertDetailCache";
+    public static final String CONCERT_CACHE_PREFIX = "concert:";
+    public static final Long CONCERT_CACHE_TTL = 30L;
 
     // 콘서트 목록 조회
     public List<ConcertInfo.ConcertDetail> getAvailableConcertList(String date) {
@@ -25,6 +34,35 @@ public class ConcertService {
     public List<ConcertInfo.SeatDetail> getSeatListByConcertId(Long concertId) {
         List<ConcertSeat> seatList = concertRepository.getConcertSeatListByConcertId(concertId);
         return seatList.stream().map(ConcertInfo.SeatDetail::of).toList();
+    }
+
+    // 콘서트 상세 조회 (redis 캐시)
+    @Transactional
+//    @Cacheable(value = CONCERT_CACHE_NAME, key = "#concertId")
+    public ConcertInfo.ConcertDetail getConcert(Long concertId) {
+        String cacheKey = CONCERT_CACHE_NAME + "::" + CONCERT_CACHE_PREFIX + concertId;
+
+        String cachedData = (String) redisTemplate.opsForValue().get(cacheKey);
+        if (cachedData != null) {
+            try {
+                ConcertInfo.ConcertDetail result = objectMapper.readValue(cachedData, ConcertInfo.ConcertDetail.class);
+                redisTemplate.expire(cacheKey, CONCERT_CACHE_TTL, TimeUnit.MINUTES);
+                return result;
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        }
+
+        Concert concert = getConcertDetail(concertId);
+        ConcertInfo.ConcertDetail concertDetail = ConcertInfo.ConcertDetail.of(concert);
+
+        try {
+            redisTemplate.opsForValue().set(cacheKey, objectMapper.writeValueAsString(concertDetail), CONCERT_CACHE_TTL, TimeUnit.MINUTES);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+        return concertDetail;
     }
 
     // 콘서트 상세조회
@@ -64,6 +102,26 @@ public class ConcertService {
     @Transactional
     public void confirmSeat(List<ConcertSeat> seatList) {
         seatList.forEach(ConcertSeat::confirm);
+    }
+
+    // 콘서트 생성
+    @Transactional
+    public ConcertInfo.ConcertDetail createConcert(ConcertCommand.Create command) {
+
+        Concert concert = Concert.createBuilder().command(command).build();
+        concertRepository.saveConcert(concert);
+
+        ConcertInfo.ConcertDetail concertDetail = ConcertInfo.ConcertDetail.of(concert);
+
+        String cacheKey = CONCERT_CACHE_NAME + "::" + CONCERT_CACHE_PREFIX + concert.getConcertId();
+
+        try {
+            redisTemplate.opsForValue().set(cacheKey, objectMapper.writeValueAsString(concertDetail), CONCERT_CACHE_TTL, TimeUnit.MINUTES);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+        return concertDetail;
     }
 
 }

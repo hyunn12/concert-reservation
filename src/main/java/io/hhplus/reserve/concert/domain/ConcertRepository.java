@@ -18,4 +18,6 @@ public interface ConcertRepository {
 
     Concert getConcert(Long concertId);
 
+    Concert saveConcert(Concert concert);
+
 }

@@ -56,4 +56,9 @@ public class ConcertRepositoryImpl implements ConcertRepository {
         return concertJpaRepository.findById(concertId).orElseThrow(EntityNotFoundException::new);
     }
 
+    @Override
+    public Concert saveConcert(Concert concert) {
+        return concertJpaRepository.save(concert);
+    }
+
 }
