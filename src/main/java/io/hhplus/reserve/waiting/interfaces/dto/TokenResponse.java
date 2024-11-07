@@ -12,7 +12,7 @@ public class TokenResponse {
 
     @Getter
     @Builder
-    @Schema(name = "TokenResponse.Token", description = "토큰 생성 결과 객체")
+    @Schema(name = "TokenResponse.Token", description = "토큰 조회 결과 객체")
     public static class Token {
 
         @Schema(description = "token", example = "testtokentokentoken")
@@ -21,7 +21,7 @@ public class TokenResponse {
         @Schema(description = "대기상태", example = "WAIT")
         private String status;
 
-        public static Token of(TokenInfo.Token info) {
+        public static Token of(TokenInfo.Main info) {
             return Token.builder()
                     .token(info.getToken())
                     .status(info.getStatus())

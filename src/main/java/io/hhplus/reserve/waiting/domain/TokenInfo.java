@@ -31,4 +31,22 @@ public class TokenInfo {
         }
     }
 
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Main {
+        private String token;
+        private String status;
+        private long waitingCount;
+        private long waitingTime;
+
+        public static Main of(Waiting waiting) {
+            return new Main(
+                    waiting.getToken(),
+                    waiting.getStatus().toString(),
+                    waiting.getWaitingCount(),
+                    waiting.getWaitingTime()
+            );
+        }
+    }
+
 }

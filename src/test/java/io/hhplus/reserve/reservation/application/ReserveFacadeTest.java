@@ -9,8 +9,6 @@ import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
 import io.hhplus.reserve.reservation.domain.ReserveCommand;
 import io.hhplus.reserve.reservation.domain.ReserveInfo;
 import io.hhplus.reserve.support.domain.exception.BusinessException;
-import io.hhplus.reserve.waiting.domain.Waiting;
-import io.hhplus.reserve.waiting.infra.WaitingJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,8 +31,6 @@ class ReserveFacadeTest extends TestContainerSupport {
 
     // orm --
     @Autowired
-    private WaitingJpaRepository waitingJpaRepository;
-    @Autowired
     private ConcertJpaRepository concertJpaRepository;
     @Autowired
     private ConcertSeatJpaRepository concertSeatJpaRepository;
@@ -45,10 +41,6 @@ class ReserveFacadeTest extends TestContainerSupport {
 
     @BeforeEach
     void setUp() {
-        Waiting waiting1 = new Waiting(1L, 1L, 1L, "valid_token", null);
-        Waiting waiting2 = new Waiting(2L, 2L, 1L, "expired_token", null);
-        waitingJpaRepository.saveAll(List.of(waiting1, waiting2));
-
         Concert concert = new Concert(1L,
                 "AA Concert",
                 "AA concert desc",
