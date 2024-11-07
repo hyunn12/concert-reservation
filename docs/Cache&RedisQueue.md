@@ -1,6 +1,6 @@
 ## 캐싱 및 Redis 대기열 설계
 
-### Cache
+## Cache
 - 데이터를 임시로 복사해두는 Storage 계층
 - 적은 부하로 API 응답을 빠르게 처리 가능
 - 조회 빈도가 높고 변동이 적은 데이터에 적합
@@ -27,3 +27,51 @@
 #### 적용 전
 
 #### 적용 후
+
+
+<br>
+
+## 대기열
+- 기존에 DB를 사용하던 대기열을 Redis 로 이관
+- NoSQL 기반이면서 in-memory에서 데이터를 처리하기때문에 메모리 처리 속도 향상
+
+### 사용한 자료구조
+#### Waiting Queue: `Sorted Set`
+- score 기준으로 정렬되며 중복 비허용
+- 대기열에 입장한 시간을 score 로 저장하여 접속한 순서대로 정렬될 수 있도록 함
+#### Active Queue: `Set`
+- 중복 비허용
+- 전체 서버에 대해 활성 유저 수를 관리하기 위해 각 token 별로 set 생성해 만료시간( TTL 5min ) 설정
+
+### 구현 방식
+- 스케줄러를 사용해 30초마다 활성인원 수를 확인한 후 단위수(_ACTIVE_SIZE_)만큼 활성화 처리 진행 
+- 대기열에서 활성화열로 이동 시 기존 대기열에서는 제거함
+
+```java
+// 대기열 상태 확인
+public TokenInfo.Main checkToken(String givenToken) {
+    String token = givenToken;
+    if (givenToken == null) {
+        // 토큰 없을 경우 신규 생성
+        token = UUID.randomUUID().toString();
+
+        long activeCount = waitingRepository.getActiveCount();
+        if (activeCount < ACTIVE_SIZE) {
+            // 대기인원 적을 경우 active
+            waitingRepository.addActiveQueue(token);
+            Waiting waiting = Waiting.builder()
+                    .token(token)
+                    .status(WaitingStatus.ACTIVE)
+                    .build();
+            return TokenInfo.Main.of(waiting);
+        }
+
+        // waiting 대기열 추가
+        waitingRepository.addWaitingQueue(token);
+        return TokenInfo.Main.of(getWaiting(token));
+    }
+
+    // 토큰 존재 시 대기열 정보 조회
+    return TokenInfo.Main.of(getWaiting(token));
+}
+```

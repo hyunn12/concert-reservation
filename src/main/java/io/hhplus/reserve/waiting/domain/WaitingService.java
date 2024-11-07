@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static io.hhplus.reserve.waiting.domain.WaitingConstant.ACTIVE_LIMIT;
-import static io.hhplus.reserve.waiting.domain.WaitingConstant.WAITING_TTL;
+import static io.hhplus.reserve.waiting.domain.WaitingConstant.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,7 @@ public class WaitingService {
             token = UUID.randomUUID().toString();
 
             long activeCount = waitingRepository.getActiveCount();
-            if (activeCount < ACTIVE_LIMIT) {
+            if (activeCount < ACTIVE_SIZE) {
                 // 대기인원 적을 경우 active
                 waitingRepository.addActiveQueue(token);
                 Waiting waiting = Waiting.builder()
@@ -48,15 +47,13 @@ public class WaitingService {
         long waitingCount = waitingRepository.getWaitingRank(token);
         if (waitingCount <= 0) {
             // 대기인원 없을 경우 active
-            waitingRepository.removeWaitingQueue(token);
-            waitingRepository.addActiveQueue(token);
             return Waiting.builder()
                     .token(token)
                     .status(WaitingStatus.ACTIVE)
                     .build();
         }
-        // 대기시간 계산
-        long waitingTime = Math.max((long) Math.ceil((double) (waitingCount - 1) / ACTIVE_LIMIT) * WAITING_TTL * TimeUnit.MINUTES.toMillis(1), 0);
+        // 대기시간 계산 (스케줄러 단위 30s)
+        long waitingTime = Math.max((long) Math.ceil((double) (waitingCount - 1) / ACTIVE_SIZE) * 30 * TimeUnit.SECONDS.toMillis(1), 0);
         return Waiting.builder()
                 .token(token)
                 .waitingCount(waitingCount)

@@ -13,8 +13,8 @@ public class WaitingScheduler {
 
     private final WaitingService waitingService;
 
-    // 대기열 활성화
-    @Scheduled(fixedRate = 60000)
+    // 대기열 활성화 (30s)
+    @Scheduled(fixedRate = 30000)
     public void deleteExpiredWaiting() {
         log.info("# [WaitingScheduler] ::: Scheduler Start");
         waitingService.activeToken();

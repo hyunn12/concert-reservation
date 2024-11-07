@@ -64,7 +64,7 @@ public class WaitingRepositoryImpl implements WaitingRepository {
 
     @Override
     public List<String> popWaitingTokens() {
-        Set<ZSetOperations.TypedTuple<String>> typedTuples = zSetOperations.popMin(WAITING_KEY, ACTIVE_LIMIT);
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = zSetOperations.popMin(WAITING_KEY, ACTIVE_SIZE);
         return Optional.ofNullable(typedTuples)
                 .map(set -> set.stream()
                         .map(ZSetOperations.TypedTuple::getValue)
