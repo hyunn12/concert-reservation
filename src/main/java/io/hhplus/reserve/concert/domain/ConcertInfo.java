@@ -10,14 +10,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ConcertInfo {
+public class ConcertInfo implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ConcertDetail implements Serializable {
-        @Serial
-        private static final long serialVersionUID = 1L;
+    public static class ConcertDetail {
 
         private Long concertId;
         private String title;
@@ -44,6 +44,7 @@ public class ConcertInfo {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SeatDetail {
+
         private Long seatId;
         private Long concertId;
         private int seatNum;

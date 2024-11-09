@@ -1,6 +1,5 @@
 package io.hhplus.reserve.concert.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.reserve.common.annotation.DistributedLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ public class ConcertService {
 
     private final ConcertRepository concertRepository;
     private final RedisTemplate<String, Object> redisTemplate;
-    private final ObjectMapper objectMapper;
 
     public static final String CONCERT_CACHE_NAME = "concertDetailCache";
     public static final String CONCERT_CACHE_PREFIX = "concert:";
@@ -38,29 +36,17 @@ public class ConcertService {
 
     // 콘서트 상세 조회 (redis 캐시)
     @Transactional
-//    @Cacheable(value = CONCERT_CACHE_NAME, key = "#concertId")
     public ConcertInfo.ConcertDetail getConcert(Long concertId) {
         String cacheKey = CONCERT_CACHE_NAME + "::" + CONCERT_CACHE_PREFIX + concertId;
 
-        String cachedData = (String) redisTemplate.opsForValue().get(cacheKey);
-        if (cachedData != null) {
-            try {
-                ConcertInfo.ConcertDetail result = objectMapper.readValue(cachedData, ConcertInfo.ConcertDetail.class);
-                redisTemplate.expire(cacheKey, CONCERT_CACHE_TTL, TimeUnit.MINUTES);
-                return result;
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
+        ConcertInfo.ConcertDetail result = (ConcertInfo.ConcertDetail) redisTemplate.opsForValue().get(cacheKey);
+        if (result != null) {
+            return result;
         }
 
         Concert concert = getConcertDetail(concertId);
         ConcertInfo.ConcertDetail concertDetail = ConcertInfo.ConcertDetail.of(concert);
-
-        try {
-            redisTemplate.opsForValue().set(cacheKey, objectMapper.writeValueAsString(concertDetail), CONCERT_CACHE_TTL, TimeUnit.MINUTES);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+        redisTemplate.opsForValue().set(cacheKey, concertDetail, CONCERT_CACHE_TTL, TimeUnit.MINUTES);
 
         return concertDetail;
     }
@@ -114,12 +100,7 @@ public class ConcertService {
         ConcertInfo.ConcertDetail concertDetail = ConcertInfo.ConcertDetail.of(concert);
 
         String cacheKey = CONCERT_CACHE_NAME + "::" + CONCERT_CACHE_PREFIX + concert.getConcertId();
-
-        try {
-            redisTemplate.opsForValue().set(cacheKey, objectMapper.writeValueAsString(concertDetail), CONCERT_CACHE_TTL, TimeUnit.MINUTES);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+        redisTemplate.opsForValue().set(cacheKey, concertDetail, CONCERT_CACHE_TTL, TimeUnit.MINUTES);
 
         return concertDetail;
     }
