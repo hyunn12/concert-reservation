@@ -16,8 +16,7 @@ public class FilterConfig {
 
         registrationBean.addUrlPatterns(
                 "/api/payment/**",
-                "/api/reservation/**",
-                "/api/token/status"
+                "/api/reservation/**"
         );
 
         registrationBean.setOrder(1);

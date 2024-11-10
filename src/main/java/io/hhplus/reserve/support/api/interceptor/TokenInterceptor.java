@@ -1,7 +1,6 @@
 package io.hhplus.reserve.support.api.interceptor;
 
 import io.hhplus.reserve.common.CommonConstant;
-import io.hhplus.reserve.waiting.domain.Waiting;
 import io.hhplus.reserve.waiting.domain.WaitingService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,8 +33,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     }
 
     private boolean isInvalidToken(String token) {
-        Waiting waiting = waitingService.validateToken(token);
-        return waiting == null;
+        return !waitingService.checkActiveToken(token);
     }
 
 }

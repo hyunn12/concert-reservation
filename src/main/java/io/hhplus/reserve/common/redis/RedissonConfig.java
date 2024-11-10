@@ -1,4 +1,4 @@
-package io.hhplus.reserve.common.config;
+package io.hhplus.reserve.common.redis;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

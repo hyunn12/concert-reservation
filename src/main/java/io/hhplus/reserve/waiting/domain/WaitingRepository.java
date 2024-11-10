@@ -4,16 +4,20 @@ import java.util.List;
 
 public interface WaitingRepository {
 
-    int getActiveCount(long concertId);
+    long getActiveCount();
 
-    int getWaitingCount(Waiting waiting);
+    void addActiveQueue(String token);
 
-    boolean isWaitingEmpty(Waiting waiting);
+    void addWaitingQueue(String token);
 
-    Waiting getWaiting(String token);
+    long getWaitingRank(String token);
 
-    Waiting saveWaiting(Waiting waiting);
+    void removeActiveQueue(String token);
 
-    List<Waiting> getExpiredWaitingList();
+    void removeWaitingQueue(String token);
+
+    List<String> popWaitingTokens();
+
+    boolean isActiveToken(String token);
 
 }

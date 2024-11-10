@@ -17,9 +17,6 @@ import io.hhplus.reserve.reservation.domain.Reservation;
 import io.hhplus.reserve.reservation.domain.ReservationService;
 import io.hhplus.reserve.reservation.infra.ReservationJpaRepository;
 import io.hhplus.reserve.support.domain.exception.BusinessException;
-import io.hhplus.reserve.waiting.domain.Waiting;
-import io.hhplus.reserve.waiting.domain.WaitingService;
-import io.hhplus.reserve.waiting.infra.WaitingJpaRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,16 +37,12 @@ class PaymentFacadeTest extends TestContainerSupport {
     @Autowired
     private PaymentService paymentService;
     @Autowired
-    private WaitingService waitingService;
-    @Autowired
     private ConcertService concertService;
     @Autowired
     private PointService pointService;
     @Autowired
     private ReservationService reservationService;
 
-    @Autowired
-    private WaitingJpaRepository waitingJpaRepository;
     @Autowired
     private ConcertJpaRepository concertJpaRepository;
     @Autowired
@@ -63,16 +56,10 @@ class PaymentFacadeTest extends TestContainerSupport {
 
     @BeforeEach
     void setUp() {
-        paymentFacade = new PaymentFacade(paymentService, waitingService, concertService, pointService, reservationService);
-
-        waitingJpaRepository.deleteAll();
         concertJpaRepository.deleteAll();
         concertSeatJpaRepository.deleteAll();
         pointJpaRepository.deleteAll();
         reservationJpaRepository.deleteAll();
-
-        Waiting waiting = new Waiting(1L, 1L, 1L, "valid_token", null);
-        waitingJpaRepository.save(waiting);
 
         Concert concert = new Concert(1L,
                 "AA Concert",

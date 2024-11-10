@@ -70,7 +70,7 @@ public class PaymentFacade {
         concertService.confirmSeat(seatList);
 
         // 토큰 삭제
-        waitingService.deleteToken(command.getToken());
+        waitingService.removeActiveToken(command.getToken());
 
         return PaymentInfo.Main.of(payment, reservation);
     }

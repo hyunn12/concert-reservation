@@ -57,7 +57,9 @@
         <img width="500" alt="image" src="https://github.com/user-attachments/assets/38f710bd-d1d9-41e9-b378-34a096dffb11">
     - 낙관적락 적용 시 / 840 ms   
         <img width="500" alt="image" src="https://github.com/user-attachments/assets/a5ef86ac-2fb9-42bc-bd83-4c43c41c948e">
-
+    - 분산락(Redis) 적용 시 / 1264 ms
+        <img width="500" alt="image" src="https://github.com/user-attachments/assets/dbe08bd8-a078-473f-a347-2838b2d0b520">
+`지금은 분산락이 제일 느린 것으로 측정이 되는데 waitTime 등 조정 후 다시 테스트 진행`
 
 ### 2. 포인트(잔액) 충전 / 사용
 

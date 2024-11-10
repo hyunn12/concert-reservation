@@ -1,19 +1,18 @@
 package io.hhplus.reserve.waiting.domain;
 
-import io.hhplus.reserve.support.domain.exception.BusinessException;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+import java.util.UUID;
+
+import static io.hhplus.reserve.waiting.domain.WaitingConstant.ACTIVE_SIZE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class WaitingServiceTest {
@@ -24,178 +23,77 @@ class WaitingServiceTest {
     @InjectMocks
     private WaitingService waitingService;
 
-    @Nested
-    @DisplayName("토큰 생성")
-    class GenerateToken {
+    @Test
+    @DisplayName("토큰값이 null 이면서 대기 인원이 적은 경우")
+    void testCreateNewActiveToken() {
 
-        @Test
-        @DisplayName("ACTIVE_COUNT 보다 활성인원 수가 적은 경우 ACTIVE 토큰 반환")
-        void testGenerateActiveToken() {
-            // given
-            TokenCommand.Generate command = TokenCommand.Generate.builder().userId(1L).concertId(1L).build();
-            given(waitingRepository.getActiveCount(command.getConcertId())).willReturn(5);
+        when(waitingRepository.getActiveCount()).thenReturn(ACTIVE_SIZE - 1L);
 
-            Waiting waiting = Waiting.createToken(command.getUserId(), command.getConcertId(), WaitingStatus.ACTIVE);
-            given(waitingRepository.saveWaiting(any(Waiting.class))).willReturn(waiting);
+        TokenInfo.Main result = waitingService.checkToken(null);
 
-            // when
-            TokenInfo.Token result = waitingService.generateToken(command);
-
-            // then
-            assertEquals(result.getStatus(), WaitingStatus.ACTIVE.toString());
-            then(waitingRepository).should(times(1)).getActiveCount(command.getConcertId());
-            then(waitingRepository).should(times(1)).saveWaiting(any(Waiting.class));
-        }
-
-        @Test
-        @DisplayName("활성인원 수가 많은 경우 WAIT 토큰 반환")
-        void testGenerateWaitToken() {
-            // given
-            TokenCommand.Generate command = TokenCommand.Generate.builder().userId(1L).concertId(1L).build();
-            given(waitingRepository.getActiveCount(command.getConcertId())).willReturn(10);
-
-            Waiting waiting = Waiting.createToken(command.getUserId(), command.getConcertId(), WaitingStatus.WAIT);
-            given(waitingRepository.saveWaiting(any(Waiting.class))).willReturn(waiting);
-
-            // when
-            TokenInfo.Token result = waitingService.generateToken(command);
-
-            // then
-            assertEquals(result.getStatus(), WaitingStatus.WAIT.toString());
-            then(waitingRepository).should(times(1)).getActiveCount(command.getConcertId());
-            then(waitingRepository).should(times(1)).saveWaiting(any(Waiting.class));
-        }
-
+        verify(waitingRepository).getActiveCount();
+        verify(waitingRepository).addActiveQueue(anyString());
+        assertEquals(WaitingStatus.ACTIVE.toString(), result.getStatus());
     }
 
-    @Nested
-    @DisplayName("토큰 조회 및 활성화")
-    class RefreshToken {
+    @Test
+    @DisplayName("토큰값이 null 이면서 대기 인원이 많은 경우")
+    void testCreateNewWaitingToken() {
+        when(waitingRepository.getActiveCount()).thenReturn(ACTIVE_SIZE + 1L);
+        when(waitingRepository.getWaitingRank(anyString())).thenReturn(3L);
 
-        @Test
-        @DisplayName("대기인원 없을 경우 토큰 상태 활성화 ACTIVE")
-        void testRefreshTokenActive() {
-            // given
-            TokenCommand.Status command = TokenCommand.Status.builder().token("testtokentokentoken").build();
-            Waiting givenToken = new Waiting(1L, 1L, 1L, command.getToken(), WaitingStatus.WAIT);
+        TokenInfo.Main result = waitingService.checkToken(null);
 
-            given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
-            given(waitingRepository.isWaitingEmpty(givenToken)).willReturn(true);
-            given(waitingRepository.getWaitingCount(givenToken)).willReturn(0);
-
-            // when
-            TokenInfo.Status result = waitingService.refreshToken(command);
-
-            // then
-            assertEquals(result.getStatus(), WaitingStatus.ACTIVE.toString());
-            then(waitingRepository).should(times(1)).isWaitingEmpty(givenToken);
-            then(waitingRepository).should(times(1)).getWaitingCount(givenToken);
-        }
-
-        @Test
-        @DisplayName("대기인원 있을 경우 토큰 상태 유지 WAIT")
-        void testRefreshTokenWait() {
-            // given
-            TokenCommand.Status command = TokenCommand.Status.builder().token("testtokentokentoken").build();
-            Waiting givenToken = new Waiting(1L, 1L, 1L, command.getToken(), WaitingStatus.WAIT);
-
-            given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
-            given(waitingRepository.isWaitingEmpty(givenToken)).willReturn(false);
-            given(waitingRepository.getWaitingCount(givenToken)).willReturn(10);
-
-            // when
-            TokenInfo.Status result = waitingService.refreshToken(command);
-
-            // then
-            assertEquals(result.getStatus(), WaitingStatus.WAIT.toString());
-            then(waitingRepository).should(times(1)).isWaitingEmpty(givenToken);
-            then(waitingRepository).should(times(1)).getWaitingCount(givenToken);
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 토큰으로 조회 시 예외 발생")
-        void testNotExistToken() {
-            // given
-            TokenCommand.Status command = TokenCommand.Status.builder().token("not_exist_token").build();
-
-            given(waitingRepository.getWaiting(command.getToken())).willThrow(new EntityNotFoundException());
-
-            // when / then
-            assertThrows(EntityNotFoundException.class, () -> waitingService.refreshToken(command));
-
-            then(waitingRepository).should(times(1)).getWaiting(command.getToken());
-            then(waitingRepository).should(never()).isWaitingEmpty(any(Waiting.class));
-            then(waitingRepository).should(never()).getWaitingCount(any(Waiting.class));
-        }
-
-        @Test
-        @DisplayName("유효하지 않은 토큰으로 조회 시 예외 발생")
-        void testInvalidToken() {
-            // given
-            TokenCommand.Status command = TokenCommand.Status.builder().token("invalid_token").build();
-            Waiting givenToken = new Waiting(1L, 1L, 1L, command.getToken(), WaitingStatus.DELETE);
-
-            given(waitingRepository.getWaiting(command.getToken())).willReturn(givenToken);
-
-            // when / then
-            assertThrows(BusinessException.class, () -> waitingService.refreshToken(command));
-
-            then(waitingRepository).should(times(1)).getWaiting(command.getToken());
-            then(waitingRepository).should(never()).isWaitingEmpty(any(Waiting.class));
-            then(waitingRepository).should(never()).getWaitingCount(any(Waiting.class));
-        }
-
+        verify(waitingRepository).getActiveCount();
+        verify(waitingRepository).addWaitingQueue(anyString());
+        assertEquals(WaitingStatus.WAIT.toString(), result.getStatus());
     }
 
-    @Nested
-    @DisplayName("토큰 검증")
-    class ValidateToken {
+    @Test
+    @DisplayName("대기열 토큰 상태 조회")
+    void testCheckWaitingToken() {
+        String token = UUID.randomUUID().toString();
+        long rank = 5L;
 
-        @Test
-        @DisplayName("유효한 토큰 검증 성공")
-        void testValidToken() {
-            // given
-            String token = "testtokentokentoken";
-            Waiting givenToken = new Waiting(1L, 1L, 1L, token, WaitingStatus.ACTIVE);
+        when(waitingRepository.getWaitingRank(token)).thenReturn(rank);
 
-            given(waitingRepository.getWaiting(token)).willReturn(givenToken);
+        TokenInfo.Main result = waitingService.checkToken(token);
 
-            // when
-            Waiting result = waitingService.validateToken(token);
+        verify(waitingRepository).getWaitingRank(token);
+        assertEquals(WaitingStatus.WAIT.toString(), result.getStatus());
+        assertEquals(rank, result.getWaitingCount());
+    }
 
-            // then
-            assertEquals(result.getToken(), token);
-            then(waitingRepository).should(times(1)).getWaiting(token);
-        }
+    @Test
+    @DisplayName("활성화 토큰 조회")
+    void testCheckActiveToken() {
+        String token = UUID.randomUUID().toString();
+        when(waitingRepository.getWaitingRank(token)).thenReturn(0L);
 
-        @Test
-        @DisplayName("유효하지 않은 토큰 검증 시 예외 발생")
-        void testInvalidToken() {
-            // given
-            String token = "invalid_token";
-            Waiting givenToken = new Waiting(1L, 1L, 1L, token, WaitingStatus.DELETE);
+        Waiting waiting = waitingService.getWaiting(token);
 
-            given(waitingRepository.getWaiting(token)).willReturn(givenToken);
+        assertEquals(WaitingStatus.ACTIVE, waiting.getStatus());
+    }
 
-            // when / then
-            assertThrows(BusinessException.class, () -> waitingService.validateToken(token));
+    @Test
+    @DisplayName("대기열 토큰 활성화")
+    void testWaitingTokenToActive() {
+        List<String> waitingTokens = List.of(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        when(waitingRepository.popWaitingTokens()).thenReturn(waitingTokens);
 
-            then(waitingRepository).should(times(1)).getWaiting(token);
-        }
+        waitingService.activeToken();
 
-        @Test
-        @DisplayName("존재하지 않는 토큰 검증 시 예외 발생")
-        void testNotExistToken() {
-            // given
-            String token = "not_exist_token";
+        waitingTokens.forEach(token -> verify(waitingRepository).addActiveQueue(token));
+    }
 
-            given(waitingRepository.getWaiting(token)).willThrow(new EntityNotFoundException());
+    @Test
+    @DisplayName("활성화 토큰 제거")
+    void testRemoveActiveToken() {
+        String token = UUID.randomUUID().toString();
 
-            // when / then
-            assertThrows(EntityNotFoundException.class, () -> waitingService.validateToken(token));
+        waitingService.removeActiveToken(token);
 
-            then(waitingRepository).should(times(1)).getWaiting(token);
-        }
+        verify(waitingRepository).removeActiveQueue(token);
     }
 
 }

@@ -3,6 +3,7 @@ package io.hhplus.reserve.concert.domain;
 import io.hhplus.reserve.support.domain.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,5 +38,15 @@ public class Concert extends BaseEntity {
 
     @Column(name = "reservation_end_at")
     private LocalDateTime reservationEndAt;
+
+    @Builder(builderMethodName = "createBuilder")
+    public Concert(ConcertCommand.Create command) {
+        this.title = command.getTitle();
+        this.description = command.getDescription();
+        this.concertStartAt = command.getConcertStartAt();
+        this.concertEndAt = command.getConcertEndAt();
+        this.reservationStartAt = command.getReservationStartAt();
+        this.reservationEndAt = command.getReservationEndAt();
+    }
 
 }

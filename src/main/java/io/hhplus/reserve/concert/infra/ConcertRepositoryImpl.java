@@ -37,6 +37,16 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     }
 
     @Override
+    public List<ConcertSeat> getConcertSeatList(List<Long> seatIdList) {
+        return concertSeatJpaRepository.findConcertSeatList(seatIdList);
+    }
+
+    @Override
+    public ConcertSeat getConcertSeat(Long seatId) {
+        return concertSeatJpaRepository.findById(seatId).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
     public List<ConcertSeat> saveConcertSeatList(List<ConcertSeat> seatList) {
         return concertSeatJpaRepository.saveAll(seatList);
     }
@@ -44,6 +54,11 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     @Override
     public Concert getConcert(Long concertId) {
         return concertJpaRepository.findById(concertId).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public Concert saveConcert(Concert concert) {
+        return concertJpaRepository.save(concert);
     }
 
 }

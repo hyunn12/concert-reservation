@@ -1,18 +1,28 @@
 package io.hhplus.reserve.concert.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ConcertInfo {
+public class ConcertInfo implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ConcertDetail {
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class ConcertDetail implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        @JsonProperty
         private Long concertId;
         private String title;
         private String description;
@@ -36,7 +46,9 @@ public class ConcertInfo {
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SeatDetail {
+
         private Long seatId;
         private Long concertId;
         private int seatNum;
@@ -53,5 +65,4 @@ public class ConcertInfo {
             );
         }
     }
-
 }
