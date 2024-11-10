@@ -51,6 +51,13 @@ public class ConcertService {
         return concertDetail;
     }
 
+    // 콘서트 상세 조회 (DB)
+    @Transactional
+    public ConcertInfo.ConcertDetail getConcertById(Long concertId) {
+        Concert concert = getConcertDetail(concertId);
+        return ConcertInfo.ConcertDetail.of(concert);
+    }
+
     // 콘서트 상세조회
     public Concert getConcertDetail(Long concertId) {
         return concertRepository.getConcert(concertId);

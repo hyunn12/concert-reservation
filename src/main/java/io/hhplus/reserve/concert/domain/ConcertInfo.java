@@ -1,5 +1,6 @@
 package io.hhplus.reserve.concert.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,8 +18,11 @@ public class ConcertInfo implements Serializable {
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ConcertDetail {
+    public static class ConcertDetail implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 1L;
 
+        @JsonProperty
         private Long concertId;
         private String title;
         private String description;

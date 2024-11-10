@@ -70,4 +70,15 @@ public class ConcertController {
         return ResponseEntity.ok(ConcertResponse.Concert.of(result));
     }
 
+    @GetMapping("/detail/temp/{id}")
+    @Operation(summary = "콘서트 상세 조회", description = "콘서트 상세 조회")
+    public ResponseEntity<ConcertResponse.Concert> getConcertById(
+            @Parameter(description = "콘서트 ID", example = "1", required = true)
+            @PathVariable("id") Long concertId
+    ) {
+        ConcertInfo.ConcertDetail result = concertService.getConcertById(concertId);
+
+        return ResponseEntity.ok(ConcertResponse.Concert.of(result));
+    }
+
 }
