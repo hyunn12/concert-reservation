@@ -6,13 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface ConcertJpaRepository extends JpaRepository<Concert, Long> {
 
-    @Query(value = "select * from concert c where date(:date) between date(c.reservation_start_at) and date(c.reservation_end_at)", nativeQuery = true)
-    List<Concert> findAllByDate(@Param("date") LocalDate date);
+//    @Query(value = "select * from concert c where :date between date(c.reservation_start_at) and date(c.reservation_end_at)", nativeQuery = true)
+    @Query(value = "select * from concert c where c.reservation_start_at <= :endDate and c.reservation_end_at >= :startDate", nativeQuery = true)
+    List<Concert> findAllByDate(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
 }
