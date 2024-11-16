@@ -7,6 +7,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +27,12 @@ public class ConcertService {
 
     // 콘서트 목록 조회
     public List<ConcertInfo.ConcertDetail> getAvailableConcertList(String date) {
-        List<Concert> concertList = concertRepository.getConcertList(date);
+        LocalDate parsedDate = LocalDate.parse(date);
+        LocalDateTime startDate = parsedDate.atStartOfDay();
+        LocalDateTime endDate = parsedDate.atTime(LocalTime.MAX);
+
+        List<Concert> concertList = concertRepository.getConcertList(startDate, endDate);
+
         return concertList.stream().map(ConcertInfo.ConcertDetail::of).toList();
     }
 
