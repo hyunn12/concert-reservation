@@ -7,6 +7,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -23,7 +25,9 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     @Override
     public List<Concert> getConcertList(String date) {
         LocalDate parsedDate = LocalDate.parse(date);
-        return concertJpaRepository.findAllByDate(parsedDate);
+        LocalDateTime startDate = parsedDate.atStartOfDay();
+        LocalDateTime endDate = parsedDate.atTime(LocalTime.MAX);
+        return concertJpaRepository.findAllByDate(startDate, endDate);
     }
 
     @Override
