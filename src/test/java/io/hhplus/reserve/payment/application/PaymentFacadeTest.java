@@ -62,10 +62,8 @@ class PaymentFacadeTest extends TestContainerSupport {
         pointJpaRepository.save(point);
     }
 
-
     @Test
     @DisplayName("유효한 조건으로 결제 성공")
-    @Transactional
     void testPayment() {
         // given
         PaymentCommand.Payment command = PaymentCommand.Payment.builder()
@@ -86,7 +84,7 @@ class PaymentFacadeTest extends TestContainerSupport {
         List<ConcertSeat> seatList = concertSeatJpaRepository.findAllById(List.of(1L, 2L));
         seatList.forEach(seat -> assertEquals(SeatStatus.CONFIRMED, seat.getStatus()));
 
-        Point updatedPoint = pointJpaRepository.findByUserIdWithLock(1L).orElseThrow();
+        Point updatedPoint = pointJpaRepository.findByUserId(1L).orElseThrow();
         assertEquals(5000, updatedPoint.getPoint());
 
         Reservation reservation = reservationJpaRepository.findById(result.getReservationId()).orElseThrow();

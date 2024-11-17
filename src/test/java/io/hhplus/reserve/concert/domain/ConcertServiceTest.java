@@ -8,7 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,6 +37,11 @@ class ConcertServiceTest {
         void testReturnConcertList() {
             // given
             String date = "2024-10-15";
+
+            LocalDate parsedDate = LocalDate.parse(date);
+            LocalDateTime startDate = parsedDate.atStartOfDay();
+            LocalDateTime endDate = parsedDate.atTime(LocalTime.MAX);
+
             List<Concert> mockConcertList = List.of(
                     new Concert(1L,
                             "AA Concert",
@@ -52,7 +59,7 @@ class ConcertServiceTest {
                             LocalDateTime.of(2024, 11, 23, 23, 59))
             );
 
-            given(concertRepository.getConcertList(date)).willReturn(mockConcertList);
+            given(concertRepository.getConcertList(startDate, endDate)).willReturn(mockConcertList);
 
             // when
             List<ConcertInfo.ConcertDetail> result = concertService.getAvailableConcertList(date);
@@ -61,7 +68,7 @@ class ConcertServiceTest {
             assertThat(result).hasSize(2);
             assertEquals(result.get(0).getTitle(), "AA Concert");
             assertEquals(result.get(1).getTitle(), "BB Concert");
-            then(concertRepository).should(times(1)).getConcertList(date);
+            then(concertRepository).should(times(1)).getConcertList(startDate, endDate);
         }
 
         @Test
@@ -69,14 +76,17 @@ class ConcertServiceTest {
         void testReturnEmptyList() {
             // given
             String date = "2024-10-15";
-            given(concertRepository.getConcertList(date)).willReturn(List.of());
+            LocalDate parsedDate = LocalDate.parse(date);
+            LocalDateTime startDate = parsedDate.atStartOfDay();
+            LocalDateTime endDate = parsedDate.atTime(LocalTime.MAX);
+            given(concertRepository.getConcertList(startDate, endDate)).willReturn(List.of());
 
             // when
             List<ConcertInfo.ConcertDetail> result = concertService.getAvailableConcertList(date);
 
             // then
             assertThat(result).isEmpty();
-            then(concertRepository).should(times(1)).getConcertList(date);
+            then(concertRepository).should(times(1)).getConcertList(startDate, endDate);
         }
     }
 
