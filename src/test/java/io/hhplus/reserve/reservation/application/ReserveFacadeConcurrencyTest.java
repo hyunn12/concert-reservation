@@ -1,6 +1,6 @@
 package io.hhplus.reserve.reservation.application;
 
-import io.hhplus.reserve.TestContainerSupport;
+import io.hhplus.reserve.config.TestContainerSupport;
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.infra.ConcertJpaRepository;

@@ -1,11 +1,11 @@
 package io.hhplus.reserve.payment.application;
 
-import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.domain.SeatStatus;
 import io.hhplus.reserve.concert.infra.ConcertJpaRepository;
 import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
+import io.hhplus.reserve.config.TestContainerSupport;
 import io.hhplus.reserve.payment.domain.PaymentCommand;
 import io.hhplus.reserve.payment.domain.PaymentInfo;
 import io.hhplus.reserve.point.domain.Point;

@@ -1,7 +1,7 @@
 package io.hhplus.reserve.support.api.filter;
 
-import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.common.CommonConstant;
+import io.hhplus.reserve.config.TestContainerSupport;
 import io.hhplus.reserve.waiting.interfaces.api.TokenController;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
