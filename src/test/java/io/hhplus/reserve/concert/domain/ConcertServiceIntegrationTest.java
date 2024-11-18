@@ -1,8 +1,8 @@
 package io.hhplus.reserve.concert.domain;
 
-import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.concert.infra.ConcertJpaRepository;
 import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
+import io.hhplus.reserve.config.TestContainerSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package io.hhplus.reserve.support.api.interceptor;
 
-import io.hhplus.reserve.TestContainerSupport;
+import io.hhplus.reserve.config.TestContainerSupport;
 import io.hhplus.reserve.common.CommonConstant;
 import io.hhplus.reserve.waiting.domain.WaitingService;
 import org.junit.jupiter.api.BeforeEach;

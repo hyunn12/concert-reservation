@@ -8,37 +8,27 @@ import io.hhplus.reserve.payment.domain.Payment;
 import io.hhplus.reserve.payment.domain.PaymentCommand;
 import io.hhplus.reserve.payment.domain.PaymentInfo;
 import io.hhplus.reserve.payment.domain.PaymentService;
+import io.hhplus.reserve.payment.domain.event.PaymentEventPublisher;
+import io.hhplus.reserve.payment.domain.event.PaymentSuccessEvent;
 import io.hhplus.reserve.point.domain.PointCommand;
 import io.hhplus.reserve.point.domain.PointService;
 import io.hhplus.reserve.reservation.application.ReserveCriteria;
 import io.hhplus.reserve.reservation.domain.Reservation;
 import io.hhplus.reserve.reservation.domain.ReservationService;
-import io.hhplus.reserve.waiting.domain.WaitingService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Facade
+@RequiredArgsConstructor
 public class PaymentFacade {
 
     private final PaymentService paymentService;
-    private final WaitingService waitingService;
     private final ConcertService concertService;
     private final PointService pointService;
     private final ReservationService reservationService;
-
-    public PaymentFacade(PaymentService paymentService,
-                         WaitingService waitingService,
-                         ConcertService concertService,
-                         PointService pointService,
-                         ReservationService reservationService
-    ) {
-        this.paymentService = paymentService;
-        this.waitingService = waitingService;
-        this.concertService = concertService;
-        this.pointService = pointService;
-        this.reservationService = reservationService;
-    }
+    private final PaymentEventPublisher paymentEventPublisher;
 
     // 결제 및 예약
     @Transactional
@@ -69,8 +59,9 @@ public class PaymentFacade {
         // 좌석 확정
         concertService.confirmSeat(seatList);
 
-        // 토큰 삭제
-        waitingService.removeActiveToken(command.getToken());
+        // 결제 성공 이벤트
+        PaymentSuccessEvent successEvent = new PaymentSuccessEvent(payment, reservation, command.getToken());
+        paymentEventPublisher.success(successEvent);
 
         return PaymentInfo.Main.of(payment, reservation);
     }

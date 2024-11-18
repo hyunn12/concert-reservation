@@ -1,20 +1,16 @@
 package io.hhplus.reserve.payment.application;
 
-import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
-import io.hhplus.reserve.concert.domain.ConcertService;
 import io.hhplus.reserve.concert.domain.SeatStatus;
 import io.hhplus.reserve.concert.infra.ConcertJpaRepository;
 import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
+import io.hhplus.reserve.config.TestContainerSupport;
 import io.hhplus.reserve.payment.domain.PaymentCommand;
 import io.hhplus.reserve.payment.domain.PaymentInfo;
-import io.hhplus.reserve.payment.domain.PaymentService;
 import io.hhplus.reserve.point.domain.Point;
-import io.hhplus.reserve.point.domain.PointService;
 import io.hhplus.reserve.point.infra.PointJpaRepository;
 import io.hhplus.reserve.reservation.domain.Reservation;
-import io.hhplus.reserve.reservation.domain.ReservationService;
 import io.hhplus.reserve.reservation.infra.ReservationJpaRepository;
 import io.hhplus.reserve.support.domain.exception.BusinessException;
 import jakarta.transaction.Transactional;
@@ -35,15 +31,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class PaymentFacadeTest extends TestContainerSupport {
 
     @Autowired
-    private PaymentService paymentService;
-    @Autowired
-    private ConcertService concertService;
-    @Autowired
-    private PointService pointService;
-    @Autowired
-    private ReservationService reservationService;
-
-    @Autowired
     private ConcertJpaRepository concertJpaRepository;
     @Autowired
     private ConcertSeatJpaRepository concertSeatJpaRepository;
@@ -52,15 +39,11 @@ class PaymentFacadeTest extends TestContainerSupport {
     @Autowired
     private ReservationJpaRepository reservationJpaRepository;
 
+    @Autowired
     private PaymentFacade paymentFacade;
 
     @BeforeEach
     void setUp() {
-        concertJpaRepository.deleteAll();
-        concertSeatJpaRepository.deleteAll();
-        pointJpaRepository.deleteAll();
-        reservationJpaRepository.deleteAll();
-
         Concert concert = new Concert(1L,
                 "AA Concert",
                 "AA concert desc",
@@ -79,10 +62,8 @@ class PaymentFacadeTest extends TestContainerSupport {
         pointJpaRepository.save(point);
     }
 
-
     @Test
     @DisplayName("유효한 조건으로 결제 성공")
-    @Transactional
     void testPayment() {
         // given
         PaymentCommand.Payment command = PaymentCommand.Payment.builder()
@@ -103,7 +84,7 @@ class PaymentFacadeTest extends TestContainerSupport {
         List<ConcertSeat> seatList = concertSeatJpaRepository.findAllById(List.of(1L, 2L));
         seatList.forEach(seat -> assertEquals(SeatStatus.CONFIRMED, seat.getStatus()));
 
-        Point updatedPoint = pointJpaRepository.findByUserIdWithLock(1L).orElseThrow();
+        Point updatedPoint = pointJpaRepository.findByUserId(1L).orElseThrow();
         assertEquals(5000, updatedPoint.getPoint());
 
         Reservation reservation = reservationJpaRepository.findById(result.getReservationId()).orElseThrow();

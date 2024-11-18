@@ -41,7 +41,7 @@ public class WaitingRepositoryImpl implements WaitingRepository {
 
     @Override
     public void addWaitingQueue(String token) {
-        long score = System.currentTimeMillis();
+        long score = System.nanoTime();
         zSetOperations.add(WAITING_KEY, token, score);
     }
 

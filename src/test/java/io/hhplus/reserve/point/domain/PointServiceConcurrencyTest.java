@@ -1,6 +1,6 @@
 package io.hhplus.reserve.point.domain;
 
-import io.hhplus.reserve.TestContainerSupport;
+import io.hhplus.reserve.config.TestContainerSupport;
 import io.hhplus.reserve.point.infra.PointJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
