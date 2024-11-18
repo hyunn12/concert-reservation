@@ -8,8 +8,10 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.utility.DockerImageName;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
@@ -21,9 +23,15 @@ public abstract class TestContainerSupport {
 
     private static final GenericContainer REDIS = new GenericContainer("redis:6.2.6").withExposedPorts(6379);
 
+    private static final KafkaContainer KAFKA = new KafkaContainer(
+            DockerImageName.parse("confluentinc/cp-kafka:7.5.0")
+                    .asCompatibleSubstituteFor("apache/kafka")
+    );
+
     @BeforeAll
     public static void startContainers() {
         log.info("Starting containers...");
+        KAFKA.start();
         MYSQL.start();
         REDIS.start();
         log.info("Containers started successfully.");
@@ -32,6 +40,7 @@ public abstract class TestContainerSupport {
     @AfterAll
     public static void stopContainers() {
         log.info("Stopping containers...");
+        KAFKA.stop();
         MYSQL.stop();
         REDIS.stop();
         log.info("Containers stopped successfully.");
@@ -39,6 +48,9 @@ public abstract class TestContainerSupport {
 
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
+        // kafka
+        registry.add("spring.kafka.bootstrap-servers", KAFKA::getBootstrapServers);
+
         // mysql
         registry.add("spring.datasource.driver-class-name", MYSQL::getDriverClassName);
         registry.add("spring.datasource.url", MYSQL::getJdbcUrl);
@@ -53,5 +65,6 @@ public abstract class TestContainerSupport {
     static {
         MYSQL.waitingFor(Wait.forListeningPort());
         REDIS.waitingFor(Wait.forListeningPort());
+        KAFKA.waitingFor(Wait.forListeningPort());
     }
 }
