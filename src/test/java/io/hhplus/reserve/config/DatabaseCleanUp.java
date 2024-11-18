@@ -1,4 +1,4 @@
-package io.hhplus.reserve;
+package io.hhplus.reserve.config;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;

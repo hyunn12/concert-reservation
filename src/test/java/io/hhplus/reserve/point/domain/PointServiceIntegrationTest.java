@@ -1,6 +1,6 @@
 package io.hhplus.reserve.point.domain;
 
-import io.hhplus.reserve.TestContainerSupport;
+import io.hhplus.reserve.config.TestContainerSupport;
 import io.hhplus.reserve.point.infra.PointJpaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

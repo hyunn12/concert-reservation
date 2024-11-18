@@ -1,11 +1,11 @@
 package io.hhplus.reserve.payment.application;
 
-import io.hhplus.reserve.TestContainerSupport;
 import io.hhplus.reserve.concert.domain.Concert;
 import io.hhplus.reserve.concert.domain.ConcertSeat;
 import io.hhplus.reserve.concert.domain.SeatStatus;
 import io.hhplus.reserve.concert.infra.ConcertJpaRepository;
 import io.hhplus.reserve.concert.infra.ConcertSeatJpaRepository;
+import io.hhplus.reserve.config.TestContainerSupport;
 import io.hhplus.reserve.payment.domain.PaymentCommand;
 import io.hhplus.reserve.payment.domain.PaymentInfo;
 import io.hhplus.reserve.point.domain.Point;
@@ -62,10 +62,8 @@ class PaymentFacadeTest extends TestContainerSupport {
         pointJpaRepository.save(point);
     }
 
-
     @Test
     @DisplayName("유효한 조건으로 결제 성공")
-    @Transactional
     void testPayment() {
         // given
         PaymentCommand.Payment command = PaymentCommand.Payment.builder()
@@ -86,7 +84,7 @@ class PaymentFacadeTest extends TestContainerSupport {
         List<ConcertSeat> seatList = concertSeatJpaRepository.findAllById(List.of(1L, 2L));
         seatList.forEach(seat -> assertEquals(SeatStatus.CONFIRMED, seat.getStatus()));
 
-        Point updatedPoint = pointJpaRepository.findByUserIdWithLock(1L).orElseThrow();
+        Point updatedPoint = pointJpaRepository.findByUserId(1L).orElseThrow();
         assertEquals(5000, updatedPoint.getPoint());
 
         Reservation reservation = reservationJpaRepository.findById(result.getReservationId()).orElseThrow();

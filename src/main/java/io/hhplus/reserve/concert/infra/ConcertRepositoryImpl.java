@@ -6,9 +6,7 @@ import io.hhplus.reserve.concert.domain.ConcertSeat;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -23,10 +21,7 @@ public class ConcertRepositoryImpl implements ConcertRepository {
     }
 
     @Override
-    public List<Concert> getConcertList(String date) {
-        LocalDate parsedDate = LocalDate.parse(date);
-        LocalDateTime startDate = parsedDate.atStartOfDay();
-        LocalDateTime endDate = parsedDate.atTime(LocalTime.MAX);
+    public List<Concert> getConcertList(LocalDateTime startDate, LocalDateTime endDate) {
         return concertJpaRepository.findAllByDate(startDate, endDate);
     }
 

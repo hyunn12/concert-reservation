@@ -1,10 +1,11 @@
 package io.hhplus.reserve.concert.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ConcertRepository {
 
-    List<Concert> getConcertList(String date);
+    List<Concert> getConcertList(LocalDateTime startDate, LocalDateTime endDate);
 
     List<ConcertSeat> getConcertSeatListByConcertId(Long concertId);
 
