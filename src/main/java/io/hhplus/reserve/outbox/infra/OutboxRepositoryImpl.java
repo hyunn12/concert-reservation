@@ -23,4 +23,9 @@ public class OutboxRepositoryImpl implements OutboxRepository {
     public Outbox findById(String id) {
         return outboxJpaRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
+
+    @Override
+    public List<Outbox> findAllByIsPublished(boolean isPublished) {
+        return outboxJpaRepository.findAllByPublished(isPublished);
+    }
 }
