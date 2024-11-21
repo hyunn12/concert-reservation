@@ -1,8 +1,11 @@
 package io.hhplus.reserve.payment.interfaces.event;
 
-import io.hhplus.reserve.external.application.ExternalService;
+import io.hhplus.reserve.common.kafka.KafkaConstant;
+import io.hhplus.reserve.common.util.JsonUtil;
+import io.hhplus.reserve.outbox.domain.Outbox;
+import io.hhplus.reserve.outbox.domain.OutboxService;
 import io.hhplus.reserve.payment.domain.event.PaymentSuccessEvent;
-import io.hhplus.reserve.waiting.domain.WaitingService;
+import io.hhplus.reserve.payment.infra.event.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -15,20 +18,27 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class PaymentEventListener {
 
-    private final WaitingService waitingService;
-    private final ExternalService externalService;
+    private final OutboxService outboxService;
+    private final KafkaProducer kafkaProducer;
 
-    @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleRemoveToken(PaymentSuccessEvent event) {
-        log.info("PaymentEventListener::: removeToken {}", event);
-        waitingService.removeActiveToken(event.getToken());
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void createOutbox(PaymentSuccessEvent event) {
+        Outbox outbox = Outbox.create(
+                "PAYMENT",
+                KafkaConstant.PAYMENT_TOPIC,
+                "PaymentSuccessEvent",
+                JsonUtil.objectToJsonString(event)
+        );
+        outboxService.saveOutbox(outbox);
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleNotifyPayment(PaymentSuccessEvent event) {
-        log.info("PaymentEventListener::: notify {}", event);
-        externalService.notifyPaymentSuccess(event.getInfo());
+    public void paymentNotifyHandler(PaymentSuccessEvent event) {
+        kafkaProducer.send(
+                KafkaConstant.PAYMENT_TOPIC,
+                event.getOutboxId(),
+                event.getInfo()
+        );
     }
 }

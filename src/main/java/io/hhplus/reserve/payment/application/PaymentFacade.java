@@ -60,7 +60,7 @@ public class PaymentFacade {
         concertService.confirmSeat(seatList);
 
         // 결제 성공 이벤트
-        PaymentSuccessEvent successEvent = new PaymentSuccessEvent(payment, reservation, command.getToken());
+        PaymentSuccessEvent successEvent = PaymentSuccessEvent.create(payment, reservation, command.getToken());
         paymentEventPublisher.success(successEvent);
 
         return PaymentInfo.Main.of(payment, reservation);
