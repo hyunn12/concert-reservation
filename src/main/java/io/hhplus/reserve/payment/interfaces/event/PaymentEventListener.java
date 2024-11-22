@@ -24,6 +24,7 @@ public class PaymentEventListener {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void createOutbox(PaymentSuccessEvent event) {
         Outbox outbox = Outbox.create(
+                event.getOutboxId(),
                 "PAYMENT",
                 KafkaConstant.PAYMENT_TOPIC,
                 "PaymentSuccessEvent",
@@ -38,7 +39,7 @@ public class PaymentEventListener {
         kafkaProducer.send(
                 KafkaConstant.PAYMENT_TOPIC,
                 event.getOutboxId(),
-                event.getInfo()
+                event.getPaymentId()
         );
     }
 }

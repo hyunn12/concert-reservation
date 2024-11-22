@@ -10,8 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "outbox")
 @Getter
@@ -43,9 +41,9 @@ public class Outbox extends BaseEntity {
     @Column(name = "count")
     private int count;
 
-    public static Outbox create(String domainName, String topic, String eventType, String message) {
+    public static Outbox create(String id, String domainName, String topic, String eventType, String message) {
         return Outbox.builder()
-                .id(UUID.randomUUID().toString())
+                .id(id)
                 .domainName(domainName)
                 .topic(topic)
                 .eventType(eventType)
