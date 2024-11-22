@@ -7,7 +7,6 @@ import io.hhplus.reserve.outbox.domain.Outbox;
 import io.hhplus.reserve.outbox.domain.OutboxRepository;
 import io.hhplus.reserve.payment.domain.event.PaymentSuccessEvent;
 import io.hhplus.reserve.payment.infra.event.KafkaProducer;
-import io.hhplus.reserve.waiting.domain.WaitingRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +20,6 @@ import static org.awaitility.Awaitility.await;
 
 @Slf4j
 class PaymentFacadeEventTest extends TestContainerSupport {
-
-    @Autowired
-    private WaitingRepository waitingRepository;
 
     @Autowired
     private OutboxRepository outboxRepository;
