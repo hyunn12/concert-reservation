@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface OutboxJpaRepository extends JpaRepository<Outbox, String> {
 
-    @Query("select o from Outbox o where o.isPublished = :isPublished")
-    List<Outbox> findAllByPublished(@Param("isPublished") boolean isPublished);
+    @Query("select o from Outbox o where o.isPublished = :isPublished and o.count <= :count")
+    List<Outbox> findAllByPublished(@Param("isPublished") boolean isPublished, @Param("count") int count);
 }

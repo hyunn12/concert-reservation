@@ -1,5 +1,6 @@
 package io.hhplus.reserve.outbox.infra;
 
+import io.hhplus.reserve.common.kafka.KafkaConstant;
 import io.hhplus.reserve.outbox.domain.Outbox;
 import io.hhplus.reserve.outbox.domain.OutboxRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,6 +27,6 @@ public class OutboxRepositoryImpl implements OutboxRepository {
 
     @Override
     public List<Outbox> findAllByIsPublished(boolean isPublished) {
-        return outboxJpaRepository.findAllByPublished(isPublished);
+        return outboxJpaRepository.findAllByPublished(isPublished, KafkaConstant.MAX_RETRY_COUNT);
     }
 }

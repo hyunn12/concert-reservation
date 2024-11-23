@@ -3,9 +3,7 @@ package io.hhplus.reserve.payment.interfaces.event;
 import io.hhplus.reserve.common.kafka.KafkaConstant;
 import io.hhplus.reserve.common.util.JsonUtil;
 import io.hhplus.reserve.external.application.ExternalService;
-import io.hhplus.reserve.outbox.domain.Outbox;
 import io.hhplus.reserve.outbox.domain.OutboxService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -20,13 +18,10 @@ public class PaymentEventConsumer {
     private final OutboxService outboxService;
     private final ExternalService externalService;
 
-    @Transactional
     @KafkaListener(topics = KafkaConstant.PAYMENT_TOPIC, groupId = "payment-outbox")
     public void outboxPublished(ConsumerRecord<String, String> consumerRecord){
         log.info("# [PaymentEventConsumer] outboxPublished ::: {}", consumerRecord.key());
-        Outbox outbox = outboxService.getOutboxById(consumerRecord.key());
-        outbox.published();
-        outboxService.saveOutbox(outbox);
+        outboxService.publishOutbox(consumerRecord.key());
     }
 
     @KafkaListener(topics = KafkaConstant.PAYMENT_TOPIC, groupId = "payment-notify")

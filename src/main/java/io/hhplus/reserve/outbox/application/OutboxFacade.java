@@ -1,7 +1,6 @@
 package io.hhplus.reserve.outbox.application;
 
 import io.hhplus.reserve.common.annotation.Facade;
-import io.hhplus.reserve.common.kafka.KafkaConstant;
 import io.hhplus.reserve.outbox.domain.Outbox;
 import io.hhplus.reserve.outbox.domain.OutboxService;
 import io.hhplus.reserve.payment.infra.event.KafkaProducer;
@@ -21,16 +20,8 @@ public class OutboxFacade {
     public void retrySendOutboxMessage() {
         List<Outbox> outboxList = outboxService.getNotPublishedOutboxList();
         for (Outbox outbox : outboxList) {
-            if (outbox.getCount() >= KafkaConstant.MAX_RETRY_COUNT) {
-                outbox.unpublished();
-                outboxService.saveOutbox(outbox);
-                continue;
-            }
-
+            outboxService.increaseOutboxCount(outbox);
             kafkaProducer.send(outbox.getTopic(), outbox.getId(), outbox.getMessage());
-            outbox.increaseCount();
-            outboxService.saveOutbox(outbox);
         }
     }
-
 }
