@@ -50,7 +50,7 @@ class PaymentFacadeEventTest extends TestContainerSupport {
                 "PAYMENT",
                 KafkaConstant.PAYMENT_TOPIC,
                 "PaymentSuccessEvent",
-                JsonUtil.objectToJsonString(event)
+                JsonUtil.objectToJsonString(event.getPaymentId())
         );
         outboxRepository.save(outbox);
 

@@ -1,6 +1,7 @@
 package io.hhplus.reserve.outbox.application;
 
 import io.hhplus.reserve.common.annotation.Facade;
+import io.hhplus.reserve.common.util.JsonUtil;
 import io.hhplus.reserve.outbox.domain.Outbox;
 import io.hhplus.reserve.outbox.domain.OutboxService;
 import io.hhplus.reserve.payment.infra.event.KafkaProducer;
@@ -21,7 +22,8 @@ public class OutboxFacade {
         List<Outbox> outboxList = outboxService.getNotPublishedOutboxList();
         for (Outbox outbox : outboxList) {
             outboxService.increaseOutboxCount(outbox);
-            kafkaProducer.send(outbox.getTopic(), outbox.getId(), outbox.getMessage());
+            Long paymentId = JsonUtil.jsonStringToObject(outbox.getMessage(), Long.class);
+            kafkaProducer.send(outbox.getTopic(), outbox.getId(), paymentId);
         }
     }
 }

@@ -28,7 +28,7 @@ public class PaymentEventListener {
                 "PAYMENT",
                 KafkaConstant.PAYMENT_TOPIC,
                 "PaymentSuccessEvent",
-                JsonUtil.objectToJsonString(event)
+                JsonUtil.objectToJsonString(event.getPaymentId())
         );
         outboxService.saveOutbox(outbox);
     }
