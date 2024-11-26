@@ -13,8 +13,8 @@ public class OutboxScheduler {
 
     private final OutboxFacade outboxFacade;
 
-    // 재시도 (5s)
-    @Scheduled(fixedRate = 5000)
+    // 재시도 (5 min)
+    @Scheduled(fixedRate = 300000)
     public void retrySendOutboxMessage() {
         log.info("# [OutboxScheduler] ::: Scheduler Start");
         outboxFacade.retrySendOutboxMessage();
