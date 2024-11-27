@@ -6,14 +6,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PaymentInfo {
+public class PaymentInfo implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     @Getter
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Main {
+    public static class Main implements Serializable {
+        @Serial
+        private static final long serialVersionUID = 1L;
+
         private Long reservationId;
         private Long paymentId;
         private Long userId;
