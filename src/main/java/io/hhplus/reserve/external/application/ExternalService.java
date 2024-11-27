@@ -1,6 +1,5 @@
 package io.hhplus.reserve.external.application;
 
-import io.hhplus.reserve.payment.domain.PaymentInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -8,8 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ExternalService {
 
-    public void notifyPaymentSuccess(PaymentInfo.Main info) {
-        log.info("notifyPaymentSuccess::: {}", info);
+    public void notifyPaymentSuccess(Long paymentId) {
+        log.info("# [ExternalService] notifyPaymentSuccess::: paymentId: {}", paymentId);
     }
-
 }

@@ -14,3 +14,11 @@ spring:
     generate-ddl: true
     open-in-view: false
     show-sql: true
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.testcontainers: TRACE
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: DEBUG

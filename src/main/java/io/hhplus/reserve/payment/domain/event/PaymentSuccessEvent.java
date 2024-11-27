@@ -1,18 +1,25 @@
 package io.hhplus.reserve.payment.domain.event;
 
-import io.hhplus.reserve.payment.domain.Payment;
-import io.hhplus.reserve.payment.domain.PaymentInfo;
-import io.hhplus.reserve.reservation.domain.Reservation;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.UUID;
 
 @Getter
-public class PaymentSuccessEvent {
+@NoArgsConstructor
+@AllArgsConstructor
+public final class PaymentSuccessEvent implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-    private final PaymentInfo.Main info;
-    private final String token;
+    private Long paymentId;
+    private String token;
+    private String outboxId;
 
-    public PaymentSuccessEvent(Payment payment, Reservation reservation, String token) {
-        this.info = PaymentInfo.Main.of(payment, reservation);
-        this.token = token;
+    public static PaymentSuccessEvent create(Long paymentId, String token) {
+        return new PaymentSuccessEvent(paymentId, token, UUID.randomUUID().toString());
     }
 }
