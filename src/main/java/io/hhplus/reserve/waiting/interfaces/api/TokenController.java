@@ -28,7 +28,7 @@ public class TokenController {
     @Operation(summary = "대기열 토큰 발급/조회", description = "현재 대기열 상태 조회 및 발급")
     public ResponseEntity<TokenResponse.Token> checkToken(
             @Schema(description = "대기열 토큰")
-            @RequestHeader(CommonConstant.TOKEN) String token
+            @RequestHeader(value = CommonConstant.TOKEN, required = false) String token
     ) {
         TokenInfo.Main result = waitingService.checkToken(token);
         return ResponseEntity.ok(TokenResponse.Token.of(result));
