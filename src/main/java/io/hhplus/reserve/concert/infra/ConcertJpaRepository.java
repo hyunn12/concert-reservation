@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public interface ConcertJpaRepository extends JpaRepository<Concert, Long> {
 
-//    @Query(value = "select * from concert c where :date between date(c.reservation_start_at) and date(c.reservation_end_at)", nativeQuery = true)
     @Query(value = "select * from concert c where c.reservation_start_at <= :endDate and c.reservation_end_at >= :startDate", nativeQuery = true)
     List<Concert> findAllByDate(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
